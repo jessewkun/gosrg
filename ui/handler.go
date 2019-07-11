@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"fmt"
 	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
@@ -28,6 +27,30 @@ func getCurrentLine(v *gocui.View) string {
 	return line
 }
 
+func up(v *gocui.View) error {
+	ox, oy := v.Origin()
+	cx, cy := v.Cursor()
+	if err := v.SetCursor(cx, cy-1); err != nil && oy > 0 {
+		if err := v.SetOrigin(ox, oy-1); err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
+}
+
+func down(v *gocui.View) error {
+	cx, cy := v.Cursor()
+	if err := v.SetCursor(cx, cy+1); err != nil {
+		ox, oy := v.Origin()
+		if err := v.SetOrigin(ox, oy+1); err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
+}
+
 func ServerInitHandler() error {
 	utils.Soutput("Current Host: " + config.Srg.Host)
 	utils.Soutput("Current Port: " + config.Srg.Port)
@@ -37,6 +60,10 @@ func ServerInitHandler() error {
 
 func ServerFocusHandler(arg ...interface{}) error {
 	config.Srg.G.Cursor = false
+	utils.Clear(config.Srg.AllView["server"].View)
+	utils.Soutput("Current Host: " + config.Srg.Host)
+	utils.Soutput("Current Port: " + config.Srg.Port)
+	utils.Soutput("Current Db  : " + strconv.Itoa(config.Srg.Db))
 	utils.Toutput(config.TipsMap["server"])
 	redis.Info()
 	return nil
@@ -66,43 +93,26 @@ func KeyBlurHandler() error {
 }
 
 func KeyUpHandler(g *gocui.Gui, v *gocui.View) error {
-	if v != nil {
-		ox, oy := v.Origin()
-		cx, cy := v.Cursor()
-		if err := v.SetCursor(cx, cy-1); err != nil && oy > 0 {
-			if err := v.SetOrigin(ox, oy-1); err != nil {
-				return err
-			}
-		}
-		if key := getCurrentLine(v); key != "" {
-			redis.KeyDetail(key)
-		}
+	if err := up(v); err != nil {
+		return err
+	}
+	if key := getCurrentLine(v); key != "" {
+		redis.KeyDetail(key)
 	}
 	return nil
 }
 
 func KeyDownHandler(g *gocui.Gui, v *gocui.View) error {
-	if v != nil {
-		cx, cy := v.Cursor()
-		if err := v.SetCursor(cx, cy+1); err != nil {
-			ox, oy := v.Origin()
-			if err := v.SetOrigin(ox, oy+1); err != nil {
-				return err
-			}
-		}
-		if key := getCurrentLine(v); key != "" {
-			redis.KeyDetail(key)
-		}
+	if err := down(v); err != nil {
+		return err
+	}
+	if key := getCurrentLine(v); key != "" {
+		redis.KeyDetail(key)
 	}
 	return nil
 }
 
 func KeyDetailHandler(g *gocui.Gui, v *gocui.View) error {
-	if _, err := g.SetCurrentView(v.Name()); err != nil {
-		utils.Logger.Fatalln(err)
-		return err
-	}
-
 	if key := getCurrentLine(v); key != "" {
 		redis.KeyDetail(key)
 	}
@@ -193,6 +203,50 @@ func HelpHideHandler(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
+func DbInitHandler() error {
+	return nil
+}
+func DbFocusHandler(arg ...interface{}) error {
+	config.Srg.G.Cursor = true
+	utils.Toutput(config.TipsMap["db"])
+	for index := 0; index <= config.REDIS_MAX_DB_NUM; index++ {
+		utils.DBoutput("> database " + strconv.Itoa(index))
+	}
+	return nil
+}
+func DbBlurHandler() error {
+	return nil
+}
+
+func DbHideHandler(g *gocui.Gui, v *gocui.View) error {
+	name := config.Srg.AllView["db"].Name
+	if err := config.Srg.G.DeleteView(name); err != nil {
+		return err
+	}
+	redis.Db()
+	setCurrent(config.Srg.NextView)
+	return nil
+}
+
+func DbUpHandler(g *gocui.Gui, v *gocui.View) error {
+	return up(v)
+}
+
+func DbDownHandler(g *gocui.Gui, v *gocui.View) error {
+	return down(v)
+}
+
+func DbSelectHandler(g *gocui.Gui, v *gocui.View) error {
+	if str := getCurrentLine(v); str != "" {
+		// db, _ := strconv.Atoi(str)
+		db := 1
+		config.Srg.Db = db
+		DbHideHandler(g, v)
+	}
+
+	return nil
+}
+
 func GlobalQuitHandler(g *gocui.Gui, v *gocui.View) error {
 	return gocui.ErrQuit
 }
@@ -203,10 +257,6 @@ func GlobalTabHandler(g *gocui.Gui, v *gocui.View) error {
 		utils.Logger.Fatalln(err)
 		return err
 	}
-
-	str := fmt.Sprintf("next view: %s", config.Srg.NextView.Name)
-	utils.Debug(str)
-
 	return nil
 }
 
@@ -221,6 +271,24 @@ func GlobalShowHelpViewHandler(g *gocui.Gui, v *gocui.View) error {
 		v.Wrap = true
 		config.Srg.AllView["help"].View = v
 		setCurrent(config.Srg.AllView["help"])
+	}
+	return nil
+}
+
+func GlobalShowDbViewHandler(g *gocui.Gui, v *gocui.View) error {
+	maxX, maxY := config.Srg.G.Size()
+	name := config.Srg.AllView["db"].Name
+	if v, err := config.Srg.G.SetView(name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2+6, 0); err != nil {
+		if !gocui.IsUnknownView(err) {
+			return err
+		}
+		v.Title = DbView.Title
+		v.Wrap = true
+		v.Highlight = true
+		v.SelBgColor = gocui.ColorGreen
+		v.SelFgColor = gocui.ColorBlack
+		config.Srg.AllView["db"].View = v
+		setCurrent(config.Srg.AllView["db"])
 	}
 	return nil
 }

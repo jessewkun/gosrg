@@ -5,6 +5,8 @@ import (
 	"gosrg/config"
 	"strconv"
 	"time"
+
+	"github.com/awesome-gocui/gocui"
 )
 
 func Yellow(str string) string {
@@ -31,6 +33,10 @@ func UnderLine(str string) string {
 	return fmt.Sprintf("\x1b[3%d;%dm%s\x1b[0m ", 5, 4, str)
 }
 
+func Clear(v *gocui.View) {
+	v.Clear()
+}
+
 func Soutput(str string) {
 	v := config.Srg.AllView["server"].View
 	if _, err := fmt.Fprintln(v, str); err != nil {
@@ -41,7 +47,7 @@ func Soutput(str string) {
 // Douput used for Detail view output without newline
 func Douput(str string) {
 	v := config.Srg.AllView["detail"].View
-	v.Clear()
+	Clear(v)
 	if _, err := fmt.Fprint(v, str); err != nil {
 		Logger.Fatalln(err)
 	}
@@ -100,6 +106,16 @@ func Houtput(str string) {
 		Logger.Fatalln(err)
 	} else {
 		Debug("Houtput: " + strconv.Itoa(n))
+	}
+}
+
+func DBoutput(str string) {
+	v := config.Srg.AllView["db"].View
+	n, err := fmt.Fprintln(v, str)
+	if err != nil {
+		Logger.Fatalln(err)
+	} else {
+		Debug("DBoutput: " + strconv.Itoa(n))
 	}
 }
 

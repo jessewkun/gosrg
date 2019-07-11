@@ -15,6 +15,7 @@ func InitConfigAllView() {
 		"tip":     &TipView,
 		"project": &ProjectView,
 		"help":    &HelpView,
+		"db":      &DbView,
 	}
 	config.Srg.NextView = &ServerView
 }
@@ -23,6 +24,7 @@ var GlobalShortCuts = []config.ShortCut{
 	config.ShortCut{Key: gocui.KeyCtrlC, Mod: gocui.ModNone, Handler: GlobalQuitHandler},
 	config.ShortCut{Key: gocui.KeyTab, Mod: gocui.ModNone, Handler: GlobalTabHandler},
 	config.ShortCut{Key: gocui.KeyCtrlSpace, Mod: gocui.ModNone, Handler: GlobalShowHelpViewHandler},
+	config.ShortCut{Key: gocui.KeyCtrlD, Mod: gocui.ModNone, Handler: GlobalShowDbViewHandler},
 }
 
 var ServerView = config.View{
@@ -90,5 +92,19 @@ var HelpView = config.View{
 	BlurHandler:  HelpBlurHandler,
 	ShortCuts: []config.ShortCut{
 		config.ShortCut{Key: gocui.KeyEsc, Mod: gocui.ModNone, Handler: HelpHideHandler},
+	},
+}
+
+var DbView = config.View{
+	Name:         "db",
+	Title:        " Select Database ",
+	InitHandler:  DbInitHandler,
+	FocusHandler: DbFocusHandler,
+	BlurHandler:  DbBlurHandler,
+	ShortCuts: []config.ShortCut{
+		config.ShortCut{Key: gocui.KeyEsc, Mod: gocui.ModNone, Handler: DbHideHandler},
+		config.ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: DbUpHandler},
+		config.ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: DbDownHandler},
+		config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: DbSelectHandler},
 	},
 }

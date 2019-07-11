@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"gosrg/config"
 	"gosrg/utils"
 
@@ -89,6 +90,8 @@ func setCurrent(v *config.View, arg ...interface{}) error {
 		utils.Logger.Fatalln(err)
 		return err
 	}
+	str := fmt.Sprintf("current view: %s", config.Srg.NextView.Name)
+	utils.Debug(str)
 	v.FocusHandler(arg)
 	return nil
 }

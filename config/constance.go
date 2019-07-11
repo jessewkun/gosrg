@@ -22,3 +22,5 @@ const HELP_CONTENT = `
 `
 
 const LOG_FILE = "./gosrg.log"
+
+const REDIS_MAX_DB_NUM = 15

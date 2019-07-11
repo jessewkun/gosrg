@@ -46,14 +46,13 @@ var (
 		"output": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"tip":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"help":   "Esc: Close Help view",
+		"db":     "Esc: Close Db view",
 	}
 )
 
 func InitSrg() {
 	Srg = Gosrg{
-		Host:  "127.0.0.1",
-		Port:  "6379",
-		Db:    1,
-		TabNo: 0,
+		Host: "127.0.0.1",
+		Port: "6379",
 	}
 }
