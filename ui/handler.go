@@ -54,9 +54,10 @@ func KeyInitHandler() error {
 func KeyFocusHandler(arg ...interface{}) error {
 	config.Srg.G.Cursor = true
 	utils.Toutput(config.TipsMap["key"])
-	if key := getCurrentLine(config.Srg.AllView["key"].View); key != "" {
-		redis.KeyDetail(key)
-	}
+	// 暂时关闭 key view 的 KeyDetail, 因为要看 info 的时候必须经过 key, 如果开启的话就会覆盖掉 detail 了
+	// if key := getCurrentLine(config.Srg.AllView["key"].View); key != "" {
+	// 	redis.KeyDetail(key)
+	// }
 	return nil
 }
 

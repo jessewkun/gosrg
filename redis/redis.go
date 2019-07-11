@@ -22,6 +22,8 @@ func Keys() {
 	if err != nil {
 		utils.Logger.Fatalln(err)
 	} else {
+		config.Srg.CurrentKey = ""
+		config.Srg.CurrentKeyType = ""
 		utils.OCommandOuput("keys *")
 		for _, key := range keys {
 			utils.Kouput(key)
@@ -35,6 +37,8 @@ func Info() {
 	if err != nil {
 		utils.Logger.Fatalln(err)
 	} else {
+		config.Srg.CurrentKey = ""
+		config.Srg.CurrentKeyType = ""
 		utils.OCommandOuput(command)
 		utils.Douput(info)
 	}
