@@ -1,0 +1,10 @@
+gosrg.log
+vendor/
+log/
+var/
+output/
+*.swp
+.deploy/
+.statsd/
+.DS_Store
+._.DS_Store
