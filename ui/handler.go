@@ -5,6 +5,7 @@ import (
 	"gosrg/redis"
 	"gosrg/utils"
 	"strconv"
+	"strings"
 
 	"github.com/awesome-gocui/gocui"
 )
@@ -223,7 +224,6 @@ func DbHideHandler(g *gocui.Gui, v *gocui.View) error {
 	if err := config.Srg.G.DeleteView(name); err != nil {
 		return err
 	}
-	redis.Db()
 	setCurrent(config.Srg.NextView)
 	return nil
 }
@@ -236,12 +236,19 @@ func DbDownHandler(g *gocui.Gui, v *gocui.View) error {
 	return down(v)
 }
 
+func DbEnterHandler(g *gocui.Gui, v *gocui.View) error {
+	return DbSelectHandler(g, v)
+}
+
 func DbSelectHandler(g *gocui.Gui, v *gocui.View) error {
 	if str := getCurrentLine(v); str != "" {
-		// db, _ := strconv.Atoi(str)
-		db := 1
-		config.Srg.Db = db
-		DbHideHandler(g, v)
+		tmp := strings.Split(str, " ")
+		db, _ := strconv.Atoi(tmp[2])
+		if err := redis.Db(db); err == nil {
+			config.Srg.Db = db
+			utils.Logger.Println("select db to " + tmp[2])
+		}
+		return DbHideHandler(g, v)
 	}
 
 	return nil

@@ -3,6 +3,7 @@ package redis
 import (
 	"gosrg/config"
 	"gosrg/utils"
+	"os"
 	"strconv"
 	"strings"
 
@@ -12,22 +13,24 @@ import (
 func InitConn() (redis.Conn, error) {
 	conn, err := redis.Dial(config.REDIS_NETWORK, config.Srg.Host+":"+config.Srg.Port)
 	if err != nil {
-		utils.Logger.Panicln(err)
-		return nil, err
+		println("redis connect fail")
+		utils.Logger.Println(err.Error())
+		os.Exit(1)
 	}
 	return conn, nil
 }
 
-func Db() {
-	_, err := redis.String(config.Srg.Redis.Do("select", config.Srg.Db))
+func Db(db int) error {
+	_, err := redis.String(config.Srg.Redis.Do("select", db))
 	if err != nil {
 		utils.Logger.Fatalln(err)
 		utils.OErrorOuput(err.Error())
-	} else {
-		config.Srg.CurrentKey = ""
-		config.Srg.CurrentKeyType = ""
-		utils.OCommandOuput("select " + strconv.Itoa(config.Srg.Db))
+		return err
 	}
+	config.Srg.CurrentKey = ""
+	config.Srg.CurrentKeyType = ""
+	utils.OCommandOuput("select " + strconv.Itoa(db))
+	return nil
 }
 
 func Keys() {

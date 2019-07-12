@@ -46,7 +46,7 @@ var (
 		"output": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"tip":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"help":   "Esc: Close Help view",
-		"db":     "Esc: Close Db view",
+		"db":     "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close Db view",
 	}
 )
 

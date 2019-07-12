@@ -23,7 +23,7 @@ func InitConfigAllView() {
 var GlobalShortCuts = []config.ShortCut{
 	config.ShortCut{Key: gocui.KeyCtrlC, Mod: gocui.ModNone, Handler: GlobalQuitHandler},
 	config.ShortCut{Key: gocui.KeyTab, Mod: gocui.ModNone, Handler: GlobalTabHandler},
-	config.ShortCut{Key: gocui.KeyCtrlSpace, Mod: gocui.ModNone, Handler: GlobalShowHelpViewHandler},
+	config.ShortCut{Key: gocui.KeySpace, Mod: gocui.ModNone, Handler: GlobalShowHelpViewHandler},
 	config.ShortCut{Key: gocui.KeyCtrlD, Mod: gocui.ModNone, Handler: GlobalShowDbViewHandler},
 }
 
@@ -106,5 +106,6 @@ var DbView = config.View{
 		config.ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: DbUpHandler},
 		config.ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: DbDownHandler},
 		config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: DbSelectHandler},
+		config.ShortCut{Key: gocui.KeyEnter, Mod: gocui.ModNone, Handler: DbEnterHandler},
 	},
 }
