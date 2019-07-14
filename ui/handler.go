@@ -61,7 +61,7 @@ func ServerInitHandler() error {
 
 func ServerFocusHandler(arg ...interface{}) error {
 	config.Srg.G.Cursor = false
-	utils.Clear(config.Srg.AllView["server"].View)
+	config.Srg.AllView["server"].View.Clear()
 	utils.Soutput("Current Host: " + config.Srg.Host)
 	utils.Soutput("Current Port: " + config.Srg.Port)
 	utils.Soutput("Current Db  : " + strconv.Itoa(config.Srg.Db))
@@ -75,6 +75,7 @@ func ServerBlurHandler() error {
 }
 
 func KeyInitHandler() error {
+	config.Srg.AllView["key"].View.Clear()
 	redis.Keys()
 	return nil
 }
@@ -225,6 +226,7 @@ func DbHideHandler(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 	setCurrent(config.Srg.NextView)
+	KeyInitHandler()
 	return nil
 }
 
