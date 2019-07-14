@@ -64,7 +64,7 @@ func Layout(g *gocui.Gui) error {
 		v.Wrap = true
 		ServerView.View = v
 		ServerView.InitHandler()
-		setCurrent(&ServerView)
+		setCurrent(ServerView)
 	}
 
 	if v, err := g.SetView(KeyView.Name, 0, maxY/10+1, maxX/3, maxY-2, 0); err != nil {

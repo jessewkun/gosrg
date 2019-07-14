@@ -30,3 +30,18 @@ const HELP_CONTENT = `
 const LOG_FILE = "./gosrg.log"
 
 const REDIS_MAX_DB_NUM = 15
+
+var (
+	OS      string
+	Srg     Gosrg
+	TabView = []string{"server", "key", "detail", "output"}
+	TipsMap = map[string]string{
+		"server": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
+		"key":    "↑↓ MouseLeft: Toggle keys",
+		"detail": "Ctrl-s: Save detail",
+		"output": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
+		"tip":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
+		"help":   "Esc: Close Help view",
+		"db":     "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close Db view",
+	}
+)

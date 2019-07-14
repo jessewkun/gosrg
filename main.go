@@ -18,10 +18,7 @@ func main() {
 		utils.Logger.Fatalln(config.PROJECT_NAME + " is not support Windows")
 	}
 	config.InitSrg()
-
-	if conn, err := redis.InitConn(); err == nil {
-		config.Srg.Redis = conn
-	}
+	redis.InitRedis()
 
 	var err error
 	config.Srg.G, err = gocui.NewGui(gocui.Output256, true)

@@ -10,14 +10,14 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func InitConn() (redis.Conn, error) {
+func InitRedis() {
 	conn, err := redis.Dial(config.REDIS_NETWORK, config.Srg.Host+":"+config.Srg.Port)
 	if err != nil {
 		println("redis connect fail")
 		utils.Logger.Println(err.Error())
 		os.Exit(1)
 	}
-	return conn, nil
+	config.Srg.Redis = conn
 }
 
 func Db(db int) error {
