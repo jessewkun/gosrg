@@ -1,13 +1,13 @@
 package utils
 
 import (
-	"gosrg/config"
 	"os/exec"
+	"runtime"
 )
 
 func OpenLink(link string) {
 	command := "open"
-	if config.OS == "linux" {
+	if runtime.GOOS == "linux" {
 		command = "x-www-browser"
 	}
 	if _, err := RunCommand(command, link); err != nil {

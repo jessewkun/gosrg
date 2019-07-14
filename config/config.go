@@ -32,7 +32,6 @@ const LOG_FILE = "./gosrg.log"
 const REDIS_MAX_DB_NUM = 15
 
 var (
-	OS      string
 	Srg     Gosrg
 	TabView = []string{"server", "key", "detail", "output"}
 	TipsMap = map[string]string{

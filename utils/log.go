@@ -18,8 +18,8 @@ func InitLog() {
 	Logger.SetFlags(log.LstdFlags | log.Lshortfile)
 }
 
-func Debug(str string) {
+func Debug(v ...interface{}) {
 	if config.DEBUG {
-		Logger.Println(str)
+		Logger.Println(v)
 	}
 }

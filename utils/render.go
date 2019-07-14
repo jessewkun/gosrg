@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"gosrg/config"
-	"strconv"
 	"time"
 
 	"github.com/awesome-gocui/gocui"
@@ -91,31 +90,22 @@ func Toutput(str string) {
 
 func Poutput(str string) {
 	v := config.Srg.AllView["project"].View
-	n, err := fmt.Fprint(v, UnderLine(str))
-	if err != nil {
+	if _, err := fmt.Fprint(v, str); err != nil {
 		Logger.Fatalln(err)
-	} else {
-		Debug("Poutput: " + strconv.Itoa(n))
 	}
 }
 
 func Houtput(str string) {
 	v := config.Srg.AllView["help"].View
-	n, err := fmt.Fprint(v, str)
-	if err != nil {
+	if _, err := fmt.Fprint(v, str); err != nil {
 		Logger.Fatalln(err)
-	} else {
-		Debug("Houtput: " + strconv.Itoa(n))
 	}
 }
 
 func DBoutput(str string) {
 	v := config.Srg.AllView["db"].View
-	n, err := fmt.Fprintln(v, str)
-	if err != nil {
+	if _, err := fmt.Fprintln(v, str); err != nil {
 		Logger.Fatalln(err)
-	} else {
-		Debug("DBoutput: " + strconv.Itoa(n))
 	}
 }
 

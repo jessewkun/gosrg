@@ -13,8 +13,7 @@ import (
 func main() {
 	utils.InitLog()
 
-	config.OS = runtime.GOOS
-	if config.OS == "windows" {
+	if runtime.GOOS == "windows" {
 		utils.Logger.Fatalln(config.PROJECT_NAME + " is not support Windows")
 	}
 	config.InitSrg()
