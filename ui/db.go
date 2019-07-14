@@ -46,6 +46,7 @@ func DbHideHandler(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 	setCurrent(config.Srg.NextView)
+	ServerInitHandler()
 	KeyInitHandler()
 	return nil
 }

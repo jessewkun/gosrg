@@ -16,6 +16,7 @@ var ServerView = &config.View{
 }
 
 func ServerInitHandler() error {
+	config.Srg.AllView["server"].View.Clear()
 	utils.Soutput("Current Host: " + config.Srg.Host)
 	utils.Soutput("Current Port: " + config.Srg.Port)
 	utils.Soutput("Current Db  : " + strconv.Itoa(config.Srg.Db))
@@ -24,7 +25,6 @@ func ServerInitHandler() error {
 
 func ServerFocusHandler(arg ...interface{}) error {
 	config.Srg.G.Cursor = false
-	config.Srg.AllView["server"].View.Clear()
 	ServerInitHandler()
 	utils.Toutput(config.TipsMap["server"])
 	redis.Info()
