@@ -8,36 +8,44 @@ import (
 	"github.com/awesome-gocui/gocui"
 )
 
-var DetailView *config.View
+var dView *DetailView
+
+type DetailView struct {
+	GView
+}
 
 func init() {
-	DetailView = &config.View{
-		Name:         "detail",
-		Title:        " Detail ",
-		InitHandler:  DetailInitHandler,
-		FocusHandler: DetailFocusHandler,
-		BlurHandler:  DetailBlurHandler,
-		ShortCuts: []config.ShortCut{
-			config.ShortCut{Key: gocui.KeyCtrlS, Mod: gocui.ModNone, Handler: DetailSaveHandler},
-		},
+	dView = new(DetailView)
+	dView.Name = "detail"
+	dView.Title = " Detail "
+	dView.ShortCuts = []ShortCut{
+		ShortCut{Key: gocui.KeyCtrlS, Mod: gocui.ModNone, Handler: dView.save},
 	}
 }
 
-func DetailInitHandler() error {
-	return nil
-}
-func DetailFocusHandler(arg ...interface{}) error {
-	config.Srg.G.Cursor = true
-	utils.Toutput(config.TipsMap["detail"])
-	return nil
-}
-func DetailBlurHandler() error {
+func (d *DetailView) Layout(g *gocui.Gui) error {
+	maxX, maxY := g.Size()
+	if v, err := g.SetView(d.Name, maxX/3+1, 0, maxX-1, maxY-15, 0); err != nil {
+		if !gocui.IsUnknownView(err) {
+			utils.Logger.Fatalln(err)
+			return err
+		}
+		v.Title = d.Title
+		v.Wrap = true
+		v.Editable = true
+		d.View = v
+		d.initialize()
+	}
 	return nil
 }
 
-func DetailSaveHandler(g *gocui.Gui, v *gocui.View) error {
-	if v != nil {
-		redis.SetKeyDetail(v.ViewBuffer())
-	}
+func (d *DetailView) focus(arg ...interface{}) error {
+	Ui.G.Cursor = true
+	tView.output(config.TipsMap[d.Name])
+	return nil
+}
+
+func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
+	redis.SetKeyDetail(v.ViewBuffer())
 	return nil
 }

@@ -8,117 +8,120 @@ import (
 	"github.com/awesome-gocui/gocui"
 )
 
-func Layout(g *gocui.Gui) error {
-	maxX, maxY := g.Size()
+var Ui UI
 
-	if v, err := g.SetView(TipView.Name, 0, maxY-2, maxX-20, maxY, 0); err != nil {
-		if !gocui.IsUnknownView(err) {
+type GHandler interface {
+	Layout(g *gocui.Gui) error
+	registerShortCuts() error
+	initialize() error
+	focus(arg ...interface{}) error
+	clear() error
+	setCurrent(arg ...interface{}) error
+	getCurrentLine() string
+	output(str string) error
+	outputln(str string) error
+}
+
+type UI struct {
+	G        *gocui.Gui
+	AllView  map[string]GHandler
+	TabNo    int
+	NextView GHandler
+}
+
+type GView struct {
+	Name      string
+	Title     string
+	View      *gocui.View
+	ShortCuts []ShortCut
+}
+
+type ShortCut struct {
+	Key     interface{}
+	Mod     gocui.Modifier
+	Handler func(*gocui.Gui, *gocui.View) error
+}
+
+func (gv *GView) Layout(g *gocui.Gui) error {
+	return nil
+}
+
+func (gv *GView) registerShortCuts() error {
+	for _, sc := range gv.ShortCuts {
+		if err := Ui.G.SetKeybinding(gv.Name, sc.Key, sc.Mod, sc.Handler); err != nil {
 			utils.Logger.Fatalln(err)
 			return err
 		}
-		v.Frame = false
-		TipView.View = v
-		TipView.InitHandler()
 	}
+	return nil
+}
 
-	if v, err := g.SetView(ProjectView.Name, maxX-19, maxY-2, maxX-1, maxY, 0); err != nil {
-		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
-			return err
-		}
-		v.Frame = false
-		ProjectView.View = v
-		ProjectView.InitHandler()
-	}
+func (gv *GView) initialize() error {
+	return nil
+}
 
-	if v, err := g.SetView(OutputView.Name, maxX/3+1, maxY-14, maxX-1, maxY-2, 0); err != nil {
-		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
-			return err
-		}
-		v.Title = OutputView.Title
-		v.Wrap = true
-		v.Autoscroll = true
-		OutputView.View = v
-		OutputView.InitHandler()
-	}
+func (gv *GView) focus(arg ...interface{}) error {
+	Ui.G.Cursor = false
+	return nil
+}
 
-	if v, err := g.SetView(DetailView.Name, maxX/3+1, 0, maxX-1, maxY-15, 0); err != nil {
-		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
-			return err
-		}
-		v.Title = DetailView.Title
-		v.Wrap = true
-		v.Editable = true
-		DetailView.View = v
-		DetailView.InitHandler()
-	}
+func (gv *GView) clear() error {
+	gv.View.Clear()
+	return nil
+}
 
-	if v, err := g.SetView(ServerView.Name, 0, 0, maxX/3, maxY/10, 0); err != nil {
-		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
-			return err
-		}
-		v.Title = ServerView.Title
-		v.Wrap = true
-		ServerView.View = v
-		ServerView.InitHandler()
-		setCurrent(ServerView)
-	}
-
-	if v, err := g.SetView(KeyView.Name, 0, maxY/10+1, maxX/3, maxY-2, 0); err != nil {
-		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
-			return err
-		}
-		v.Title = KeyView.Title
-		v.Wrap = true
-		v.Autoscroll = true
-		v.Highlight = true
-		v.SelBgColor = gocui.ColorGreen
-		v.SelFgColor = gocui.ColorBlack
-		KeyView.View = v
-		KeyView.InitHandler()
+func (gv *GView) output(str string) error {
+	if _, err := fmt.Fprint(gv.View, str); err != nil {
+		utils.Logger.Fatalln(err)
+		return err
 	}
 
 	return nil
 }
 
-func setCurrent(v *config.View, arg ...interface{}) error {
-	if _, err := config.Srg.G.SetCurrentView(v.Name); err != nil {
+func (gv *GView) outputln(str string) error {
+	if _, err := fmt.Fprintln(gv.View, str); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}
-	str := fmt.Sprintf("current view: %s", config.Srg.NextView.Name)
+
+	return nil
+}
+
+func (gv *GView) setCurrent(arg ...interface{}) error {
+	if _, err := Ui.G.SetCurrentView(gv.Name); err != nil {
+		utils.Logger.Fatalln(err)
+		return err
+	}
+	str := fmt.Sprintf("current view: %s", gv.Name)
 	utils.Debug(str)
-	v.FocusHandler(arg)
+	gv.focus(arg...)
 	return nil
 }
 
 func setNextView() {
-	config.Srg.TabNo++
-	next := config.Srg.TabNo % len(config.TabView)
-	config.Srg.NextView = config.Srg.AllView[config.TabView[next]]
+	Ui.TabNo++
+	next := Ui.TabNo % len(config.TabView)
+	Ui.NextView = Ui.AllView[config.TabView[next]]
 }
 
-func getCurrentLine(v *gocui.View) string {
+func (gv *GView) getCurrentLine() string {
 	var line string
 	var err error
 
-	_, cy := v.Cursor()
-	if line, err = v.Line(cy); err != nil {
+	_, cy := gv.View.Cursor()
+	if line, err = gv.View.Line(cy); err != nil {
 		utils.Logger.Println(err)
 		return ""
 	}
 	return line
 }
 
-func up(v *gocui.View) error {
-	ox, oy := v.Origin()
-	cx, cy := v.Cursor()
-	if err := v.SetCursor(cx, cy-1); err != nil && oy > 0 {
-		if err := v.SetOrigin(ox, oy-1); err != nil {
+func (gv *GView) cursorUp() error {
+	ox, oy := gv.View.Origin()
+	cx, cy := gv.View.Cursor()
+	if err := gv.View.SetCursor(cx, cy-1); err != nil && oy > 0 {
+		if err := gv.View.SetOrigin(ox, oy-1); err != nil {
 			return err
 		}
 		return nil
@@ -126,11 +129,11 @@ func up(v *gocui.View) error {
 	return nil
 }
 
-func down(v *gocui.View) error {
-	cx, cy := v.Cursor()
-	if err := v.SetCursor(cx, cy+1); err != nil {
-		ox, oy := v.Origin()
-		if err := v.SetOrigin(ox, oy+1); err != nil {
+func (gv *GView) cursorDown() error {
+	cx, cy := gv.View.Cursor()
+	if err := gv.View.SetCursor(cx, cy+1); err != nil {
+		ox, oy := gv.View.Origin()
+		if err := gv.View.SetOrigin(ox, oy+1); err != nil {
 			return err
 		}
 		return nil
@@ -138,32 +141,21 @@ func down(v *gocui.View) error {
 	return nil
 }
 
-func InitConfigAllView() {
-	config.Srg.AllView = map[string]*config.View{
-		"server":  ServerView,
-		"key":     KeyView,
-		"detail":  DetailView,
-		"output":  OutputView,
-		"tip":     TipView,
-		"project": ProjectView,
-		"help":    HelpView,
-		"db":      DbView,
+func InitUI() {
+	Ui.AllView = map[string]GHandler{
+		"global":  gView,
+		"server":  sView,
+		"key":     kView,
+		"detail":  dView,
+		"output":  opView,
+		"tip":     tView,
+		"project": pView,
+		"help":    hView,
+		"db":      dbView,
 	}
-	config.Srg.NextView = ServerView
-}
-
-func InitShortCuts() {
-	for _, sc := range GlobalShortCuts {
-		if err := config.Srg.G.SetKeybinding("", sc.Key, sc.Mod, sc.Handler); err != nil {
-			utils.Logger.Fatalln(err)
-		}
-	}
-
-	for _, v := range config.Srg.AllView {
-		for _, sc := range v.ShortCuts {
-			if err := config.Srg.G.SetKeybinding(v.Name, sc.Key, sc.Mod, sc.Handler); err != nil {
-				utils.Logger.Fatalln(err)
-			}
-		}
+	Ui.NextView = sView
+	Ui.G.SetManager(tView, pView, opView, dView, sView, kView)
+	for _, item := range Ui.AllView {
+		item.registerShortCuts()
 	}
 }

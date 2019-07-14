@@ -5,36 +5,50 @@ import (
 	"gosrg/redis"
 	"gosrg/utils"
 	"strconv"
+
+	"github.com/awesome-gocui/gocui"
 )
 
-var ServerView *config.View
+var sView *ServerView
+
+type ServerView struct {
+	GView
+}
 
 func init() {
-	ServerView = &config.View{
-		Name:         "server",
-		Title:        " Server Info ",
-		InitHandler:  ServerInitHandler,
-		FocusHandler: ServerFocusHandler,
-		BlurHandler:  ServerBlurHandler,
+	sView = new(ServerView)
+	sView.Name = "server"
+	sView.Title = " Server Info "
+}
+
+func (s *ServerView) Layout(g *gocui.Gui) error {
+	maxX, maxY := g.Size()
+	if v, err := g.SetView(s.Name, 0, 0, maxX/3, maxY/10, 0); err != nil {
+		if !gocui.IsUnknownView(err) {
+			utils.Logger.Fatalln(err)
+			return err
+		}
+		v.Title = s.Title
+		v.Wrap = true
+		s.View = v
+		s.initialize()
+		s.initialize()
 	}
-}
-
-func ServerInitHandler() error {
-	ServerView.View.Clear()
-	utils.Soutput("Current Host: " + config.Srg.Host)
-	utils.Soutput("Current Port: " + config.Srg.Port)
-	utils.Soutput("Current Db  : " + strconv.Itoa(config.Srg.Db))
 	return nil
 }
 
-func ServerFocusHandler(arg ...interface{}) error {
-	config.Srg.G.Cursor = false
-	ServerInitHandler()
-	utils.Toutput(config.TipsMap["server"])
+func (s *ServerView) initialize() error {
+	s.clear()
+	s.outputln("Current Host: " + redis.R.Host)
+	s.outputln("Current Port: " + redis.R.Port)
+	s.outputln("Current Db  : " + strconv.Itoa(redis.R.Db))
+	return nil
+}
+
+func (s *ServerView) focus(arg ...interface{}) error {
+	Ui.G.Cursor = false
+	s.initialize()
+	tView.output(config.TipsMap[s.Name])
 	redis.Info()
-	return nil
-}
-
-func ServerBlurHandler() error {
 	return nil
 }

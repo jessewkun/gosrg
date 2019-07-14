@@ -1,7 +1,5 @@
 package config
 
-const REDIS_NETWORK = "tcp"
-
 const PROJECT_URL = "https://github.com/jessewkun/gosrg"
 const PROJECT_NAME = "Gosrg"
 const PROJECT_VERSION = "unversioned"
@@ -32,7 +30,6 @@ const LOG_FILE = "./gosrg.log"
 const REDIS_MAX_DB_NUM = 15
 
 var (
-	Srg     Gosrg
 	TabView = []string{"server", "key", "detail", "output"}
 	TipsMap = map[string]string{
 		"server": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",

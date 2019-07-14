@@ -2,10 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"gosrg/config"
-	"time"
-
-	"github.com/awesome-gocui/gocui"
 )
 
 func Yellow(str string) string {
@@ -32,86 +28,86 @@ func UnderLine(str string) string {
 	return fmt.Sprintf("\x1b[3%d;%dm%s\x1b[0m ", 5, 4, str)
 }
 
-func Clear(v *gocui.View) {
-	v.Clear()
-}
+// func Clear(v *gocui.View) {
+// 	v.Clear()
+// }
 
-func Soutput(str string) {
-	v := config.Srg.AllView["server"].View
-	if _, err := fmt.Fprintln(v, str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func Soutput(str string) {
+// 	v := config.Srg.AllView["server"].View
+// 	if _, err := fmt.Fprintln(v, str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-// Douput used for Detail view output without newline
-func Douput(str string) {
-	v := config.Srg.AllView["detail"].View
-	Clear(v)
-	if _, err := fmt.Fprint(v, str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// // Douput used for Detail view output without newline
+// func Douput(str string) {
+// 	v := config.Srg.AllView["detail"].View
+// 	Clear(v)
+// 	if _, err := fmt.Fprint(v, str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func OCommandOuput(str string) {
-	v := config.Srg.AllView["output"].View
-	if _, err := fmt.Fprintln(v, Now()+Bule("[COMMAND]")+str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func OCommandOuput(str string) {
+// 	v := config.Srg.AllView["output"].View
+// 	if _, err := fmt.Fprintln(v, Now()+Bule("[COMMAND]")+str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func OInfoOuput(str string) {
-	v := config.Srg.AllView["output"].View
-	if _, err := fmt.Fprintln(v, Now()+Green("[RESULT]")+str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func OInfoOuput(str string) {
+// 	v := config.Srg.AllView["output"].View
+// 	if _, err := fmt.Fprintln(v, Now()+Green("[RESULT]")+str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func OErrorOuput(str string) {
-	v := config.Srg.AllView["output"].View
-	if _, err := fmt.Fprintln(v, Now()+Red("[ERROR]")+str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func OErrorOuput(str string) {
+// 	v := config.Srg.AllView["output"].View
+// 	if _, err := fmt.Fprintln(v, Now()+Red("[ERROR]")+str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func Kouput(str string) {
-	v := config.Srg.AllView["key"].View
-	if _, err := fmt.Fprintln(v, str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func Kouput(str string) {
+// 	v := config.Srg.AllView["key"].View
+// 	if _, err := fmt.Fprintln(v, str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func Toutput(str string) {
-	v := config.Srg.AllView["tip"].View
-	v.Clear()
-	if _, err := fmt.Fprint(v, str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func Toutput(str string) {
+// 	v := config.Srg.AllView["tip"].View
+// 	v.Clear()
+// 	if _, err := fmt.Fprint(v, str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func Poutput(str string) {
-	v := config.Srg.AllView["project"].View
-	if _, err := fmt.Fprint(v, str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func Poutput(str string) {
+// 	v := config.Srg.AllView["project"].View
+// 	if _, err := fmt.Fprint(v, str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func Houtput(str string) {
-	v := config.Srg.AllView["help"].View
-	if _, err := fmt.Fprint(v, str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func Houtput(str string) {
+// 	v := config.Srg.AllView["help"].View
+// 	if _, err := fmt.Fprint(v, str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func DBoutput(str string) {
-	v := config.Srg.AllView["db"].View
-	if _, err := fmt.Fprintln(v, str); err != nil {
-		Logger.Fatalln(err)
-	}
-}
+// func DBoutput(str string) {
+// 	v := config.Srg.AllView["db"].View
+// 	if _, err := fmt.Fprintln(v, str); err != nil {
+// 		Logger.Fatalln(err)
+// 	}
+// }
 
-func Now() string {
-	nowTime := time.Now()
-	t := nowTime.String()
-	timeStr := "[" + t[:19] + "] "
-	return timeStr
-}
+// func Now() string {
+// 	nowTime := time.Now()
+// 	t := nowTime.String()
+// 	timeStr := "[" + t[:19] + "] "
+// 	return timeStr
+// }

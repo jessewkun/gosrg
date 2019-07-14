@@ -8,65 +8,80 @@ import (
 	"github.com/awesome-gocui/gocui"
 )
 
-var KeyView *config.View
+var kView *KeyView
+
+type KeyView struct {
+	GView
+}
 
 func init() {
-	KeyView = &config.View{
-		Name:         "key",
-		Title:        " Keys ",
-		InitHandler:  KeyInitHandler,
-		FocusHandler: KeyFocusHandler,
-		BlurHandler:  KeyBlurHandler,
-		ShortCuts: []config.ShortCut{
-			config.ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: KeyUpHandler},
-			config.ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: KeyDownHandler},
-			config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: KeyDetailHandler},
-		},
+	kView = new(KeyView)
+	kView.Name = "key"
+	kView.Title = " Keys "
+	kView.ShortCuts = []ShortCut{
+		ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: kView.up},
+		ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: kView.down},
+		ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: kView.detail},
 	}
 }
 
-func KeyInitHandler() error {
-	KeyView.View.Clear()
+func (k *KeyView) Layout(g *gocui.Gui) error {
+	maxX, maxY := g.Size()
+	if v, err := g.SetView(k.Name, 0, maxY/10+1, maxX/3, maxY-2, 0); err != nil {
+		if !gocui.IsUnknownView(err) {
+			utils.Logger.Fatalln(err)
+			return err
+		}
+		v.Title = k.Title
+		v.Wrap = true
+		v.Autoscroll = true
+		v.Highlight = true
+		v.SelBgColor = gocui.ColorGreen
+		v.SelFgColor = gocui.ColorBlack
+		k.View = v
+		k.initialize()
+	}
+	return nil
+}
+
+func (k *KeyView) initialize() error {
+	k.clear()
 	redis.Keys()
 	return nil
 }
 
-func KeyFocusHandler(arg ...interface{}) error {
-	config.Srg.G.Cursor = true
-	utils.Toutput(config.TipsMap["key"])
+func (k *KeyView) focus(arg ...interface{}) error {
+	Ui.G.Cursor = true
+	tView.output(config.TipsMap[k.Name])
 	// 暂时关闭 key view 的 KeyDetail, 因为要看 info 的时候必须经过 key, 如果开启的话就会覆盖掉 detail 了
-	// if key := getCurrentLine(KeyView.View); key != "" {
+	// if key := k.getCurrentLine(); key != "" {
 	// 	redis.KeyDetail(key)
 	// }
 	return nil
 }
 
-func KeyBlurHandler() error {
-	return nil
-}
-
-func KeyUpHandler(g *gocui.Gui, v *gocui.View) error {
-	if err := up(v); err != nil {
+func (k *KeyView) up(g *gocui.Gui, v *gocui.View) error {
+	if err := k.cursorUp(); err != nil {
 		return err
 	}
-	if key := getCurrentLine(v); key != "" {
+	if key := k.getCurrentLine(); key != "" {
 		redis.KeyDetail(key)
 	}
 	return nil
 }
 
-func KeyDownHandler(g *gocui.Gui, v *gocui.View) error {
-	if err := down(v); err != nil {
+func (k *KeyView) down(g *gocui.Gui, v *gocui.View) error {
+	if err := k.cursorDown(); err != nil {
 		return err
 	}
-	if key := getCurrentLine(v); key != "" {
+	if key := k.getCurrentLine(); key != "" {
 		redis.KeyDetail(key)
 	}
 	return nil
 }
 
-func KeyDetailHandler(g *gocui.Gui, v *gocui.View) error {
-	if key := getCurrentLine(v); key != "" {
+func (k *KeyView) detail(g *gocui.Gui, v *gocui.View) error {
+	if key := k.getCurrentLine(); key != "" {
 		redis.KeyDetail(key)
 	}
 

@@ -7,35 +7,44 @@ import (
 	"github.com/awesome-gocui/gocui"
 )
 
-var ProjectView *config.View
+var pView *ProjectView
+
+type ProjectView struct {
+	GView
+}
 
 func init() {
-	ProjectView = &config.View{
-		Name:         "project",
-		InitHandler:  ProjectInitHandler,
-		FocusHandler: ProjectFocusHandler,
-		BlurHandler:  ProjectBlurHandler,
-		ShortCuts: []config.ShortCut{
-			config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: ProjectOpenHandler},
-		},
+	pView = new(ProjectView)
+	pView.Name = "project"
+	pView.ShortCuts = []ShortCut{
+		ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: pView.openGit},
 	}
 }
 
-func ProjectInitHandler() error {
-	utils.Poutput(config.PROJECT_NAME + " " + config.PROJECT_VERSION)
-	return nil
-}
-func ProjectFocusHandler(arg ...interface{}) error {
-	config.Srg.G.Cursor = false
-	return nil
-}
-func ProjectBlurHandler() error {
+func (p *ProjectView) Layout(g *gocui.Gui) error {
+	maxX, maxY := Ui.G.Size()
+	if v, err := g.SetView(p.Name, maxX-19, maxY-2, maxX-1, maxY, 0); err != nil {
+		if !gocui.IsUnknownView(err) {
+			utils.Logger.Fatalln(err)
+			return err
+		}
+		v.Frame = false
+		p.View = v
+		p.initialize()
+	}
 	return nil
 }
 
-func ProjectOpenHandler(g *gocui.Gui, v *gocui.View) error {
-	if v != nil {
-		utils.OpenLink(config.PROJECT_URL)
-	}
+func (p *ProjectView) initialize() error {
+	p.output(config.PROJECT_NAME + " " + config.PROJECT_VERSION)
+	return nil
+}
+func (p *ProjectView) focus(arg ...interface{}) error {
+	Ui.G.Cursor = false
+	return nil
+}
+
+func (p *ProjectView) openGit(g *gocui.Gui, v *gocui.View) error {
+	utils.OpenLink(config.PROJECT_URL)
 	return nil
 }

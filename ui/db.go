@@ -10,71 +10,84 @@ import (
 	"github.com/awesome-gocui/gocui"
 )
 
-var DbView *config.View
+var dbView *DbView
+
+type DbView struct {
+	GView
+}
 
 func init() {
-	DbView = &config.View{
-		Name:         "db",
-		Title:        " Select Database ",
-		InitHandler:  DbInitHandler,
-		FocusHandler: DbFocusHandler,
-		BlurHandler:  DbBlurHandler,
-		ShortCuts: []config.ShortCut{
-			config.ShortCut{Key: gocui.KeyEsc, Mod: gocui.ModNone, Handler: DbHideHandler},
-			config.ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: DbUpHandler},
-			config.ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: DbDownHandler},
-			config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: DbSelectHandler},
-			config.ShortCut{Key: gocui.KeyEnter, Mod: gocui.ModNone, Handler: DbEnterHandler},
-		},
+	dbView = new(DbView)
+	dbView.Name = "db"
+	dbView.Title = " Redis Database "
+	dbView.ShortCuts = []ShortCut{
+		ShortCut{Key: gocui.KeyEsc, Mod: gocui.ModNone, Handler: dbView.hide},
+		ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: dbView.up},
+		ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: dbView.down},
+		ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: dbView.choice},
+		ShortCut{Key: gocui.KeyEnter, Mod: gocui.ModNone, Handler: dbView.enter},
 	}
+
 }
 
-func DbInitHandler() error {
+func (db *DbView) Layout(g *gocui.Gui) error {
+	maxX, maxY := Ui.G.Size()
+	if v, err := Ui.G.SetView(db.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2+6, 0); err != nil {
+		if !gocui.IsUnknownView(err) {
+			return err
+		}
+		v.Title = db.Title
+		v.Wrap = true
+		v.Highlight = true
+		v.SelBgColor = gocui.ColorGreen
+		v.SelFgColor = gocui.ColorBlack
+		db.View = v
+		db.setCurrent()
+	}
 	return nil
 }
-func DbFocusHandler(arg ...interface{}) error {
-	config.Srg.G.Cursor = true
-	utils.Toutput(config.TipsMap["db"])
+
+func (db *DbView) focus(arg ...interface{}) error {
+	Ui.G.Cursor = true
+	utils.Debug(1)
+	tView.output(config.TipsMap[db.Name])
 	for index := 0; index <= config.REDIS_MAX_DB_NUM; index++ {
-		utils.DBoutput("> database " + strconv.Itoa(index))
+		db.outputln("> database " + strconv.Itoa(index))
 	}
 	return nil
 }
-func DbBlurHandler() error {
-	return nil
-}
 
-func DbHideHandler(g *gocui.Gui, v *gocui.View) error {
-	if err := config.Srg.G.DeleteView(DbView.Name); err != nil {
+func (db *DbView) hide(g *gocui.Gui, v *gocui.View) error {
+	if err := Ui.G.DeleteView(db.Name); err != nil {
 		return err
 	}
-	setCurrent(config.Srg.NextView)
-	ServerInitHandler()
-	KeyInitHandler()
+	Ui.NextView.setCurrent()
+	sView.initialize()
+	kView.initialize()
 	return nil
 }
 
-func DbUpHandler(g *gocui.Gui, v *gocui.View) error {
-	return up(v)
+func (db *DbView) up(g *gocui.Gui, v *gocui.View) error {
+	return db.cursorUp()
 }
 
-func DbDownHandler(g *gocui.Gui, v *gocui.View) error {
-	return down(v)
+func (db *DbView) down(g *gocui.Gui, v *gocui.View) error {
+	return db.cursorDown()
 }
 
-func DbEnterHandler(g *gocui.Gui, v *gocui.View) error {
-	return DbSelectHandler(g, v)
+func (db *DbView) enter(g *gocui.Gui, v *gocui.View) error {
+	return db.choice(g, v)
 }
 
-func DbSelectHandler(g *gocui.Gui, v *gocui.View) error {
-	if str := getCurrentLine(v); str != "" {
+func (db *DbView) choice(g *gocui.Gui, v *gocui.View) error {
+	if str := db.getCurrentLine(); str != "" {
 		tmp := strings.Split(str, " ")
-		db, _ := strconv.Atoi(tmp[2])
-		if err := redis.Db(db); err == nil {
-			config.Srg.Db = db
+		dbNo, _ := strconv.Atoi(tmp[2])
+		if err := redis.Db(dbNo); err == nil {
+			redis.R.Db = dbNo
 			utils.Logger.Println("select db to " + tmp[2])
 		}
-		return DbHideHandler(g, v)
+		return db.hide(g, v)
 	}
 
 	return nil
