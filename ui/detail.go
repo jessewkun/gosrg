@@ -8,15 +8,19 @@ import (
 	"github.com/awesome-gocui/gocui"
 )
 
-var DetailView = &config.View{
-	Name:         "detail",
-	Title:        " Detail ",
-	InitHandler:  DetailInitHandler,
-	FocusHandler: DetailFocusHandler,
-	BlurHandler:  DetailBlurHandler,
-	ShortCuts: []config.ShortCut{
-		config.ShortCut{Key: gocui.KeyCtrlS, Mod: gocui.ModNone, Handler: DetailSaveHandler},
-	},
+var DetailView *config.View
+
+func init() {
+	DetailView = &config.View{
+		Name:         "detail",
+		Title:        " Detail ",
+		InitHandler:  DetailInitHandler,
+		FocusHandler: DetailFocusHandler,
+		BlurHandler:  DetailBlurHandler,
+		ShortCuts: []config.ShortCut{
+			config.ShortCut{Key: gocui.KeyCtrlS, Mod: gocui.ModNone, Handler: DetailSaveHandler},
+		},
+	}
 }
 
 func DetailInitHandler() error {

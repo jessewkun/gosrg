@@ -7,14 +7,18 @@ import (
 	"github.com/awesome-gocui/gocui"
 )
 
-var ProjectView = &config.View{
-	Name:         "project",
-	InitHandler:  ProjectInitHandler,
-	FocusHandler: ProjectFocusHandler,
-	BlurHandler:  ProjectBlurHandler,
-	ShortCuts: []config.ShortCut{
-		config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: ProjectOpenHandler},
-	},
+var ProjectView *config.View
+
+func init() {
+	ProjectView = &config.View{
+		Name:         "project",
+		InitHandler:  ProjectInitHandler,
+		FocusHandler: ProjectFocusHandler,
+		BlurHandler:  ProjectBlurHandler,
+		ShortCuts: []config.ShortCut{
+			config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: ProjectOpenHandler},
+		},
+	}
 }
 
 func ProjectInitHandler() error {

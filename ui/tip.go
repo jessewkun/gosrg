@@ -5,11 +5,15 @@ import (
 	"gosrg/utils"
 )
 
-var TipView = &config.View{
-	Name:         "tip",
-	InitHandler:  TipInitHandler,
-	FocusHandler: TipFocusHandler,
-	BlurHandler:  TipBlurHandler,
+var TipView *config.View
+
+func init() {
+	TipView = &config.View{
+		Name:         "tip",
+		InitHandler:  TipInitHandler,
+		FocusHandler: TipFocusHandler,
+		BlurHandler:  TipBlurHandler,
+	}
 }
 
 func TipInitHandler() error {

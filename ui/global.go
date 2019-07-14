@@ -29,23 +29,21 @@ func GlobalTabHandler(g *gocui.Gui, v *gocui.View) error {
 
 func GlobalShowHelpViewHandler(g *gocui.Gui, v *gocui.View) error {
 	maxX, maxY := config.Srg.G.Size()
-	name := config.Srg.AllView["help"].Name
-	if v, err := config.Srg.G.SetView(name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2+6, 0); err != nil {
+	if v, err := config.Srg.G.SetView(HelpView.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2+6, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			return err
 		}
 		v.Title = HelpView.Title
 		v.Wrap = true
-		config.Srg.AllView["help"].View = v
-		setCurrent(config.Srg.AllView["help"])
+		HelpView.View = v
+		setCurrent(HelpView)
 	}
 	return nil
 }
 
 func GlobalShowDbViewHandler(g *gocui.Gui, v *gocui.View) error {
 	maxX, maxY := config.Srg.G.Size()
-	name := config.Srg.AllView["db"].Name
-	if v, err := config.Srg.G.SetView(name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2+6, 0); err != nil {
+	if v, err := config.Srg.G.SetView(DbView.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2+6, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			return err
 		}
@@ -54,8 +52,8 @@ func GlobalShowDbViewHandler(g *gocui.Gui, v *gocui.View) error {
 		v.Highlight = true
 		v.SelBgColor = gocui.ColorGreen
 		v.SelFgColor = gocui.ColorBlack
-		config.Srg.AllView["db"].View = v
-		setCurrent(config.Srg.AllView["db"])
+		DbView.View = v
+		setCurrent(DbView)
 	}
 	return nil
 }

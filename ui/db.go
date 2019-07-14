@@ -10,19 +10,23 @@ import (
 	"github.com/awesome-gocui/gocui"
 )
 
-var DbView = &config.View{
-	Name:         "db",
-	Title:        " Select Database ",
-	InitHandler:  DbInitHandler,
-	FocusHandler: DbFocusHandler,
-	BlurHandler:  DbBlurHandler,
-	ShortCuts: []config.ShortCut{
-		config.ShortCut{Key: gocui.KeyEsc, Mod: gocui.ModNone, Handler: DbHideHandler},
-		config.ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: DbUpHandler},
-		config.ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: DbDownHandler},
-		config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: DbSelectHandler},
-		config.ShortCut{Key: gocui.KeyEnter, Mod: gocui.ModNone, Handler: DbEnterHandler},
-	},
+var DbView *config.View
+
+func init() {
+	DbView = &config.View{
+		Name:         "db",
+		Title:        " Select Database ",
+		InitHandler:  DbInitHandler,
+		FocusHandler: DbFocusHandler,
+		BlurHandler:  DbBlurHandler,
+		ShortCuts: []config.ShortCut{
+			config.ShortCut{Key: gocui.KeyEsc, Mod: gocui.ModNone, Handler: DbHideHandler},
+			config.ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: DbUpHandler},
+			config.ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: DbDownHandler},
+			config.ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: DbSelectHandler},
+			config.ShortCut{Key: gocui.KeyEnter, Mod: gocui.ModNone, Handler: DbEnterHandler},
+		},
+	}
 }
 
 func DbInitHandler() error {
@@ -41,8 +45,7 @@ func DbBlurHandler() error {
 }
 
 func DbHideHandler(g *gocui.Gui, v *gocui.View) error {
-	name := config.Srg.AllView["db"].Name
-	if err := config.Srg.G.DeleteView(name); err != nil {
+	if err := config.Srg.G.DeleteView(DbView.Name); err != nil {
 		return err
 	}
 	setCurrent(config.Srg.NextView)

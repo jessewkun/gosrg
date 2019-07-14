@@ -5,12 +5,16 @@ import (
 	"gosrg/utils"
 )
 
-var OutputView = &config.View{
-	Name:         "output",
-	Title:        " Output ",
-	InitHandler:  OutputInitHandler,
-	FocusHandler: OutputFocusHandler,
-	BlurHandler:  OutputBlurHandler,
+var OutputView *config.View
+
+func init() {
+	OutputView = &config.View{
+		Name:         "output",
+		Title:        " Output ",
+		InitHandler:  OutputInitHandler,
+		FocusHandler: OutputFocusHandler,
+		BlurHandler:  OutputBlurHandler,
+	}
 }
 
 func OutputInitHandler() error {

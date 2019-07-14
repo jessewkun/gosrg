@@ -7,16 +7,20 @@ import (
 	"strconv"
 )
 
-var ServerView = &config.View{
-	Name:         "server",
-	Title:        " Server Info ",
-	InitHandler:  ServerInitHandler,
-	FocusHandler: ServerFocusHandler,
-	BlurHandler:  ServerBlurHandler,
+var ServerView *config.View
+
+func init() {
+	ServerView = &config.View{
+		Name:         "server",
+		Title:        " Server Info ",
+		InitHandler:  ServerInitHandler,
+		FocusHandler: ServerFocusHandler,
+		BlurHandler:  ServerBlurHandler,
+	}
 }
 
 func ServerInitHandler() error {
-	config.Srg.AllView["server"].View.Clear()
+	ServerView.View.Clear()
 	utils.Soutput("Current Host: " + config.Srg.Host)
 	utils.Soutput("Current Port: " + config.Srg.Port)
 	utils.Soutput("Current Db  : " + strconv.Itoa(config.Srg.Db))
