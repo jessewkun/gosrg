@@ -41,3 +41,8 @@ func (t *TipView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = false
 	return nil
 }
+
+func (t *TipView) output(arg interface{}) error {
+	t.clear()
+	return t.GView.output(arg)
+}

@@ -32,7 +32,7 @@ func (s *ServerView) Layout(g *gocui.Gui) error {
 		v.Wrap = true
 		s.View = v
 		s.initialize()
-		s.initialize()
+		s.setCurrent(s)
 	}
 	return nil
 }
@@ -49,6 +49,9 @@ func (s *ServerView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = false
 	s.initialize()
 	tView.output(config.TipsMap[s.Name])
-	redis.Info()
+	if output, res := redis.R.Info(); len(output) > 0 {
+		opView.formatOutput(output)
+		dView.output(res)
+	}
 	return nil
 }

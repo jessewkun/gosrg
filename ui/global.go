@@ -28,7 +28,7 @@ func (gl *GLobalView) quit(g *gocui.Gui, v *gocui.View) error {
 
 func (gl *GLobalView) tab(g *gocui.Gui, v *gocui.View) error {
 	setNextView()
-	if err := Ui.NextView.setCurrent(); err != nil {
+	if err := Ui.NextView.setCurrent(Ui.NextView); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}

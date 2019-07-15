@@ -49,3 +49,8 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 	redis.SetKeyDetail(v.ViewBuffer())
 	return nil
 }
+
+func (d *DetailView) output(arg interface{}) error {
+	d.clear()
+	return d.GView.output(arg)
+}

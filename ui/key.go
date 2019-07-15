@@ -21,7 +21,7 @@ func init() {
 	kView.ShortCuts = []ShortCut{
 		ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: kView.up},
 		ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: kView.down},
-		ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: kView.detail},
+		ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: kView.click},
 	}
 }
 
@@ -46,7 +46,12 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 
 func (k *KeyView) initialize() error {
 	k.clear()
-	redis.Keys()
+	if output, keys := redis.R.Keys(); len(output) > 0 {
+		opView.formatOutput(output)
+		for _, key := range keys {
+			kView.outputln(key)
+		}
+	}
 	return nil
 }
 
@@ -54,9 +59,7 @@ func (k *KeyView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
 	tView.output(config.TipsMap[k.Name])
 	// 暂时关闭 key view 的 KeyDetail, 因为要看 info 的时候必须经过 key, 如果开启的话就会覆盖掉 detail 了
-	// if key := k.getCurrentLine(); key != "" {
-	// 	redis.KeyDetail(key)
-	// }
+	// return k.click(Ui.G, k.View)
 	return nil
 }
 
@@ -64,25 +67,22 @@ func (k *KeyView) up(g *gocui.Gui, v *gocui.View) error {
 	if err := k.cursorUp(); err != nil {
 		return err
 	}
-	if key := k.getCurrentLine(); key != "" {
-		redis.KeyDetail(key)
-	}
-	return nil
+	return k.click(g, v)
 }
 
 func (k *KeyView) down(g *gocui.Gui, v *gocui.View) error {
 	if err := k.cursorDown(); err != nil {
 		return err
 	}
-	if key := k.getCurrentLine(); key != "" {
-		redis.KeyDetail(key)
-	}
-	return nil
+	return k.click(g, v)
 }
 
-func (k *KeyView) detail(g *gocui.Gui, v *gocui.View) error {
+func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 	if key := k.getCurrentLine(); key != "" {
-		redis.KeyDetail(key)
+		if output, detail := redis.R.KeyDetail(key); len(output) > 0 {
+			opView.formatOutput(output)
+			dView.output(detail)
+		}
 	}
 
 	return nil

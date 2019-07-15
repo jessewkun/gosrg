@@ -20,6 +20,6 @@ func InitLog() {
 
 func Debug(v ...interface{}) {
 	if config.DEBUG {
-		Logger.Println(v)
+		Logger.Println(v...)
 	}
 }

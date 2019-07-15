@@ -42,14 +42,13 @@ func (db *DbView) Layout(g *gocui.Gui) error {
 		v.SelBgColor = gocui.ColorGreen
 		v.SelFgColor = gocui.ColorBlack
 		db.View = v
-		db.setCurrent()
+		db.setCurrent(dbView)
 	}
 	return nil
 }
 
 func (db *DbView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
-	utils.Debug(1)
 	tView.output(config.TipsMap[db.Name])
 	for index := 0; index <= config.REDIS_MAX_DB_NUM; index++ {
 		db.outputln("> database " + strconv.Itoa(index))
@@ -61,7 +60,7 @@ func (db *DbView) hide(g *gocui.Gui, v *gocui.View) error {
 	if err := Ui.G.DeleteView(db.Name); err != nil {
 		return err
 	}
-	Ui.NextView.setCurrent()
+	Ui.NextView.setCurrent(Ui.NextView)
 	sView.initialize()
 	kView.initialize()
 	return nil
@@ -83,8 +82,9 @@ func (db *DbView) choice(g *gocui.Gui, v *gocui.View) error {
 	if str := db.getCurrentLine(); str != "" {
 		tmp := strings.Split(str, " ")
 		dbNo, _ := strconv.Atoi(tmp[2])
-		if err := redis.Db(dbNo); err == nil {
+		if output := redis.R.SelectDb(dbNo); len(output) > 0 {
 			redis.R.Db = dbNo
+			opView.formatOutput(output)
 			utils.Logger.Println("select db to " + tmp[2])
 		}
 		return db.hide(g, v)

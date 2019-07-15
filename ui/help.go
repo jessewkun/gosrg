@@ -30,7 +30,7 @@ func (h *HelpView) Layout(g *gocui.Gui) error {
 		v.Title = h.Title
 		v.Wrap = true
 		h.View = v
-		h.setCurrent()
+		h.setCurrent(h)
 	}
 	return nil
 }
@@ -46,6 +46,6 @@ func (h *HelpView) hide(g *gocui.Gui, v *gocui.View) error {
 	if err := Ui.G.DeleteView(h.Name); err != nil {
 		return err
 	}
-	Ui.NextView.setCurrent()
+	Ui.NextView.setCurrent(Ui.NextView)
 	return nil
 }

@@ -16,10 +16,10 @@ type GHandler interface {
 	initialize() error
 	focus(arg ...interface{}) error
 	clear() error
-	setCurrent(arg ...interface{}) error
+	setCurrent(v GHandler, arg ...interface{}) error
 	getCurrentLine() string
-	output(str string) error
-	outputln(str string) error
+	output(arg interface{}) error
+	outputln(arg interface{}) error
 }
 
 type UI struct {
@@ -70,8 +70,8 @@ func (gv *GView) clear() error {
 	return nil
 }
 
-func (gv *GView) output(str string) error {
-	if _, err := fmt.Fprint(gv.View, str); err != nil {
+func (gv *GView) output(arg interface{}) error {
+	if _, err := fmt.Fprint(gv.View, arg); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}
@@ -79,8 +79,8 @@ func (gv *GView) output(str string) error {
 	return nil
 }
 
-func (gv *GView) outputln(str string) error {
-	if _, err := fmt.Fprintln(gv.View, str); err != nil {
+func (gv *GView) outputln(arg interface{}) error {
+	if _, err := fmt.Fprintln(gv.View, arg); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}
@@ -88,14 +88,13 @@ func (gv *GView) outputln(str string) error {
 	return nil
 }
 
-func (gv *GView) setCurrent(arg ...interface{}) error {
+func (gv *GView) setCurrent(v GHandler, arg ...interface{}) error {
 	if _, err := Ui.G.SetCurrentView(gv.Name); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}
-	str := fmt.Sprintf("current view: %s", gv.Name)
-	utils.Debug(str)
-	gv.focus(arg...)
+	utils.Debug(fmt.Sprintf("current view: %s", gv.Name))
+	v.focus(arg...)
 	return nil
 }
 

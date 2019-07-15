@@ -3,13 +3,19 @@ package redis
 import (
 	"gosrg/utils"
 	"os"
+	"strconv"
 
 	"github.com/gomodule/redigo/redis"
 )
 
 var R Redis
 
-const REDIS_NETWORK = "tcp"
+const (
+	REDIS_NETWORK  = "tcp"
+	OUTPUT_COMMAND = "c"
+	OUTPUT_INFO    = "i"
+	OUTPUT_ERROR   = "e"
+)
 
 type Redis struct {
 	Host           string
@@ -35,78 +41,82 @@ func InitRedis() {
 	R.Redis = conn
 }
 
-func Db(db int) error {
-	// _, err := redis.String(config.Srg.Redis.Do("select", db))
-	// if err != nil {
-	// 	utils.Logger.Fatalln(err)
-	// 	utils.OErrorOuput(err.Error())
-	// 	return err
-	// }
-	// config.Srg.CurrentKey = ""
-	// config.Srg.CurrentKeyType = ""
-	// utils.OCommandOuput("select " + strconv.Itoa(db))
-	return nil
+func (R Redis) SelectDb(db int) (output [][]string) {
+	output = append(output, []string{"select " + strconv.Itoa(db), OUTPUT_COMMAND})
+	_, err := redis.String(R.Redis.Do("select", db))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	R.CurrentKey = ""
+	R.CurrentKeyType = ""
+	return
 }
 
-func Keys() {
-	// keys, err := redis.Strings(config.Srg.Redis.Do("keys", "*"))
-	// if err != nil {
-	// 	utils.Logger.Fatalln(err)
-	// } else {
-	// 	config.Srg.CurrentKey = ""
-	// 	config.Srg.CurrentKeyType = ""
-	// 	utils.OCommandOuput("keys *")
-	// 	for _, key := range keys {
-	// 		utils.Kouput(key)
-	// 	}
-	// }
+func (R Redis) Keys() (output [][]string, keys []string) {
+	output = append(output, []string{"keys *", OUTPUT_COMMAND})
+	keys, err := redis.Strings(R.Redis.Do("keys", "*"))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	R.CurrentKey = ""
+	R.CurrentKeyType = ""
+	return
 }
 
-func Info() {
-	// command := "info"
-	// info, err := redis.String(config.Srg.Redis.Do(command))
-	// if err != nil {
-	// 	utils.Logger.Fatalln(err)
-	// } else {
-	// 	config.Srg.CurrentKey = ""
-	// 	config.Srg.CurrentKeyType = ""
-	// 	utils.OCommandOuput(command)
-	// 	utils.Douput(info)
-	// }
+func (R Redis) Info() (output [][]string, info string) {
+	output = append(output, []string{"info", OUTPUT_COMMAND})
+	info, err := redis.String(R.Redis.Do("info"))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	R.CurrentKey = ""
+	R.CurrentKeyType = ""
+	return
 }
 
-func KeyDetail(key string) {
-	// keyType, err := redis.String(config.Srg.Redis.Do("type", key))
-	// if err != nil {
-	// 	utils.Logger.Fatalln(err)
-	// } else {
-	// 	config.Srg.CurrentKey = key
-	// 	config.Srg.CurrentKeyType = keyType
-	// 	utils.OCommandOuput("type " + key)
-	// 	utils.OInfoOuput(keyType)
-	// 	switch keyType {
-	// 	case "string":
-	// 		getString(key)
-	// 	case "hash":
-	// 		getHash(key)
-	// 	case "set":
-	// 		getSet(key)
-	// 	case "zset":
-	// 		getZset(key)
-	// 	case "list":
-	// 		getList(key)
-	// 	}
-	// }
+func (R Redis) KeyDetail(key string) (output [][]string, res interface{}) {
+	output = append(output, []string{"type " + key, OUTPUT_COMMAND})
+	keyType, err := redis.String(R.Redis.Do("type", key))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	R.CurrentKey = key
+	R.CurrentKeyType = keyType
+	output = append(output, []string{keyType, OUTPUT_INFO})
+	switch keyType {
+	case "string":
+		o, detail := getString(key)
+		output = append(output, o...)
+		res = detail
+	case "hash":
+		getHash(key)
+	case "set":
+		getSet(key)
+	case "zset":
+		getZset(key)
+	case "list":
+		getList(key)
+	}
+	return
 }
 
-func getString(key string) {
-	// res, err := redis.String(config.Srg.Redis.Do("get", key))
-	// if err != nil {
-	// 	utils.Logger.Fatalln(err)
-	// } else {
-	// 	utils.OCommandOuput("get " + key)
-	// 	utils.Douput(res)
-	// }
+func getString(key string) (output [][]string, res string) {
+	output = append(output, []string{"get " + key, OUTPUT_COMMAND})
+	res, err := redis.String(R.Redis.Do("get", key))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	return
 }
 
 func getHash(key string) {
