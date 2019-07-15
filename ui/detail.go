@@ -46,7 +46,9 @@ func (d *DetailView) focus(arg ...interface{}) error {
 }
 
 func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
-	redis.SetKeyDetail(v.ViewBuffer())
+	if output := redis.R.SetKeyDetail(v.ViewBuffer()); len(output) > 0 {
+		opView.formatOutput(output)
+	}
 	return nil
 }
 

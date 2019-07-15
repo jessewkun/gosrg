@@ -4,11 +4,12 @@ import (
 	"gosrg/utils"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gomodule/redigo/redis"
 )
 
-var R Redis
+var R *Redis
 
 const (
 	REDIS_NETWORK  = "tcp"
@@ -28,7 +29,7 @@ type Redis struct {
 }
 
 func InitRedis() {
-	R = Redis{
+	R = &Redis{
 		Host: "127.0.0.1",
 		Port: "6379",
 	}
@@ -41,7 +42,7 @@ func InitRedis() {
 	R.Redis = conn
 }
 
-func (R Redis) SelectDb(db int) (output [][]string) {
+func (R *Redis) SelectDb(db int) (output [][]string) {
 	output = append(output, []string{"select " + strconv.Itoa(db), OUTPUT_COMMAND})
 	_, err := redis.String(R.Redis.Do("select", db))
 	if err != nil {
@@ -54,7 +55,7 @@ func (R Redis) SelectDb(db int) (output [][]string) {
 	return
 }
 
-func (R Redis) Keys() (output [][]string, keys []string) {
+func (R *Redis) Keys() (output [][]string, keys []string) {
 	output = append(output, []string{"keys *", OUTPUT_COMMAND})
 	keys, err := redis.Strings(R.Redis.Do("keys", "*"))
 	if err != nil {
@@ -67,7 +68,7 @@ func (R Redis) Keys() (output [][]string, keys []string) {
 	return
 }
 
-func (R Redis) Info() (output [][]string, info string) {
+func (R *Redis) Info() (output [][]string, info string) {
 	output = append(output, []string{"info", OUTPUT_COMMAND})
 	info, err := redis.String(R.Redis.Do("info"))
 	if err != nil {
@@ -80,7 +81,7 @@ func (R Redis) Info() (output [][]string, info string) {
 	return
 }
 
-func (R Redis) KeyDetail(key string) (output [][]string, res interface{}) {
+func (R *Redis) KeyDetail(key string) (output [][]string, res interface{}) {
 	output = append(output, []string{"type " + key, OUTPUT_COMMAND})
 	keyType, err := redis.String(R.Redis.Do("type", key))
 	if err != nil {
@@ -131,37 +132,39 @@ func getZset(key string) {
 func getList(key string) {
 }
 
-func SetKeyDetail(content string) error {
-	// if config.Srg.CurrentKey == "" || config.Srg.CurrentKeyType == "" {
-	// 	return nil
-	// }
-	// switch config.Srg.CurrentKeyType {
-	// case "string":
-	// 	setString(content)
-	// case "hash":
-	// 	setHash(content)
-	// case "set":
-	// 	setSet(content)
-	// case "zset":
-	// 	setZset(content)
-	// case "list":
-	// 	setList(content)
-	// }
-	return nil
+func (R *Redis) SetKeyDetail(content string) (output [][]string) {
+	if R.CurrentKey == "" || R.CurrentKeyType == "" {
+		return
+	}
+	switch R.CurrentKeyType {
+	case "string":
+		output = setString(content)
+	case "hash":
+		setHash(content)
+	case "set":
+		setSet(content)
+	case "zset":
+		setZset(content)
+	case "list":
+		setList(content)
+	}
+	return
 }
 
-func setString(content string) {
-	// content = strings.Trim(content, " ")
-	// content = strings.Trim(content, "\n")
-	// res, err := redis.String(config.Srg.Redis.Do("set", config.Srg.CurrentKey, content))
-	// if err != nil {
-	// 	utils.OErrorOuput(err.Error())
-	// 	utils.Logger.Fatalln(err)
-	// } else {
-	// 	utils.OCommandOuput("set " + config.Srg.CurrentKey + " " + content)
-	// 	utils.OInfoOuput(res)
-	// }
+func setString(content string) (output [][]string) {
+	content = strings.Trim(content, " ")
+	content = strings.Trim(content, "\n")
+	output = append(output, []string{"set " + R.CurrentKey + " " + content, OUTPUT_COMMAND})
+	res, err := redis.String(R.Redis.Do("set", R.CurrentKey, content))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	output = append(output, []string{res, OUTPUT_INFO})
+	return
 }
+
 func setHash(content string) {}
 func setSet(content string)  {}
 func setZset(content string) {}
