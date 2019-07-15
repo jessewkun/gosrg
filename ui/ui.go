@@ -151,9 +151,10 @@ func InitUI() {
 		"project": pView,
 		"help":    hView,
 		"db":      dbView,
+		"info":    iView,
 	}
 	Ui.NextView = sView
-	Ui.G.SetManager(tView, pView, opView, dView, sView, kView)
+	Ui.G.SetManager(iView, tView, pView, opView, dView, sView, kView)
 	for _, item := range Ui.AllView {
 		item.registerShortCuts()
 	}

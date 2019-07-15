@@ -81,7 +81,7 @@ func (R *Redis) Info() (output [][]string, info string) {
 	return
 }
 
-func (R *Redis) KeyDetail(key string) (output [][]string, res interface{}) {
+func (R *Redis) KeyDetail(key string) (output [][]string, res interface{}, info map[string]int64) {
 	output = append(output, []string{"type " + key, OUTPUT_COMMAND})
 	keyType, err := redis.String(R.Redis.Do("type", key))
 	if err != nil {
@@ -94,9 +94,10 @@ func (R *Redis) KeyDetail(key string) (output [][]string, res interface{}) {
 	output = append(output, []string{keyType, OUTPUT_INFO})
 	switch keyType {
 	case "string":
-		o, detail := getString(key)
+		o, detail, i := getString(key)
 		output = append(output, o...)
 		res = detail
+		info = i
 	case "hash":
 		getHash(key)
 	case "set":
@@ -109,7 +110,7 @@ func (R *Redis) KeyDetail(key string) (output [][]string, res interface{}) {
 	return
 }
 
-func getString(key string) (output [][]string, res string) {
+func getString(key string) (output [][]string, res string, info map[string]int64) {
 	output = append(output, []string{"get " + key, OUTPUT_COMMAND})
 	res, err := redis.String(R.Redis.Do("get", key))
 	if err != nil {
@@ -117,6 +118,25 @@ func getString(key string) (output [][]string, res string) {
 		utils.Logger.Fatalln(err)
 		return
 	}
+
+	info = make(map[string]int64)
+	output = append(output, []string{"ttl " + key, OUTPUT_COMMAND})
+	ttlres, err := redis.Int64(R.Redis.Do("ttl", key))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	info["TTL"] = ttlres
+
+	output = append(output, []string{"strlen " + key, OUTPUT_COMMAND})
+	lenres, err := redis.Int64(R.Redis.Do("strlen", key))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	info["LEN"] = lenres
 	return
 }
 

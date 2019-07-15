@@ -23,7 +23,7 @@ func init() {
 
 func (s *ServerView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
-	if v, err := g.SetView(s.Name, 0, 0, maxX/3, maxY/10, 0); err != nil {
+	if v, err := g.SetView(s.Name, 0, 0, maxX/3-15, maxY/10, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			utils.Logger.Fatalln(err)
 			return err
@@ -48,6 +48,7 @@ func (s *ServerView) initialize() error {
 func (s *ServerView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = false
 	s.initialize()
+	iView.clear()
 	tView.output(config.TipsMap[s.Name])
 	if output, res := redis.R.Info(); len(output) > 0 {
 		opView.formatOutput(output)

@@ -4,6 +4,7 @@ import (
 	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
+	"strconv"
 
 	"github.com/awesome-gocui/gocui"
 )
@@ -27,7 +28,7 @@ func init() {
 
 func (k *KeyView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
-	if v, err := g.SetView(k.Name, 0, maxY/10+1, maxX/3, maxY-2, 0); err != nil {
+	if v, err := g.SetView(k.Name, 0, maxY/10+1, maxX/3-15, maxY-2, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			utils.Logger.Fatalln(err)
 			return err
@@ -58,7 +59,7 @@ func (k *KeyView) initialize() error {
 func (k *KeyView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
 	tView.output(config.TipsMap[k.Name])
-	// 暂时关闭 key view 的 KeyDetail, 因为要看 info 的时候必须经过 key, 如果开启的话就会覆盖掉 detail 了
+	// 暂时关闭 key view 的 KeyDetail, 因为要看 server info 的时候必须经过 key, 如果开启的话就会覆盖掉 detail 了
 	// return k.click(Ui.G, k.View)
 	return nil
 }
@@ -79,9 +80,14 @@ func (k *KeyView) down(g *gocui.Gui, v *gocui.View) error {
 
 func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 	if key := k.getCurrentLine(); key != "" {
-		if output, detail := redis.R.KeyDetail(key); len(output) > 0 {
+		if output, detail, info := redis.R.KeyDetail(key); len(output) > 0 {
 			opView.formatOutput(output)
 			dView.output(detail)
+			iView.clear()
+			for k, v := range info {
+				iView.outputln(utils.Yellow(k + " :"))
+				iView.outputln("    " + strconv.FormatInt(v, 10))
+			}
 		}
 	}
 
