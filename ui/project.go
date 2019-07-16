@@ -17,7 +17,7 @@ func init() {
 	pView = new(ProjectView)
 	pView.Name = "project"
 	pView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: pView.openGit},
+		ShortCut{Key: gocui.MouseLeft, Level: LOCAL_N, Handler: pView.openGit},
 	}
 }
 
@@ -37,10 +37,6 @@ func (p *ProjectView) Layout(g *gocui.Gui) error {
 
 func (p *ProjectView) initialize() error {
 	p.output(utils.UnderLine(config.PROJECT_NAME + " " + config.PROJECT_VERSION))
-	return nil
-}
-func (p *ProjectView) focus(arg ...interface{}) error {
-	Ui.G.Cursor = false
 	return nil
 }
 

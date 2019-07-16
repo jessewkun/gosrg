@@ -37,11 +37,6 @@ func (t *TipView) initialize() error {
 	return nil
 }
 
-func (t *TipView) focus(arg ...interface{}) error {
-	Ui.G.Cursor = false
-	return nil
-}
-
 func (t *TipView) output(arg interface{}) error {
 	t.clear()
 	return t.GView.output(utils.Bule(arg.(string)))

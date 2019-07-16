@@ -12,8 +12,8 @@ var Ui UI
 
 type GHandler interface {
 	Layout(g *gocui.Gui) error
-	registerShortCuts() error
 	initialize() error
+	bindShortCuts() error
 	focus(arg ...interface{}) error
 	clear() error
 	setCurrent(v GHandler, arg ...interface{}) error
@@ -36,19 +36,73 @@ type GView struct {
 	ShortCuts []ShortCut
 }
 
+const (
+	GLOABL_N = iota // gloabal and cannnot unbind
+	GLOABL_Y        // global and can unbind
+	LOCAL_N         // local and cannot unbind
+	LOCAL_Y         // local and can unbind
+)
+
 type ShortCut struct {
 	Key     interface{}
-	Mod     gocui.Modifier
+	Level   int
 	Handler func(*gocui.Gui, *gocui.View) error
+}
+
+type ButtonWidget struct {
+	Name    string
+	x, y    int
+	w       int
+	label   string
+	handler func(g *gocui.Gui, v *gocui.View) error
+}
+
+func NewButtonWidget(name string, x, y int, label string, handler func(g *gocui.Gui, v *gocui.View) error) *ButtonWidget {
+	return &ButtonWidget{Name: name, x: x, y: y, w: len(label) + 1, label: label, handler: handler}
+}
+
+func (w *ButtonWidget) Layout(g *gocui.Gui) error {
+	if v, err := Ui.G.SetView(w.Name, w.x, w.y, w.x+w.w, w.y+2, 0); err != nil {
+		if !gocui.IsUnknownView(err) {
+			return err
+		}
+		Ui.G.Cursor = false
+		if err := Ui.G.SetKeybinding(w.Name, gocui.KeyEnter, gocui.ModNone, w.handler); err != nil {
+			return err
+		}
+		fmt.Fprint(v, w.label)
+	}
+	return nil
 }
 
 func (gv *GView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (gv *GView) registerShortCuts() error {
+func (gv *GView) bindShortCuts() error {
 	for _, sc := range gv.ShortCuts {
-		if err := Ui.G.SetKeybinding(gv.Name, sc.Key, sc.Mod, sc.Handler); err != nil {
+		vNmae := gv.Name
+		if sc.Level == GLOABL_Y || sc.Level == GLOABL_N {
+			vNmae = ""
+		}
+		if err := Ui.G.SetKeybinding(vNmae, sc.Key, gocui.ModNone, sc.Handler); err != nil {
+			utils.Logger.Fatalln(err)
+			return err
+		}
+	}
+	return nil
+}
+
+func (gv *GView) unbindShortCuts() error {
+	for _, sc := range gv.ShortCuts {
+		if sc.Level == GLOABL_N || sc.Level == LOCAL_N {
+			continue
+		}
+		vNmae := gv.Name
+		if sc.Level == GLOABL_Y {
+			vNmae = ""
+		}
+		if err := Ui.G.DeleteKeybinding(vNmae, sc.Key, gocui.ModNone); err != nil {
 			utils.Logger.Fatalln(err)
 			return err
 		}
@@ -62,6 +116,9 @@ func (gv *GView) initialize() error {
 
 func (gv *GView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = false
+	if tip, ok := config.TipsMap[gv.Name]; ok {
+		tView.output(tip)
+	}
 	return nil
 }
 
@@ -140,21 +197,39 @@ func (gv *GView) cursorDown() error {
 	return nil
 }
 
+// func (ui *UI) scrollDown(g *gocui.Gui, v *gocui.View) error {
+// 	maxY := strings.Count(v.Buffer(), "\n")
+// 	if maxY < 1 {
+// 		v.SetCursor(0, 0)
+// 	}
+// 	return nil
+// }
+// func (v *View) SetCursor(x, y int) error {
+// 	maxX, maxY := v.Size()
+// 	if x < 0 || x >= maxX || y < 0 || y >= maxY {
+// 		return errors.New("invalid point")
+// 	}
+// 	v.cx = x
+// 	v.cy = y
+// 	return nil
+// }
+
 func InitUI() {
 	Ui.AllView = map[string]GHandler{
-		"global":  gView,
-		"server":  sView,
-		"key":     kView,
+		"global": gView,
+		"server": sView,
+		"key":    kView,
+		// "keydel":  kdView,
 		"detail":  dView,
 		"output":  opView,
 		"tip":     tView,
 		"project": pView,
-		"help":    hView,
-		"db":      dbView,
+		// "help":    hView,
+		// "db":      dbView,
 	}
 	Ui.NextView = sView
 	Ui.G.SetManager(tView, pView, opView, dView, sView, kView)
 	for _, item := range Ui.AllView {
-		item.registerShortCuts()
+		item.bindShortCuts()
 	}
 }

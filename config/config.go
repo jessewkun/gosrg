@@ -34,6 +34,7 @@ var (
 	TipsMap = map[string]string{
 		"server": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"key":    "↑↓ MouseLeft: Toggle keys",
+		"keydel": "Enter: Confirm delete key",
 		"detail": "Ctrl-s: Save detail",
 		"output": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"tip":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",

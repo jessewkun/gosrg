@@ -19,9 +19,10 @@ func init() {
 	kView.Name = "key"
 	kView.Title = " Keys "
 	kView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: kView.up},
-		ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: kView.down},
-		ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: kView.click},
+		ShortCut{Key: gocui.KeyArrowUp, Level: LOCAL_Y, Handler: kView.up},
+		ShortCut{Key: gocui.KeyArrowDown, Level: LOCAL_Y, Handler: kView.down},
+		ShortCut{Key: gocui.MouseLeft, Level: LOCAL_Y, Handler: kView.click},
+		ShortCut{Key: gocui.KeyBackspace2, Level: LOCAL_Y, Handler: kView.delete},
 	}
 }
 
@@ -86,4 +87,11 @@ func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 	}
 
 	return nil
+}
+
+func (k *KeyView) delete(g *gocui.Gui, v *gocui.View) error {
+	if key := k.getCurrentLine(); key == "" {
+		return nil
+	}
+	return kdView.Layout(g)
 }

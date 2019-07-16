@@ -15,10 +15,10 @@ type GLobalView struct {
 func init() {
 	gView = new(GLobalView)
 	gView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyCtrlC, Mod: gocui.ModNone, Handler: gView.quit},
-		ShortCut{Key: gocui.KeyTab, Mod: gocui.ModNone, Handler: gView.tab},
-		ShortCut{Key: gocui.KeySpace, Mod: gocui.ModNone, Handler: gView.showHelp},
-		ShortCut{Key: gocui.KeyCtrlD, Mod: gocui.ModNone, Handler: gView.showDb},
+		ShortCut{Key: gocui.KeyCtrlC, Level: GLOABL_N, Handler: gView.quit},
+		ShortCut{Key: gocui.KeySpace, Level: GLOABL_N, Handler: gView.showHelp},
+		ShortCut{Key: gocui.KeyTab, Level: GLOABL_Y, Handler: gView.tab},
+		ShortCut{Key: gocui.KeyCtrlD, Level: GLOABL_Y, Handler: gView.showDb},
 	}
 }
 

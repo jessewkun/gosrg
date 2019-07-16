@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
 
@@ -34,12 +33,6 @@ func (op *OutputView) Layout(g *gocui.Gui) error {
 		op.View = v
 		op.initialize()
 	}
-	return nil
-}
-
-func (op *OutputView) focus(arg ...interface{}) error {
-	Ui.G.Cursor = false
-	tView.output(config.TipsMap[op.Name])
 	return nil
 }
 

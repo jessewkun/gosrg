@@ -19,7 +19,7 @@ func init() {
 	dView.Name = "detail"
 	dView.Title = " Detail "
 	dView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyCtrlS, Mod: gocui.ModNone, Handler: dView.save},
+		ShortCut{Key: gocui.KeyCtrlS, Level: LOCAL_Y, Handler: dView.save},
 	}
 }
 
@@ -34,7 +34,6 @@ func (d *DetailView) Layout(g *gocui.Gui) error {
 		v.Wrap = true
 		v.Editable = true
 		d.View = v
-		d.initialize()
 	}
 	return nil
 }

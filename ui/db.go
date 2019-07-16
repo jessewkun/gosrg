@@ -21,11 +21,11 @@ func init() {
 	dbView.Name = "db"
 	dbView.Title = " Redis Database "
 	dbView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyEsc, Mod: gocui.ModNone, Handler: dbView.hide},
-		ShortCut{Key: gocui.KeyArrowUp, Mod: gocui.ModNone, Handler: dbView.up},
-		ShortCut{Key: gocui.KeyArrowDown, Mod: gocui.ModNone, Handler: dbView.down},
-		ShortCut{Key: gocui.MouseLeft, Mod: gocui.ModNone, Handler: dbView.choice},
-		ShortCut{Key: gocui.KeyEnter, Mod: gocui.ModNone, Handler: dbView.enter},
+		ShortCut{Key: gocui.KeyEsc, Level: LOCAL_N, Handler: dbView.hide},
+		ShortCut{Key: gocui.KeyArrowUp, Level: LOCAL_Y, Handler: dbView.up},
+		ShortCut{Key: gocui.KeyArrowDown, Level: LOCAL_Y, Handler: dbView.down},
+		ShortCut{Key: gocui.MouseLeft, Level: LOCAL_Y, Handler: dbView.choice},
+		ShortCut{Key: gocui.KeyEnter, Level: LOCAL_Y, Handler: dbView.enter},
 	}
 
 }
@@ -42,14 +42,15 @@ func (db *DbView) Layout(g *gocui.Gui) error {
 		v.SelBgColor = gocui.ColorGreen
 		v.SelFgColor = gocui.ColorBlack
 		db.View = v
-		db.setCurrent(dbView)
+		db.initialize()
+
 	}
 	return nil
 }
 
-func (db *DbView) focus(arg ...interface{}) error {
-	Ui.G.Cursor = true
-	tView.output(config.TipsMap[db.Name])
+func (db *DbView) initialize() error {
+	db.bindShortCuts()
+	db.setCurrent(db)
 	for index := 0; index <= config.REDIS_MAX_DB_NUM; index++ {
 		db.outputln("> database " + strconv.Itoa(index))
 	}
@@ -60,6 +61,7 @@ func (db *DbView) hide(g *gocui.Gui, v *gocui.View) error {
 	if err := Ui.G.DeleteView(db.Name); err != nil {
 		return err
 	}
+	db.unbindShortCuts()
 	Ui.NextView.setCurrent(Ui.NextView)
 	sView.initialize()
 	kView.initialize()
