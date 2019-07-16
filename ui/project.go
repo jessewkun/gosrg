@@ -36,7 +36,7 @@ func (p *ProjectView) Layout(g *gocui.Gui) error {
 }
 
 func (p *ProjectView) initialize() error {
-	p.output(config.PROJECT_NAME + " " + config.PROJECT_VERSION)
+	p.output(utils.UnderLine(config.PROJECT_NAME + " " + config.PROJECT_VERSION))
 	return nil
 }
 func (p *ProjectView) focus(arg ...interface{}) error {

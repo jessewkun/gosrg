@@ -44,5 +44,5 @@ func (t *TipView) focus(arg ...interface{}) error {
 
 func (t *TipView) output(arg interface{}) error {
 	t.clear()
-	return t.GView.output(arg)
+	return t.GView.output(utils.Bule(arg.(string)))
 }
