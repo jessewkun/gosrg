@@ -233,6 +233,7 @@ func InitUI() {
 	Ui.AllView = map[string]GHandler{
 		"global": gView,
 		"server": sView,
+		"info":   iView,
 		"key":    kView,
 		// "keydel":  kdView,
 		"detail":  dView,
