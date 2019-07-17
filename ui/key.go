@@ -60,9 +60,6 @@ func (k *KeyView) initialize() error {
 func (k *KeyView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
 	tView.output(config.TipsMap[k.Name])
-	if key := k.getCurrentLine(); key != "" {
-		redis.R.CurrentKey = key
-	}
 	// 暂时关闭 key view 的 KeyDetail, 因为要看 info 的时候必须经过 key, 如果开启的话就会覆盖掉 detail 了
 	// return k.click(Ui.G, k.View)
 	return nil
@@ -102,10 +99,11 @@ func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 }
 
 func (k *KeyView) delete(g *gocui.Gui, v *gocui.View) error {
-	if key := k.getCurrentLine(); key == "" {
-		return nil
+	if key := k.getCurrentLine(); key != "" {
+		redis.R.CurrentKey = key
+		return kdView.Layout(g)
 	}
-	return kdView.Layout(g)
+	return nil
 }
 
 func (k *KeyView) filter(g *gocui.Gui, v *gocui.View) error {
