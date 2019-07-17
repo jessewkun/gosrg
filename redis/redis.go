@@ -4,7 +4,6 @@ import (
 	"gosrg/utils"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/gomodule/redigo/redis"
 )
@@ -55,9 +54,9 @@ func (R *Redis) SelectDb(db int) (output [][]string) {
 	return
 }
 
-func (R *Redis) Keys() (output [][]string, keys []string) {
-	output = append(output, []string{"keys *", OUTPUT_COMMAND})
-	keys, err := redis.Strings(R.Redis.Do("keys", "*"))
+func (R *Redis) Keys(pattern string) (output [][]string, keys []string) {
+	output = append(output, []string{"keys " + pattern, OUTPUT_COMMAND})
+	keys, err := redis.Strings(R.Redis.Do("keys", pattern))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
 		utils.Logger.Fatalln(err)
@@ -166,8 +165,7 @@ func (R *Redis) SetKeyDetail(content string) (output [][]string) {
 }
 
 func setString(content string) (output [][]string) {
-	content = strings.Trim(content, " ")
-	content = strings.Trim(content, "\n")
+	content = utils.Trim(content)
 	output = append(output, []string{"set " + R.CurrentKey + " " + content, OUTPUT_COMMAND})
 	res, err := redis.String(R.Redis.Do("set", R.CurrentKey, content))
 	if err != nil {

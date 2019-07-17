@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -38,4 +39,10 @@ func Now() string {
 	t := nowTime.String()
 	timeStr := "[" + t[:19] + "] "
 	return timeStr
+}
+
+func Trim(str string) string {
+	str = strings.Trim(str, " ")
+	str = strings.Trim(str, "\n")
+	return str
 }

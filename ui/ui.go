@@ -57,6 +57,9 @@ type ButtonWidget struct {
 	handler func(g *gocui.Gui, v *gocui.View) error
 }
 
+var confirmBtn *ButtonWidget
+var cancelBtn *ButtonWidget
+
 func NewButtonWidget(name string, x, y int, label string, handler func(g *gocui.Gui, v *gocui.View) error) *ButtonWidget {
 	return &ButtonWidget{Name: name, x: x, y: y, w: len(label) + 1, label: label, handler: handler}
 }

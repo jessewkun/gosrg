@@ -8,8 +8,6 @@ import (
 )
 
 var kdView *KeyDelView
-var confirmBtn *ButtonWidget
-var cancelBtn *ButtonWidget
 
 type KeyDelView struct {
 	GView
