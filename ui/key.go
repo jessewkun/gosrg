@@ -84,6 +84,9 @@ func (k *KeyView) down(g *gocui.Gui, v *gocui.View) error {
 
 func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 	if key := k.getCurrentLine(); key != "" {
+		if key == redis.R.CurrentKey {
+			return nil
+		}
 		if output, detail, info := redis.R.KeyDetail(key); len(output) > 0 {
 			opView.formatOutput(output)
 			dView.output(detail)
