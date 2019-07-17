@@ -121,6 +121,8 @@ func (gv *GView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = false
 	if tip, ok := config.TipsMap[gv.Name]; ok {
 		tView.output(tip)
+	} else {
+		tView.output("")
 	}
 	return nil
 }

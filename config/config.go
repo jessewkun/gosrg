@@ -47,5 +47,6 @@ var (
 		"tip":       "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"help":      "Esc: Close Help modal",
 		"db":        "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close Db modal",
+		"info":      "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 	}
 )
