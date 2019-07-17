@@ -8,21 +8,26 @@ const DEBUG = true
 
 const HELP_CONTENT = `
 [Global]
- tab    : Toggle view
- ctrl-c : Quit
+ Tab    : Toggle view
+ Ctrl-c : Quit
  Space  : Show help view
+ Esc    : close modal
 
 [Keys]
  ↑↓      : Toggle keys when cursor focus on key view
  MouseLeft : Toggle keys when cursor focus on key view
 
 [Detail]
- ctrl-s : Save detail when cursor focus on detail view
+ Ctrl-s : Save detail when cursor focus on detail view
 
 [Db]
- ↑↓      : Chose database when cursor focus on key view
+ ↑↓      : Chose database when cursor focus on db modal
  Enter     : Select current database
- MouseLeft : Toggle database when cursor focus on key view
+ MouseLeft : Toggle database when cursor focus on db modal
+
+[Delete key]
+ Enter : Confirm delete the key
+ Tab   : Toggle button
 `
 
 const LOG_FILE = "./gosrg.log"
@@ -34,11 +39,11 @@ var (
 	TipsMap = map[string]string{
 		"server": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"key":    "↑↓ MouseLeft: Toggle keys",
-		"keydel": "Enter: Confirm delete key",
+		"keydel": "Enter: Confirm delete the key | Tab: Toggle button | Esc: Close Db modal",
 		"detail": "Ctrl-s: Save detail",
 		"output": "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"tip":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
-		"help":   "Esc: Close Help view",
-		"db":     "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close Db view",
+		"help":   "Esc: Close Help modal",
+		"db":     "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close Db modal",
 	}
 )

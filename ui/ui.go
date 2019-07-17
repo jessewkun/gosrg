@@ -150,7 +150,6 @@ func (gv *GView) setCurrent(v GHandler, arg ...interface{}) error {
 		utils.Logger.Fatalln(err)
 		return err
 	}
-	utils.Debug(fmt.Sprintf("current view: %s", gv.Name))
 	v.focus(arg...)
 	return nil
 }

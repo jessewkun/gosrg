@@ -23,7 +23,7 @@ func init() {
 
 func (h *HelpView) Layout(g *gocui.Gui) error {
 	maxX, maxY := Ui.G.Size()
-	if v, err := Ui.G.SetView(h.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2+6, 0); err != nil {
+	if v, err := Ui.G.SetView(h.Name, maxX/3-10, maxY/3-10, maxX/2+40, maxY/2+10, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			return err
 		}
