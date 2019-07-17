@@ -17,6 +17,8 @@ const HELP_CONTENT = `
  ↑↓      : Toggle keys when cursor focus on key view
  MouseLeft : Toggle keys when cursor focus on key view
  Ctrl+f    : Open key filter modal
+ Ctrl+r    : Refrsh keys
+ Delete    : Delete key
 
 [Detail]
  Ctrl-s : Save detail when cursor focus on detail view
@@ -39,7 +41,7 @@ var (
 	TabView = []string{"server", "key", "detail", "info", "output"}
 	TipsMap = map[string]string{
 		"server":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
-		"key":       "↑↓ MouseLeft: Toggle keys | Ctrl+f: Filter keys | Deltet: Delete key",
+		"key":       "↑↓ MouseLeft: Toggle keys | Ctrl+f: Filter keys | Ctrl+r: Refresh keys | Deltet: Delete key",
 		"keydel":    "Enter: Confirm delete the key | Tab: Toggle button | Esc: Close Db modal",
 		"keyfilter": "Enter: Execute keys pattern | Tab: Toggle button | Esc: Close Db modal",
 		"detail":    "Ctrl-s: Save detail",

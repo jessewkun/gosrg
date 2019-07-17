@@ -44,7 +44,7 @@ func (kf *KeyFilterView) initialize() error {
 	kf.setCurrent(kf)
 	kf.btn()
 	kf.bindShortCuts()
-	kf.outputln("")
+	kf.outputln(redis.R.Pattern)
 	return nil
 }
 
@@ -89,12 +89,14 @@ func (kf *KeyFilterView) btn() error {
 		if len(pattern) == 0 {
 			pattern = "*"
 		}
-		output, keys := redis.R.Keys(pattern)
+		redis.R.Pattern = pattern
+		output, keys := redis.R.Keys()
 		opView.formatOutput(output)
 		kView.clear()
 		for _, key := range keys {
 			kView.outputln(key)
 		}
+		kView.View.Title = " Keys " + redis.R.Pattern
 		kf.hide(g, v)
 		return nil
 	})

@@ -25,6 +25,7 @@ func init() {
 		ShortCut{Key: gocui.MouseLeft, Level: LOCAL_Y, Handler: kView.click},
 		ShortCut{Key: gocui.KeyBackspace2, Level: LOCAL_Y, Handler: kView.delete},
 		ShortCut{Key: gocui.KeyCtrlF, Level: LOCAL_Y, Handler: kView.filter},
+		ShortCut{Key: gocui.KeyCtrlR, Level: LOCAL_Y, Handler: kView.refresh},
 	}
 }
 
@@ -48,11 +49,12 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 
 func (k *KeyView) initialize() error {
 	k.clear()
-	if output, keys := redis.R.Keys("*"); len(output) > 0 {
+	if output, keys := redis.R.Keys(); len(output) > 0 {
 		opView.formatOutput(output)
 		for _, key := range keys {
 			kView.outputln(key)
 		}
+		k.View.Title = " Keys " + redis.R.Pattern
 	}
 	return nil
 }
@@ -108,4 +110,8 @@ func (k *KeyView) delete(g *gocui.Gui, v *gocui.View) error {
 
 func (k *KeyView) filter(g *gocui.Gui, v *gocui.View) error {
 	return kfView.Layout(g)
+}
+
+func (k *KeyView) refresh(g *gocui.Gui, v *gocui.View) error {
+	return k.initialize()
 }

@@ -26,12 +26,14 @@ type Redis struct {
 	Db             int
 	CurrentKey     string
 	CurrentKeyType string
+	Pattern        string
 }
 
 func InitRedis() {
 	R = &Redis{
-		Host: "127.0.0.1",
-		Port: "6379",
+		Host:    "127.0.0.1",
+		Port:    "6379",
+		Pattern: "*",
 	}
 	conn, err := redis.Dial(REDIS_NETWORK, R.Host+":"+R.Port)
 	if err != nil {
@@ -55,9 +57,9 @@ func (R *Redis) SelectDb(db int) (output [][]string) {
 	return
 }
 
-func (R *Redis) Keys(pattern string) (output [][]string, keys []string) {
-	output = append(output, []string{"KEYS " + pattern, OUTPUT_COMMAND})
-	keys, err := redis.Strings(R.Redis.Do("keys", pattern))
+func (R *Redis) Keys() (output [][]string, keys []string) {
+	output = append(output, []string{"KEYS " + R.Pattern, OUTPUT_COMMAND})
+	keys, err := redis.Strings(R.Redis.Do("keys", R.Pattern))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
 		utils.Logger.Fatalln(err)
