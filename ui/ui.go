@@ -243,7 +243,7 @@ func InitUI() {
 		// "db":      dbView,
 	}
 	Ui.NextView = sView
-	Ui.G.SetManager(tView, pView, opView, dView, sView, kView)
+	Ui.G.SetManager(iView, tView, pView, opView, dView, sView, kView)
 	for _, item := range Ui.AllView {
 		item.bindShortCuts()
 	}

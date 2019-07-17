@@ -4,6 +4,7 @@ import (
 	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
+	"strings"
 
 	"github.com/jessewkun/gocui"
 )
@@ -29,7 +30,7 @@ func init() {
 
 func (k *KeyView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
-	if v, err := g.SetView(k.Name, 0, maxY/10+1, maxX/3, maxY-2, 0); err != nil {
+	if v, err := g.SetView(k.Name, 0, maxY/10+1, maxX/3-15, maxY-2, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			utils.Logger.Fatalln(err)
 			return err
@@ -83,9 +84,14 @@ func (k *KeyView) down(g *gocui.Gui, v *gocui.View) error {
 
 func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 	if key := k.getCurrentLine(); key != "" {
-		if output, detail := redis.R.KeyDetail(key); len(output) > 0 {
+		if output, detail, info := redis.R.KeyDetail(key); len(output) > 0 {
 			opView.formatOutput(output)
 			dView.output(detail)
+			iView.clear()
+			for _, v := range info {
+				iView.outputln(utils.Yellow(strings.ToLower(v[0]) + ":"))
+				iView.outputln("    " + v[1])
+			}
 		}
 	}
 

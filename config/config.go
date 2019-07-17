@@ -36,7 +36,7 @@ const LOG_FILE = "./gosrg.log"
 const REDIS_MAX_DB_NUM = 15
 
 var (
-	TabView = []string{"server", "key", "detail", "output"}
+	TabView = []string{"server", "key", "detail", "info", "output"}
 	TipsMap = map[string]string{
 		"server":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
 		"key":       "↑↓ MouseLeft: Toggle keys | Ctrl+f: Filter keys | Deltet: Delete key",
