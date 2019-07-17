@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var dbView *DbView
@@ -43,12 +43,12 @@ func (db *DbView) Layout(g *gocui.Gui) error {
 		v.SelFgColor = gocui.ColorBlack
 		db.View = v
 		db.initialize()
-
 	}
 	return nil
 }
 
 func (db *DbView) initialize() error {
+	gView.unbindShortCuts()
 	db.bindShortCuts()
 	db.setCurrent(db)
 	for index := 0; index <= config.REDIS_MAX_DB_NUM; index++ {
@@ -62,6 +62,7 @@ func (db *DbView) hide(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 	db.unbindShortCuts()
+	gView.bindShortCuts()
 	Ui.NextView.setCurrent(Ui.NextView)
 	sView.initialize()
 	kView.initialize()

@@ -5,7 +5,7 @@ import (
 	"gosrg/ui"
 	"gosrg/utils"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 func main() {

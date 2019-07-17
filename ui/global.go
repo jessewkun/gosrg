@@ -3,7 +3,7 @@ package ui
 import (
 	"gosrg/utils"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var gView *GLobalView
@@ -15,10 +15,10 @@ type GLobalView struct {
 func init() {
 	gView = new(GLobalView)
 	gView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyCtrlC, Level: GLOABL_N, Handler: gView.quit},
-		ShortCut{Key: gocui.KeySpace, Level: GLOABL_N, Handler: gView.showHelp},
-		ShortCut{Key: gocui.KeyTab, Level: GLOABL_Y, Handler: gView.tab},
-		ShortCut{Key: gocui.KeyCtrlD, Level: GLOABL_Y, Handler: gView.showDb},
+		ShortCut{Key: gocui.KeyCtrlC, Level: GLOBAL_N, Handler: gView.quit},
+		ShortCut{Key: gocui.KeySpace, Level: GLOBAL_N, Handler: gView.showHelp},
+		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: gView.tab},
+		ShortCut{Key: gocui.KeyCtrlD, Level: GLOBAL_Y, Handler: gView.showDb},
 	}
 }
 

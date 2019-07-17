@@ -5,7 +5,7 @@ import (
 	"gosrg/redis"
 	"gosrg/utils"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var kView *KeyView
@@ -37,8 +37,7 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 		v.Wrap = true
 		v.Autoscroll = true
 		v.Highlight = true
-		v.SelBgColor = gocui.ColorGreen
-		v.SelFgColor = gocui.ColorBlack
+		v.SelFgColor = gocui.ColorGreen
 		k.View = v
 		k.initialize()
 	}
@@ -59,6 +58,9 @@ func (k *KeyView) initialize() error {
 func (k *KeyView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
 	tView.output(config.TipsMap[k.Name])
+	if key := k.getCurrentLine(); key != "" {
+		redis.R.CurrentKey = key
+	}
 	// 暂时关闭 key view 的 KeyDetail, 因为要看 info 的时候必须经过 key, 如果开启的话就会覆盖掉 detail 了
 	// return k.click(Ui.G, k.View)
 	return nil

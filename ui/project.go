@@ -4,7 +4,7 @@ import (
 	"gosrg/config"
 	"gosrg/utils"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var pView *ProjectView
@@ -36,7 +36,7 @@ func (p *ProjectView) Layout(g *gocui.Gui) error {
 }
 
 func (p *ProjectView) initialize() error {
-	p.output(utils.UnderLine(config.PROJECT_NAME + " " + config.PROJECT_VERSION))
+	p.output(utils.Pink(utils.UnderLine(config.PROJECT_NAME + " " + config.PROJECT_VERSION)))
 	return nil
 }
 

@@ -68,6 +68,20 @@ func (R *Redis) Keys() (output [][]string, keys []string) {
 	return
 }
 
+func (R *Redis) Del() (output [][]string) {
+	output = append(output, []string{"del " + R.CurrentKey, OUTPUT_COMMAND})
+	res, err := redis.Int64(R.Redis.Do("del", R.CurrentKey))
+	if err != nil {
+		output = append(output, []string{err.Error(), OUTPUT_ERROR})
+		utils.Logger.Fatalln(err)
+		return
+	}
+	R.CurrentKey = ""
+	R.CurrentKeyType = ""
+	output = append(output, []string{strconv.FormatInt(res, 10), OUTPUT_INFO})
+	return
+}
+
 func (R *Redis) Info() (output [][]string, info string) {
 	output = append(output, []string{"info", OUTPUT_COMMAND})
 	info, err := redis.String(R.Redis.Do("info"))

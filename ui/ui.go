@@ -5,7 +5,7 @@ import (
 	"gosrg/config"
 	"gosrg/utils"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var Ui UI
@@ -37,8 +37,8 @@ type GView struct {
 }
 
 const (
-	GLOABL_N = iota // gloabal and cannnot unbind
-	GLOABL_Y        // global and can unbind
+	GLOBAL_N = iota // global and cannnot unbind
+	GLOBAL_Y        // global and can unbind
 	LOCAL_N         // local and cannot unbind
 	LOCAL_Y         // local and can unbind
 )
@@ -81,11 +81,11 @@ func (gv *GView) Layout(g *gocui.Gui) error {
 
 func (gv *GView) bindShortCuts() error {
 	for _, sc := range gv.ShortCuts {
-		vNmae := gv.Name
-		if sc.Level == GLOABL_Y || sc.Level == GLOABL_N {
-			vNmae = ""
+		vName := gv.Name
+		if sc.Level == GLOBAL_Y || sc.Level == GLOBAL_N {
+			vName = ""
 		}
-		if err := Ui.G.SetKeybinding(vNmae, sc.Key, gocui.ModNone, sc.Handler); err != nil {
+		if err := Ui.G.SetKeybinding(vName, sc.Key, gocui.ModNone, sc.Handler); err != nil {
 			utils.Logger.Fatalln(err)
 			return err
 		}
@@ -95,14 +95,14 @@ func (gv *GView) bindShortCuts() error {
 
 func (gv *GView) unbindShortCuts() error {
 	for _, sc := range gv.ShortCuts {
-		if sc.Level == GLOABL_N || sc.Level == LOCAL_N {
+		if sc.Level == GLOBAL_N || sc.Level == LOCAL_N {
 			continue
 		}
-		vNmae := gv.Name
-		if sc.Level == GLOABL_Y {
-			vNmae = ""
+		vName := gv.Name
+		if sc.Level == GLOBAL_Y {
+			vName = ""
 		}
-		if err := Ui.G.DeleteKeybinding(vNmae, sc.Key, gocui.ModNone); err != nil {
+		if err := Ui.G.DeleteKeybinding(vName, sc.Key, gocui.ModNone); err != nil {
 			utils.Logger.Fatalln(err)
 			return err
 		}
@@ -171,6 +171,19 @@ func (gv *GView) getCurrentLine() string {
 		return ""
 	}
 	return line
+}
+
+func (gv *GView) deleteCursorLine() error {
+	_, cy := gv.View.Cursor()
+	return gv.deleteLine(cy)
+}
+
+func (gv *GView) deleteLine(y int) error {
+	if err := gv.View.DeleteLine(y); err != nil {
+		utils.Logger.Fatalln(err)
+		return err
+	}
+	return nil
 }
 
 func (gv *GView) cursorUp() error {

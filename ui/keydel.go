@@ -1,15 +1,15 @@
 package ui
 
 import (
+	"gosrg/redis"
 	"gosrg/utils"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var kdView *KeyDelView
 var confirmBtn *ButtonWidget
 var cancelBtn *ButtonWidget
-var delTabNo = 0
 
 type KeyDelView struct {
 	GView
@@ -21,7 +21,7 @@ func init() {
 	kdView.Title = " WARNING "
 	kdView.ShortCuts = []ShortCut{
 		ShortCut{Key: gocui.KeyEsc, Level: LOCAL_Y, Handler: kdView.hide},
-		ShortCut{Key: gocui.KeyTab, Level: LOCAL_Y, Handler: kdView.tab},
+		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: kdView.tab},
 	}
 }
 
@@ -41,26 +41,25 @@ func (kd *KeyDelView) Layout(g *gocui.Gui) error {
 }
 
 func (kd *KeyDelView) initialize() error {
-	gView.unbindShortCuts()
-	kd.setCurrent(kd)
-	kd.bindShortCuts()
 	kd.btn()
+	gView.unbindShortCuts()
+	kd.bindShortCuts()
+	kd.setCurrent(kd)
 	kd.outputln("")
 	kd.outputln(utils.Red("     Confirm delete this key?"))
 	return nil
 }
 
 func (kd *KeyDelView) tab(g *gocui.Gui, v *gocui.View) error {
-	var tabView = []string{"keydel", "confirmdel", "canceldel"}
-	delTabNo++
-	next := delTabNo % len(tabView)
-	nextViewName := kd.Name
-	if next == 1 {
+	nextViewName := ""
+	currentView := Ui.G.CurrentView().Name()
+	if currentView == kd.Name {
 		nextViewName = confirmBtn.Name
-	} else if next == 2 {
+	} else if currentView == confirmBtn.Name {
 		nextViewName = cancelBtn.Name
+	} else {
+		nextViewName = kd.Name
 	}
-	utils.Debug(nextViewName)
 	if _, err := Ui.G.SetCurrentView(nextViewName); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
@@ -75,6 +74,9 @@ func (kd *KeyDelView) hide(g *gocui.Gui, v *gocui.View) error {
 		utils.Logger.Println(err)
 		return err
 	}
+	// for _, item := range Ui.G.Views() {
+	// 	utils.Debug(item.Name())
+	// }
 	if err := Ui.G.DeleteView(cancelBtn.Name); err != nil {
 		utils.Logger.Println(err)
 		return err
@@ -90,11 +92,15 @@ func (kd *KeyDelView) hide(g *gocui.Gui, v *gocui.View) error {
 func (kd *KeyDelView) btn() error {
 	maxX, maxY := Ui.G.Size()
 	confirmBtn = NewButtonWidget("confirmdel", maxX/3-5, maxY/3-1, "CONFIRM", func(g *gocui.Gui, v *gocui.View) error {
-		utils.Debug("confirm")
+		if output := redis.R.Del(); len(output) > 0 {
+			opView.formatOutput(output)
+			kView.deleteCursorLine()
+		}
+		kd.hide(g, v)
 		return nil
 	})
 	cancelBtn = NewButtonWidget("canceldel", maxX/3+5, maxY/3-1, "CANCEL", func(g *gocui.Gui, v *gocui.View) error {
-		utils.Debug("cancel")
+		kd.hide(g, v)
 		return nil
 	})
 	Ui.G.AppendManager(confirmBtn, cancelBtn)

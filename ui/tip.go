@@ -4,7 +4,7 @@ import (
 	"gosrg/config"
 	"gosrg/utils"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var tView *TipView

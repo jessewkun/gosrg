@@ -5,7 +5,7 @@ import (
 	"gosrg/redis"
 	"gosrg/utils"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var opView *OutputView

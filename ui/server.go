@@ -6,7 +6,7 @@ import (
 	"gosrg/utils"
 	"strconv"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var sView *ServerView

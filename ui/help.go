@@ -3,7 +3,7 @@ package ui
 import (
 	"gosrg/config"
 
-	"github.com/awesome-gocui/gocui"
+	"github.com/jessewkun/gocui"
 )
 
 var hView *HelpView
@@ -48,6 +48,7 @@ func (h *HelpView) hide(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 	h.unbindShortCuts()
+	gView.bindShortCuts()
 	Ui.NextView.setCurrent(Ui.NextView)
 	return nil
 }
