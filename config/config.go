@@ -10,24 +10,24 @@ const HELP_CONTENT = `
 [Global]
  Tab    : Toggle view
  Ctrl-c : Quit
- Space  : Show help view
- Esc    : close modal
+ Space  : Show help modal
+ Esc    : Close modal
 
 [Keys]
  ↑↓      : Toggle keys when cursor focus on key view
  MouseLeft : Toggle keys when cursor focus on key view
- Ctrl+f    : Filter keys
+ Ctrl+f    : Open key filter modal
 
 [Detail]
  Ctrl-s : Save detail when cursor focus on detail view
 
 [Db]
  ↑↓      : Chose database when cursor focus on db modal
- Enter     : Select current database
+ Enter     : Select database
  MouseLeft : Toggle database when cursor focus on db modal
 
 [Delete key]
- Enter : Confirm delete the key
+ Enter : Confirm delete key
  Tab   : Toggle button
 `
 
