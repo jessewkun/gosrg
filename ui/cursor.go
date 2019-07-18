@@ -6,6 +6,7 @@ import (
 )
 
 func (gv *GView) cursorUp() error {
+	kView.cursorDebug()
 	ox, oy := gv.View.Origin()
 	cx, cy := gv.View.Cursor()
 	if err := gv.View.SetCursor(cx, cy-1); err != nil && oy > 0 {
@@ -20,15 +21,15 @@ func (gv *GView) cursorUp() error {
 
 func (gv *GView) cursorDown() error {
 	cx, cy := gv.View.Cursor()
-	_, oy := gv.View.Origin()
+	ox, oy := gv.View.Origin()
 	lineHeight := gv.View.LinesHeight()
 	lineHeight--
-	if cy+oy+1 >= lineHeight {
+	kView.cursorDebug()
+	if cy+oy+1 > lineHeight {
 		return nil
 	}
 	if err := gv.View.SetCursor(cx, cy+1); err != nil {
 		utils.Logger.Println(err)
-		ox, oy := gv.View.Origin()
 		if err := gv.View.SetOrigin(ox, oy+1); err != nil {
 			utils.Logger.Println(err)
 			return err

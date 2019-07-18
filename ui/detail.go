@@ -64,16 +64,27 @@ func (d *DetailView) output(arg interface{}) error {
 
 func (d *DetailView) formatOutput(arg interface{}) error {
 	d.clear()
+	d.cursorBegin()
 	switch t := arg.(type) {
 	case string:
 		d.output(t)
 	case []string:
-		for _, v := range t {
-			d.GView.outputln(v)
+		for i, v := range t {
+			if i+1 == len(t) {
+				d.GView.output(v)
+			} else {
+				d.GView.outputln(v)
+			}
 		}
 	case map[string]string:
+		i := 0
 		for k, v := range t {
-			d.GView.outputln(k + ": " + v)
+			i++
+			if i == len(t) {
+				d.GView.output(k + ": " + v)
+			} else {
+				d.GView.outputln(k + ": " + v)
+			}
 		}
 	}
 	return nil
