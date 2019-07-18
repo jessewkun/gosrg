@@ -18,6 +18,8 @@ const HELP_CONTENT = `
  MouseLeft : Toggle keys when cursor focus on key view
  Ctrl+f    : Open key filter modal
  Ctrl+r    : Refrsh keys
+ Ctrl+b    : Jump to the first key
+ Ctrl+e    : Jump to the last key
  Delete    : Delete key
 
 [Detail]
