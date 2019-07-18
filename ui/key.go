@@ -98,8 +98,8 @@ func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 			dView.output(detail)
 			iView.clear()
 			for _, v := range info {
-				iView.outputln(utils.Yellow(strings.ToLower(v[0]) + ":"))
-				iView.outputln("    " + v[1])
+				iView.outputln(utils.Yellow(strings.ToLower(v[0])+":") + v[1])
+				// iView.outputln("    " + v[1])
 			}
 		}
 	}

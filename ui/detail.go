@@ -59,7 +59,11 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 
 func (d *DetailView) output(arg ...interface{}) error {
 	d.clear()
+	// switch arg.(type) {
+	// case string:
 	return d.GView.output(arg...)
+	// case map[string]string:
+	// }
 }
 
 func (d *DetailView) copy(g *gocui.Gui, v *gocui.View) error {

@@ -19,7 +19,7 @@ func init() {
 		ShortCut{Key: 'h', Level: GLOBAL_N, Handler: gView.showHelp},
 		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: gView.tab},
 		ShortCut{Key: gocui.KeyCtrlD, Level: GLOBAL_Y, Handler: gView.showDb},
-		ShortCut{Key: gocui.KeyCtrlE, Level: GLOBAL_Y, Handler: gView.showCommand},
+		// ShortCut{Key: gocui.KeyCtrlE, Level: GLOBAL_Y, Handler: gView.showCommand},
 	}
 }
 
