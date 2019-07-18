@@ -51,9 +51,14 @@ func (db *DbView) initialize() error {
 	gView.unbindShortCuts()
 	db.bindShortCuts()
 	db.setCurrent(db)
-	for index := 0; index <= config.REDIS_MAX_DB_NUM; index++ {
-		db.outputln("> database " + strconv.Itoa(index))
+	for i := 0; i <= config.REDIS_MAX_DB_NUM; i++ {
+		if i == config.REDIS_MAX_DB_NUM {
+			db.output("> database " + strconv.Itoa(i))
+		} else {
+			db.outputln("> database " + strconv.Itoa(i))
+		}
 	}
+	db.setCursor(0, redis.R.Db)
 	return nil
 }
 

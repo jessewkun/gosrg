@@ -17,9 +17,3 @@ func InitLog() {
 	Logger = log.New(file, "", log.LstdFlags)
 	Logger.SetFlags(log.LstdFlags | log.Lshortfile)
 }
-
-func Debug(v ...interface{}) {
-	if config.DEBUG {
-		Logger.Println(v...)
-	}
-}
