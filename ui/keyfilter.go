@@ -103,6 +103,7 @@ func (kf *KeyFilterView) btn() error {
 		}
 		redis.R.Pattern = pattern
 		kView.initialize()
+		kView.click(g, v)
 		kf.hide(g, v)
 		return nil
 	})

@@ -120,13 +120,16 @@ func (k *KeyView) filter(g *gocui.Gui, v *gocui.View) error {
 }
 
 func (k *KeyView) refresh(g *gocui.Gui, v *gocui.View) error {
-	return k.initialize()
+	k.initialize()
+	return k.click(g, v)
 }
 
 func (k *KeyView) begin(g *gocui.Gui, v *gocui.View) error {
-	return k.cursorBegin()
+	k.cursorBegin()
+	return k.click(g, v)
 }
 
 func (k *KeyView) end(g *gocui.Gui, v *gocui.View) error {
-	return k.cursorEnd(false)
+	k.cursorEnd(false)
+	return k.click(g, v)
 }
