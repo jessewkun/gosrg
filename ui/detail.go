@@ -5,6 +5,7 @@ import (
 	"gosrg/redis"
 	"gosrg/utils"
 
+	"github.com/atotto/clipboard"
 	"github.com/jessewkun/gocui"
 )
 
@@ -20,6 +21,9 @@ func init() {
 	dView.Title = " Detail "
 	dView.ShortCuts = []ShortCut{
 		ShortCut{Key: gocui.KeyCtrlS, Level: LOCAL_Y, Handler: dView.save},
+		ShortCut{Key: gocui.KeyCtrlY, Level: LOCAL_Y, Handler: dView.copy},
+		ShortCut{Key: gocui.KeyCtrlP, Level: LOCAL_Y, Handler: dView.paste},
+		ShortCut{Key: gocui.KeyCtrlL, Level: LOCAL_Y, Handler: dView.clean},
 	}
 }
 
@@ -54,4 +58,28 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 func (d *DetailView) output(arg ...interface{}) error {
 	d.clear()
 	return d.GView.output(arg...)
+}
+
+func (d *DetailView) copy(g *gocui.Gui, v *gocui.View) error {
+	if err := clipboard.WriteAll(v.ViewBuffer()); err != nil {
+		opView.error(err.Error())
+		utils.Logger.Println(err)
+		return err
+	}
+	opView.info("copy success")
+	return nil
+}
+
+func (d *DetailView) paste(g *gocui.Gui, v *gocui.View) error {
+	text, err := clipboard.ReadAll()
+	if err != nil {
+		opView.error(err.Error())
+		utils.Logger.Println(err)
+		return err
+	}
+	return dView.output(text)
+}
+
+func (d *DetailView) clean(g *gocui.Gui, v *gocui.View) error {
+	return d.clear()
 }
