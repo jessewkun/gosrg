@@ -45,12 +45,13 @@ func (kf *KeyFilterView) initialize() error {
 	gView.unbindShortCuts()
 	kf.setCurrent(kf)
 	kf.bindShortCuts()
-	kf.outputln(redis.R.Pattern)
 	return nil
 }
 
 func (kf *KeyFilterView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
+	kf.output(redis.R.Pattern)
+	kf.cursorLast()
 	tView.output(config.TipsMap[kf.Name])
 	return nil
 }
@@ -95,6 +96,10 @@ func (kf *KeyFilterView) btn() error {
 		pattern := utils.Trim(kf.View.ViewBuffer())
 		if len(pattern) == 0 {
 			pattern = "*"
+		}
+		if pattern == redis.R.Pattern {
+			opView.info("pattern has no change")
+			return kf.hide(g, v)
 		}
 		redis.R.Pattern = pattern
 		output, keys := redis.R.Keys()

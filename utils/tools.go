@@ -14,6 +14,10 @@ func Bule(str string) string {
 	return fmt.Sprintf("\x1b[38;5;%dm%3s\x1b[0m ", 69, str)
 }
 
+func Tianqing(str string) string {
+	return fmt.Sprintf("\x1b[38;5;%dm%3s\x1b[0m ", 45, str)
+}
+
 func Red(str string) string {
 	return fmt.Sprintf("\x1b[38;5;%dm%3s\x1b[0m ", 160, str)
 }

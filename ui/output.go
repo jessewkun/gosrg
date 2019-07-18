@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"fmt"
 	"gosrg/redis"
 	"gosrg/utils"
 
@@ -43,29 +42,15 @@ func (op *OutputView) formatOutput(str [][]string) {
 		}
 		switch item[1] {
 		case redis.OUTPUT_COMMAND:
-			op.commandOuput(item[0])
+			op.command(item[0])
 		case redis.OUTPUT_INFO:
-			op.infoOuput(item[0])
+			op.info(item[0])
 		case redis.OUTPUT_ERROR:
-			op.errorOuput(item[0])
+			op.error(item[0])
+		case redis.OUTPUT_RES:
+			op.res(item[0])
+		case redis.OUTPUT_DEBUG:
+			op.debug(item[0])
 		}
-	}
-}
-
-func (op *OutputView) commandOuput(str string) {
-	if _, err := fmt.Fprintln(op.View, utils.Now()+utils.Bule("[COMMAND]")+str); err != nil {
-		utils.Logger.Fatalln(err)
-	}
-}
-
-func (op *OutputView) infoOuput(str string) {
-	if _, err := fmt.Fprintln(op.View, utils.Now()+utils.Green("[RESULT]")+str); err != nil {
-		utils.Logger.Fatalln(err)
-	}
-}
-
-func (op *OutputView) errorOuput(str string) {
-	if _, err := fmt.Fprintln(op.View, utils.Now()+utils.Red("[ERROR]")+str); err != nil {
-		utils.Logger.Fatalln(err)
 	}
 }

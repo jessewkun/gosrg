@@ -51,7 +51,7 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
-func (d *DetailView) output(arg interface{}) error {
+func (d *DetailView) output(arg ...interface{}) error {
 	d.clear()
-	return d.GView.output(arg)
+	return d.GView.output(arg...)
 }

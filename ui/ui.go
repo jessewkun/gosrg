@@ -18,8 +18,8 @@ type GHandler interface {
 	clear() error
 	setCurrent(v GHandler, arg ...interface{}) error
 	getCurrentLine() string
-	output(arg interface{}) error
-	outputln(arg interface{}) error
+	output(arg ...interface{}) error
+	outputln(arg ...interface{}) error
 }
 
 type UI struct {
@@ -132,8 +132,8 @@ func (gv *GView) clear() error {
 	return nil
 }
 
-func (gv *GView) output(arg interface{}) error {
-	if _, err := fmt.Fprint(gv.View, arg); err != nil {
+func (gv *GView) output(arg ...interface{}) error {
+	if _, err := fmt.Fprint(gv.View, arg...); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}
@@ -141,8 +141,8 @@ func (gv *GView) output(arg interface{}) error {
 	return nil
 }
 
-func (gv *GView) outputln(arg interface{}) error {
-	if _, err := fmt.Fprintln(gv.View, arg); err != nil {
+func (gv *GView) outputln(arg ...interface{}) error {
+	if _, err := fmt.Fprintln(gv.View, arg...); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}
@@ -204,6 +204,10 @@ func (gv *GView) cursorUp() error {
 
 func (gv *GView) cursorDown() error {
 	cx, cy := gv.View.Cursor()
+	lineHeight := gv.View.LinesHeight()
+	if cy+1 >= lineHeight {
+		return nil
+	}
 	if err := gv.View.SetCursor(cx, cy+1); err != nil {
 		ox, oy := gv.View.Origin()
 		if err := gv.View.SetOrigin(ox, oy+1); err != nil {
@@ -214,19 +218,68 @@ func (gv *GView) cursorDown() error {
 	return nil
 }
 
-// func (gv *GView) cursorEnd() error {
-// 	lineHeight := gv.View.LinesHeight()
-// 	lastLine, _ := gv.View.Line(lineHeight)
-// 	lastLineWidth := len(lastLine)
-// 	utils.Debug(lineHeight, lastLine, lastLineWidth)
-// 	if err := gv.View.SetCursor(lastLineWidth, lineHeight); err != nil {
-// 		if err := gv.View.SetOrigin(lastLineWidth, lineHeight); err != nil {
-// 			return err
-// 		}
-// 		return nil
-// 	}
-// 	return nil
-// }
+func (gv *GView) command(str string) {
+	gv.outputln(utils.Now() + utils.Bule("[COMMAND]") + str)
+}
+
+func (gv *GView) info(str string) {
+	gv.outputln(utils.Now() + utils.Tianqing("[INFO]") + str)
+}
+
+func (gv *GView) res(str string) {
+	gv.outputln(utils.Now() + utils.Green("[RESULT]") + str)
+}
+
+func (gv *GView) error(str string) {
+	gv.outputln(utils.Now() + utils.Red("[ERROR]") + str)
+}
+
+func (gv *GView) debug(arg ...interface{}) {
+	if config.DEBUG {
+		arg = append([]interface{}{utils.Now() + utils.Orange("[DEBUG]")}, arg...)
+		gv.outputln(arg...)
+	}
+}
+
+func (gv *GView) cursorBegin() error {
+	if err := gv.View.SetCursor(0, 0); err != nil {
+		if err := gv.View.SetOrigin(0, 0); err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
+}
+
+func (gv *GView) cursorLast() error {
+	lineHeight := gv.View.LinesHeight()
+	lineHeight--
+	lastLine, _ := gv.View.Line(lineHeight)
+	lastLineWidth := len(lastLine)
+	opView.debug("lineHeight:", lineHeight, "lastLine:", lastLine, "lastLineWidth:", lastLineWidth)
+	if err := gv.View.SetCursor(lastLineWidth, lineHeight); err != nil {
+		if err := gv.View.SetOrigin(lastLineWidth, lineHeight); err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
+}
+
+func (gv *GView) cursorEnd() error {
+	lineHeight := gv.View.LinesHeight()
+	lineHeight--
+	lastLine, _ := gv.View.Line(lineHeight)
+	lastLineWidth := len(lastLine)
+	opView.debug("lineHeight:", lineHeight, "lastLine:", lastLine, "lastLineWidth:", lastLineWidth)
+	if err := gv.View.SetCursor(0, lineHeight); err != nil {
+		if err := gv.View.SetOrigin(0, lineHeight); err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
+}
 
 func InitUI() {
 	Ui.AllView = map[string]GHandler{

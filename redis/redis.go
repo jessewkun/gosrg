@@ -16,6 +16,8 @@ const (
 	OUTPUT_COMMAND = "c"
 	OUTPUT_INFO    = "i"
 	OUTPUT_ERROR   = "e"
+	OUTPUT_RES     = "r"
+	OUTPUT_DEBUG   = "d"
 )
 
 type Redis struct {
@@ -80,7 +82,7 @@ func (R *Redis) Del() (output [][]string) {
 	}
 	R.CurrentKey = ""
 	R.CurrentKeyType = ""
-	output = append(output, []string{strconv.FormatInt(res, 10), OUTPUT_INFO})
+	output = append(output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
 	return
 }
 
@@ -139,7 +141,7 @@ func (R *Redis) KeyDetail(key string) (output [][]string, res interface{}, info 
 	}
 	info = append(info, []string{"ttl", strconv.FormatInt(ttlres, 10)})
 
-	// output = append(output, []string{keyType, OUTPUT_INFO})
+	// output = append(output, []string{keyType, OUTPUT_RES})
 	switch keyType {
 	case "string":
 		o, detail, stringinfo := getString(key)
@@ -219,7 +221,7 @@ func setString(content string) (output [][]string) {
 		utils.Logger.Fatalln(err)
 		return
 	}
-	output = append(output, []string{res, OUTPUT_INFO})
+	output = append(output, []string{res, OUTPUT_RES})
 	return
 }
 
