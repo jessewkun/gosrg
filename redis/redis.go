@@ -99,6 +99,10 @@ func (R *Redis) Info() (output [][]string, info string) {
 	return
 }
 
+func (R *Redis) Send(ommandName string, args ...interface{}) {
+	// keyType, err := redis.String(R.Redis.Do(ommandName, args...))
+}
+
 func (R *Redis) KeyDetail(key string) (output [][]string, res interface{}, info [][]string) {
 	output = append(output, []string{"TYPE " + key, OUTPUT_COMMAND})
 
