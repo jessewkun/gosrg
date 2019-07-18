@@ -51,7 +51,7 @@ func (kf *KeyFilterView) initialize() error {
 func (kf *KeyFilterView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
 	kf.output(redis.R.Pattern)
-	kf.cursorLast()
+	kf.cursorEnd(true)
 	tView.output(config.TipsMap[kf.Name])
 	return nil
 }
@@ -102,13 +102,7 @@ func (kf *KeyFilterView) btn() error {
 			return kf.hide(g, v)
 		}
 		redis.R.Pattern = pattern
-		output, keys := redis.R.Keys()
-		opView.formatOutput(output)
-		kView.clear()
-		for _, key := range keys {
-			kView.outputln(key)
-		}
-		kView.View.Title = " Keys " + redis.R.Pattern
+		kView.initialize()
 		kf.hide(g, v)
 		return nil
 	})

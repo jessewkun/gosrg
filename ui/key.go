@@ -40,7 +40,7 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 		}
 		v.Title = k.Title
 		v.Wrap = true
-		v.Autoscroll = true
+		// v.Autoscroll = true
 		v.Highlight = true
 		v.SelFgColor = gocui.ColorGreen
 		k.View = v
@@ -51,12 +51,11 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 
 func (k *KeyView) initialize() error {
 	k.clear()
+	k.cursorBegin()
 	if output, keys := redis.R.Keys(); len(output) > 0 {
 		opView.formatOutput(output)
-		i := 0
-		for _, key := range keys {
-			i++
-			if i == len(keys) {
+		for i, key := range keys {
+			if i+1 == len(keys) {
 				kView.output(key)
 			} else {
 				kView.outputln(key)
@@ -129,5 +128,5 @@ func (k *KeyView) begin(g *gocui.Gui, v *gocui.View) error {
 }
 
 func (k *KeyView) end(g *gocui.Gui, v *gocui.View) error {
-	return k.cursorEnd()
+	return k.cursorEnd(false)
 }

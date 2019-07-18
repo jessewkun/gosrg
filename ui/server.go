@@ -52,7 +52,7 @@ func (s *ServerView) focus(arg ...interface{}) error {
 	tView.output(config.TipsMap[s.Name])
 	if output, res := redis.R.Info(); len(output) > 0 {
 		opView.formatOutput(output)
-		dView.output(res)
+		dView.output(utils.Trim(res))
 	}
 	return nil
 }
