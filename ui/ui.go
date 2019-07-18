@@ -214,20 +214,17 @@ func (gv *GView) cursorDown() error {
 	return nil
 }
 
-// func (ui *UI) scrollDown(g *gocui.Gui, v *gocui.View) error {
-// 	maxY := strings.Count(v.Buffer(), "\n")
-// 	if maxY < 1 {
-// 		v.SetCursor(0, 0)
+// func (gv *GView) cursorEnd() error {
+// 	lineHeight := gv.View.LinesHeight()
+// 	lastLine, _ := gv.View.Line(lineHeight)
+// 	lastLineWidth := len(lastLine)
+// 	utils.Debug(lineHeight, lastLine, lastLineWidth)
+// 	if err := gv.View.SetCursor(lastLineWidth, lineHeight); err != nil {
+// 		if err := gv.View.SetOrigin(lastLineWidth, lineHeight); err != nil {
+// 			return err
+// 		}
+// 		return nil
 // 	}
-// 	return nil
-// }
-// func (v *View) SetCursor(x, y int) error {
-// 	maxX, maxY := v.Size()
-// 	if x < 0 || x >= maxX || y < 0 || y >= maxY {
-// 		return errors.New("invalid point")
-// 	}
-// 	v.cx = x
-// 	v.cy = y
 // 	return nil
 // }
 

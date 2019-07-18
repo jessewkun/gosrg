@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
 
@@ -40,11 +41,17 @@ func (kf *KeyFilterView) Layout(g *gocui.Gui) error {
 }
 
 func (kf *KeyFilterView) initialize() error {
+	kf.btn()
 	gView.unbindShortCuts()
 	kf.setCurrent(kf)
-	kf.btn()
 	kf.bindShortCuts()
 	kf.outputln(redis.R.Pattern)
+	return nil
+}
+
+func (kf *KeyFilterView) focus(arg ...interface{}) error {
+	Ui.G.Cursor = true
+	tView.output(config.TipsMap[kf.Name])
 	return nil
 }
 
