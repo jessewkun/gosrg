@@ -24,6 +24,11 @@ const HELP_CONTENT = `
 
 [Detail]
  Ctrl-s : Save detail when cursor focus on detail view
+ Ctrl+b : Jump to the beginning of the detail
+ Ctrl+e : Jump to the tail of the detail
+ Ctrl+y : Copy the detail to clipboard
+ Ctrl+p : Paste the content from clipboard to detail view
+ Ctrl+l : Clear the detail view
 
 [Db]
  ↑↓      : Chose database when cursor focus on db modal
