@@ -196,7 +196,7 @@ func getString(key string) (output [][]string, res string, info [][]string) {
 	return
 }
 
-func getHash(key string) (output [][]string, res interface{}, info [][]string) {
+func getHash(key string) (output [][]string, res map[string]string, info [][]string) {
 	output = append(output, []string{"HGETALl " + key, OUTPUT_COMMAND})
 	res, err := redis.StringMap(R.Redis.Do("HGETALL", key))
 	if err != nil {
@@ -236,7 +236,7 @@ func getSet(key string) (output [][]string, res []string, info [][]string) {
 	return
 }
 
-func getZset(key string) (output [][]string, res interface{}, info [][]string) {
+func getZset(key string) (output [][]string, res map[string]string, info [][]string) {
 	output = append(output, []string{"ZRANGE " + key + " 0 -1 WITHSCORES", OUTPUT_COMMAND})
 	res, err := redis.StringMap(R.Redis.Do("ZRANGE", key, 0, -1, "WITHSCORES"))
 	if err != nil {

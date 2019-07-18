@@ -26,7 +26,6 @@ func (gv *GView) cursorDown() error {
 	if cy+oy+1 >= lineHeight {
 		return nil
 	}
-	utils.Logger.Println(cy, oy, lineHeight)
 	if err := gv.View.SetCursor(cx, cy+1); err != nil {
 		utils.Logger.Println(err)
 		ox, oy := gv.View.Origin()

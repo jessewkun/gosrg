@@ -57,13 +57,26 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
-func (d *DetailView) output(arg ...interface{}) error {
+func (d *DetailView) output(arg interface{}) error {
 	d.clear()
-	// switch arg.(type) {
-	// case string:
-	return d.GView.output(arg...)
-	// case map[string]string:
-	// }
+	return d.GView.output(arg)
+}
+
+func (d *DetailView) formatOutput(arg interface{}) error {
+	d.clear()
+	switch t := arg.(type) {
+	case string:
+		d.output(t)
+	case []string:
+		for _, v := range t {
+			d.GView.outputln(v)
+		}
+	case map[string]string:
+		for k, v := range t {
+			d.GView.outputln(k + ": " + v)
+		}
+	}
+	return nil
 }
 
 func (d *DetailView) copy(g *gocui.Gui, v *gocui.View) error {

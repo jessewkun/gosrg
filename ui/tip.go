@@ -37,9 +37,9 @@ func (t *TipView) initialize() error {
 	return nil
 }
 
-func (t *TipView) output(arg ...interface{}) error {
+func (t *TipView) output(arg interface{}) error {
 	t.clear()
-	if str, ok := arg[0].(string); ok {
+	if str, ok := arg.(string); ok {
 		return t.GView.output(utils.Bule(str))
 	}
 	return nil

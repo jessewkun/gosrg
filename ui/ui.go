@@ -18,8 +18,8 @@ type GHandler interface {
 	clear() error
 	setCurrent(v GHandler, arg ...interface{}) error
 	getCurrentLine() string
-	output(arg ...interface{}) error
-	outputln(arg ...interface{}) error
+	output(arg interface{}) error
+	outputln(arg interface{}) error
 }
 
 type UI struct {
@@ -132,8 +132,8 @@ func (gv *GView) clear() error {
 	return nil
 }
 
-func (gv *GView) output(arg ...interface{}) error {
-	if _, err := fmt.Fprint(gv.View, arg...); err != nil {
+func (gv *GView) output(arg interface{}) error {
+	if _, err := fmt.Fprint(gv.View, arg); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}
@@ -141,8 +141,8 @@ func (gv *GView) output(arg ...interface{}) error {
 	return nil
 }
 
-func (gv *GView) outputln(arg ...interface{}) error {
-	if _, err := fmt.Fprintln(gv.View, arg...); err != nil {
+func (gv *GView) outputln(arg interface{}) error {
+	if _, err := fmt.Fprintln(gv.View, arg); err != nil {
 		utils.Logger.Fatalln(err)
 		return err
 	}
@@ -209,10 +209,9 @@ func (gv *GView) error(str string) {
 func (gv *GView) debug(arg ...interface{}) {
 	if config.DEBUG {
 		arg = append([]interface{}{utils.Now() + utils.Orange("[DEBUG]")}, arg...)
-		gv.outputln(arg...)
+		gv.outputln(arg)
 	}
 }
-
 
 func InitUI() {
 	Ui.AllView = map[string]GHandler{
