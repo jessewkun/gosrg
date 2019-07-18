@@ -16,7 +16,7 @@ func init() {
 	gView = new(GLobalView)
 	gView.ShortCuts = []ShortCut{
 		ShortCut{Key: gocui.KeyCtrlC, Level: GLOBAL_N, Handler: gView.quit},
-		ShortCut{Key: gocui.KeySpace, Level: GLOBAL_N, Handler: gView.showHelp},
+		ShortCut{Key: 'h', Level: GLOBAL_N, Handler: gView.showHelp},
 		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: gView.tab},
 		ShortCut{Key: gocui.KeyCtrlD, Level: GLOBAL_Y, Handler: gView.showDb},
 	}

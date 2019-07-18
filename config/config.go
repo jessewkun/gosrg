@@ -47,15 +47,15 @@ const REDIS_MAX_DB_NUM = 15
 var (
 	TabView = []string{"server", "key", "detail", "info", "output"}
 	TipsMap = map[string]string{
-		"server":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
-		"key":       "↑↓ MouseLeft: Toggle keys | Ctrl+f: Filter keys | Ctrl+r: Refresh keys | Deltet: Delete key",
+		"server":    "Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"key":       "↑↓ MouseLeft: Toggle keys | Ctrl+f: Filter | Ctrl+r: Refresh | Deltet: Delete | h: Help",
 		"keydel":    "Enter: Confirm delete the key | Tab: Toggle button | Esc: Close Db modal",
 		"keyfilter": "Enter: Execute keys pattern | Tab: Toggle button | Esc: Close Db modal",
-		"detail":    "Ctrl-s: Save detail",
-		"output":    "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
-		"tip":       "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
+		"detail":    "Ctrl-s: Save | Ctrl+y: Copy | Ctrl+p: Paste | Ctrl+l: Clear | h: Help",
+		"output":    "Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"tip":       "Tab: Toggle view | Ctrl-c: Quit | h: Help",
 		"help":      "Esc: Close Help modal",
 		"db":        "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close Db modal",
-		"info":      "Tab: Toggle view | Ctrl-c: Quit | Ctrl-space: Help",
+		"info":      "Tab: Toggle view | Ctrl-c: Quit | h: Help",
 	}
 )
