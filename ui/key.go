@@ -40,9 +40,6 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 		}
 		v.Title = k.Title
 		v.Wrap = true
-		// v.Autoscroll = true
-		v.Highlight = true
-		v.SelFgColor = gocui.ColorGreen
 		k.View = v
 		k.initialize()
 	}
@@ -61,7 +58,7 @@ func (k *KeyView) initialize() error {
 				kView.outputln(key)
 			}
 		}
-		k.View.Title = " Keys " + redis.R.Pattern
+		k.View.Title = " Keys " + redis.R.Pattern + " "
 	}
 	return nil
 }
