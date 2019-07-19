@@ -4,7 +4,6 @@ import (
 	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
-	"strings"
 
 	"github.com/atotto/clipboard"
 	"github.com/jessewkun/gocui"
@@ -106,6 +105,8 @@ func (d *DetailView) copy(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
+// paste Used for copy content from clipboard to detail view
+// bug: linebreak is lost after pasted, fixed with the following code but bring a new bug: the text before last line is missing
 func (d *DetailView) paste(g *gocui.Gui, v *gocui.View) error {
 	if !d.View.Editable {
 		opView.info("Pasting is only worked in insert mode, pressing 'i' to switch insert mode")
@@ -117,47 +118,42 @@ func (d *DetailView) paste(g *gocui.Gui, v *gocui.View) error {
 		utils.Logger.Println(err)
 		return err
 	}
-	utils.Logger.Print(text)
 	line := d.getCurrentLine()
 	cx, cy := d.View.Cursor()
-	// text = line[:cx] + text + line[cx:]
-	// utils.Logger.Print(text)
-	textArr := strings.Split(text, "\n")
+	newText := line[:cx] + text + line[cx:]
+	d.setLine(cy, newText)
+	// textArr := strings.Split(text, "\n")
 	// for i, v := range textArr {
 	// 	if i == 0 {
 	// 		d.setLine(cy, line[:cx]+v)
 	// 	}
 	// }
-
-	i := 0
-	newCx := cx
-	for {
-		_, cy := d.View.Cursor()
-		if i == 0 {
-			d.setLine(cy, line[:cx]+textArr[i])
-			utils.Logger.Print(cy)
-			utils.Logger.Print(line[:cx] + textArr[i])
-		} else if i+1 == len(textArr) {
-			d.setLine(cy, textArr[i]+line[cx:])
-			utils.Logger.Print(cy)
-			utils.Logger.Print(textArr[i] + line[cx:])
-			newCx = len(textArr[i])
-			break
-		} else {
-			d.setLine(cy, textArr[i])
-			utils.Logger.Print(cy)
-			utils.Logger.Print(textArr[i])
-		}
-		if i < len(textArr) {
-			d.View.EditNewLine()
-		}
-		i++
-	}
-	_, cy = d.View.Cursor()
-	utils.Logger.Print(d.View.ViewBuffer())
-	utils.Logger.Print(d.View.Buffer())
-	utils.Logger.Print(d.View.ViewBufferLines())
-	utils.Logger.Print(d.View.BufferLines())
+	newCx := len(line[:cx] + text)
+	// i := 0
+	// newCx := cx
+	// for {
+	// 	_, cy := d.View.Cursor()
+	// 	if i == 0 {
+	// 		d.setLine(cy, line[:cx]+textArr[i])
+	// 		utils.Logger.Print(cy)
+	// 		utils.Logger.Print(line[:cx] + textArr[i])
+	// 	} else if i+1 == len(textArr) {
+	// 		d.setLine(cy, textArr[i]+line[cx:])
+	// 		utils.Logger.Print(cy)
+	// 		utils.Logger.Print(textArr[i] + line[cx:])
+	// 		newCx = len(textArr[i])
+	// 		break
+	// 	} else {
+	// 		d.setLine(cy, textArr[i])
+	// 		utils.Logger.Print(cy)
+	// 		utils.Logger.Print(textArr[i])
+	// 	}
+	// 	if i < len(textArr) {
+	// 		d.View.EditNewLine()
+	// 	}
+	// 	i++
+	// }
+	// _, cy = d.View.Cursor()
 	return d.setCursor(newCx, cy)
 }
 

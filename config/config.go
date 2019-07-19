@@ -10,7 +10,7 @@ const HELP_CONTENT = `
 [Global]
  Tab    : Toggle view
  Ctrl-c : Quit
- Space  : Show help modal
+ h      : Show help modal
  Esc    : Close modal
 
 [Keys]
@@ -23,6 +23,8 @@ const HELP_CONTENT = `
  Delete    : Delete key
 
 [Detail]
+ i      : Insert mode
+ Esc    : Normal mode
  Ctrl-s : Save detail when cursor focus on detail view
  Ctrl+b : Jump to the beginning of the detail
  Ctrl+e : Jump to the tail of the detail
