@@ -25,6 +25,7 @@ func init() {
 		ShortCut{Key: gocui.KeyCtrlP, Level: LOCAL_Y, Handler: dView.paste},
 		ShortCut{Key: gocui.KeyCtrlL, Level: LOCAL_Y, Handler: dView.clean},
 		ShortCut{Key: gocui.KeyCtrlB, Level: LOCAL_Y, Handler: dView.begin},
+		ShortCut{Key: gocui.KeyCtrlE, Level: LOCAL_Y, Handler: dView.end},
 		ShortCut{Key: 'i', Level: LOCAL_Y, Handler: dView.insertMode},
 		ShortCut{Key: gocui.KeyEsc, Level: LOCAL_Y, Handler: dView.normalmode},
 	}

@@ -60,8 +60,8 @@ func (R *Redis) SelectDb(db int) (output [][]string) {
 }
 
 func (R *Redis) Keys() (output [][]string, keys []string) {
-	output = append(output, []string{"KEYS " + R.Pattern, OUTPUT_COMMAND})
-	keys, err := redis.Strings(R.Redis.Do("KEYS", R.Pattern))
+	output = append(output, []string{"KEYS *" + R.Pattern + "*", OUTPUT_COMMAND})
+	keys, err := redis.Strings(R.Redis.Do("KEYS", "*"+R.Pattern+"*"))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
 		utils.Logger.Fatalln(err)
