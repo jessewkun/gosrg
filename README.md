@@ -38,9 +38,9 @@ Keybinding               | Scope                | Description
 <kbd>Ctrl+b</kbd>        | Detail               | Jump to detail begining
 <kbd>Ctrl+e</kbd>        | Detail               | Jump to end of detail
 <kbd>Esc</kbd>           | Help modal           | CLose help modal
-<kbd>Enter</kbd>         | Delete key modal     | Confirm delete key focus on CONFIRM button
+<kbd>Enter</kbd>         | Delete key modal     | Confirm delete key when focus on CONFIRM button
 <kbd>Esc</kbd>           | Delete key modal     | CLose key delete modal
-<kbd>Enter</kbd>         | Filter key modal     | Confirm filter
+<kbd>Enter</kbd>         | Filter key modal     | Confirm filter when focus on CONFIRM button
 <kbd>Esc</kbd>           | Filter key modal     | CLose key filter modal
 <kbd>Down</kbd>          | Db modal             | Move down one view line
 <kbd>Up</kbd>            | Keys                 | Move up one view
