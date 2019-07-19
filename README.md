@@ -48,6 +48,7 @@ Keybinding               | Scope                | Description
 <kbd>Enter</kbd>         | Keys                 | Select current db
 <kbd>Esc</kbd>           | Keys                 | CLose db modal
 
+
 ## Bugs
 
 Bugs or suggestions? Visit the [issue tracker](https://github.com/jessewkun/gosrg/issues)
