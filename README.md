@@ -16,7 +16,7 @@ $ "$GOPATH/bin/gosrg" --help
 ### Commands
 
 Keybinding               | Scope                | Description
--------------------------|-------------------------------------------------------------------------
+-------------------------|----------------------|--------------------------------------------------
 <kbd>Ctrl+C</kbd>        | Global               | Quit
 <kbd>h</kbd>             | Global               | Display help modal
 <kbd>Tab</kbd>           | Global               | Toggle next view
