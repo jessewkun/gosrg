@@ -18,6 +18,7 @@ const (
 	OUTPUT_ERROR   = "e"
 	OUTPUT_RES     = "r"
 	OUTPUT_DEBUG   = "d"
+	SEPARATOR      = " ==> "
 )
 
 type Redis struct {
@@ -332,7 +333,7 @@ func (r *Redis) setHash(content string) (output [][]string, err error) {
 	temp := key
 	args = append(args, key)
 	for _, v := range tmpArr {
-		t := strings.Split(v, ": ")
+		t := strings.Split(v, SEPARATOR)
 		temp += " " + t[0] + " " + t[1]
 		args = append(args, t[0], t[1])
 	}
@@ -386,7 +387,7 @@ func (r *Redis) setZset(content string) (output [][]string, err error) {
 	temp := key
 	args = append(args, key)
 	for _, v := range tmpArr {
-		t := strings.Split(v, ": ")
+		t := strings.Split(v, SEPARATOR)
 		temp += " " + t[1] + " " + t[0]
 		args = append(args, t[1], t[0])
 	}

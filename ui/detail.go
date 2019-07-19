@@ -87,9 +87,9 @@ func (d *DetailView) formatOutput(arg interface{}) error {
 		for k, v := range t {
 			i++
 			if i == len(t) {
-				d.GView.output(k + ": " + v)
+				d.GView.output(k + redis.SEPARATOR + v)
 			} else {
-				d.GView.outputln(k + ": " + v)
+				d.GView.outputln(k + redis.SEPARATOR + v)
 			}
 		}
 	}
