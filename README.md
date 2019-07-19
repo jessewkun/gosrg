@@ -45,10 +45,10 @@ Keybinding               | Scope                | Description
 <kbd>Enter</kbd>         | Filter key modal     | Confirm filter when focus on CONFIRM button
 <kbd>Tab</kbd>           | Delete key modal     | Toggle focus
 <kbd>Down</kbd>          | Db modal             | Move down one view line
-<kbd>Up</kbd>            | Keys                 | Move up one view
-<kbd>MouseLeft</kbd>     | Keys                 | Select current db
-<kbd>Enter</kbd>         | Keys                 | Select current db
-<kbd>Esc</kbd>           | Keys                 | CLose db modal
+<kbd>Up</kbd>            | Db modal             | Move up one view
+<kbd>MouseLeft</kbd>     | Db modal             | Select current db
+<kbd>Enter</kbd>         | Db modal             | Select current db
+<kbd>Esc</kbd>           | Db modal             | CLose db modal
 
 
 ## Bugs
