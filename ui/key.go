@@ -4,7 +4,6 @@ import (
 	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
-	"strings"
 
 	"github.com/jessewkun/gocui"
 )
@@ -93,11 +92,7 @@ func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 		if output, detail, info := redis.R.KeyDetail(key); len(output) > 0 {
 			opView.formatOutput(output)
 			dView.formatOutput(detail)
-			iView.clear()
-			for _, v := range info {
-				iView.outputln(utils.Yellow(strings.ToLower(v[0])+":") + v[1])
-				// iView.outputln("    " + v[1])
-			}
+			iView.formatOuput(info)
 		}
 	}
 

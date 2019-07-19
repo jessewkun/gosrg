@@ -2,6 +2,7 @@ package ui
 
 import (
 	"gosrg/utils"
+	"strings"
 
 	"github.com/jessewkun/gocui"
 )
@@ -29,6 +30,15 @@ func (i *InfoView) Layout(g *gocui.Gui) error {
 		v.Wrap = true
 		i.View = v
 		i.initialize()
+	}
+	return nil
+}
+
+func (i *InfoView) formatOuput(info [][]string) error {
+	i.clear()
+	for _, v := range info {
+		i.outputln(utils.Yellow(strings.ToLower(v[0])+":") + v[1])
+		// iView.outputln("    " + v[1])
 	}
 	return nil
 }
