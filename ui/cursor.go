@@ -11,7 +11,7 @@ func (gv *GView) cursorUp() error {
 	cx, cy := gv.View.Cursor()
 	if err := gv.View.SetCursor(cx, cy-1); err != nil && oy > 0 {
 		if err := gv.View.SetOrigin(ox, oy-1); err != nil {
-			utils.Logger.Println(err)
+			utils.Error.Println(err)
 			return err
 		}
 		return nil
@@ -29,9 +29,9 @@ func (gv *GView) cursorDown() error {
 		return nil
 	}
 	if err := gv.View.SetCursor(cx, cy+1); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 		if err := gv.View.SetOrigin(ox, oy+1); err != nil {
-			utils.Logger.Println(err)
+			utils.Error.Println(err)
 			return err
 		}
 		return nil
@@ -41,10 +41,10 @@ func (gv *GView) cursorDown() error {
 
 func (gv *GView) cursorBegin() error {
 	if err := gv.View.SetCursor(0, 0); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 	}
 	if err := gv.View.SetOrigin(0, 0); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 		return err
 	}
 	kView.cursorDebug()
@@ -71,10 +71,10 @@ func (gv *GView) cursorEnd(flag bool) error {
 		ox, oy = 0, 0
 	}
 	if err := gv.View.SetCursor(cx, cy); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 	}
 	if err := gv.View.SetOrigin(ox, oy); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 		return err
 	}
 	kView.cursorDebug()
@@ -84,10 +84,10 @@ func (gv *GView) cursorEnd(flag bool) error {
 func (gv *GView) setCursor(x int, y int) error {
 	if err := gv.View.SetCursor(x, y); err != nil {
 		// if err := gv.View.SetOrigin(x, y); err != nil {
-		// 	utils.Logger.Println(err)
+		// 	utils.Error.Println(err)
 		// 	return err
 		// }
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 		return nil
 	}
 	return nil

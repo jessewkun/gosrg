@@ -71,6 +71,7 @@ func (w *ButtonWidget) Layout(g *gocui.Gui) error {
 		}
 		Ui.G.Cursor = false
 		if err := Ui.G.SetKeybinding(w.Name, gocui.KeyEnter, gocui.ModNone, w.handler); err != nil {
+			utils.Error.Println(err)
 			return err
 		}
 		fmt.Fprint(v, w.label)
@@ -89,7 +90,7 @@ func (gv *GView) bindShortCuts() error {
 			vName = ""
 		}
 		if err := Ui.G.SetKeybinding(vName, sc.Key, gocui.ModNone, sc.Handler); err != nil {
-			utils.Logger.Fatalln(err)
+			utils.Error.Println(err)
 			return err
 		}
 	}
@@ -106,7 +107,7 @@ func (gv *GView) unbindShortCuts() error {
 			vName = ""
 		}
 		if err := Ui.G.DeleteKeybinding(vName, sc.Key, gocui.ModNone); err != nil {
-			utils.Logger.Fatalln(err)
+			utils.Error.Println(err)
 			return err
 		}
 	}
@@ -134,7 +135,7 @@ func (gv *GView) clear() error {
 
 func (gv *GView) output(arg interface{}) error {
 	if _, err := fmt.Fprint(gv.View, arg); err != nil {
-		utils.Logger.Fatalln(err)
+		utils.Error.Println(err)
 		return err
 	}
 
@@ -143,7 +144,7 @@ func (gv *GView) output(arg interface{}) error {
 
 func (gv *GView) outputln(arg interface{}) error {
 	if _, err := fmt.Fprintln(gv.View, arg); err != nil {
-		utils.Logger.Fatalln(err)
+		utils.Error.Println(err)
 		return err
 	}
 
@@ -152,7 +153,7 @@ func (gv *GView) outputln(arg interface{}) error {
 
 func (gv *GView) setCurrent(v GHandler, arg ...interface{}) error {
 	if _, err := Ui.G.SetCurrentView(gv.Name); err != nil {
-		utils.Logger.Fatalln(err)
+		utils.Error.Println(err)
 		return err
 	}
 	v.focus(arg...)
@@ -171,7 +172,7 @@ func (gv *GView) getCurrentLine() string {
 
 	_, cy := gv.View.Cursor()
 	if line, err = gv.View.Line(cy); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 		return ""
 	}
 	return line
@@ -184,7 +185,7 @@ func (gv *GView) deleteCursorLine() error {
 
 func (gv *GView) deleteLine(y int) error {
 	if err := gv.View.DeleteLine(y); err != nil {
-		utils.Logger.Fatalln(err)
+		utils.Error.Println(err)
 		return err
 	}
 	return nil
@@ -192,24 +193,29 @@ func (gv *GView) deleteLine(y int) error {
 
 func (gv *GView) command(str string) {
 	gv.outputln(utils.Now() + utils.Bule("[COMMAND]") + str)
+	utils.Command.Println(str)
 }
 
 func (gv *GView) info(str string) {
 	gv.outputln(utils.Now() + utils.Tianqing("[INFO]") + str)
+	utils.Info.Println(str)
 }
 
 func (gv *GView) res(str string) {
 	gv.outputln(utils.Now() + utils.Green("[RESULT]") + str)
+	utils.Result.Println(str)
 }
 
 func (gv *GView) error(str string) {
 	gv.outputln(utils.Now() + utils.Red("[ERROR]") + str)
+	utils.Error.Println(str)
 }
 
 func (gv *GView) debug(arg ...interface{}) {
 	if config.DEBUG {
 		arg = append([]interface{}{utils.Now() + utils.Orange("[DEBUG]")}, arg...)
 		gv.outputln(arg)
+		utils.Debug.Println(arg...)
 	}
 }
 

@@ -2,7 +2,6 @@ package redis
 
 import (
 	"gosrg/utils"
-	"os"
 	"strconv"
 	"strings"
 
@@ -32,17 +31,16 @@ type Redis struct {
 	Pattern        string
 }
 
-func InitRedis() {
+func InitRedis(host string, port string, pwd string, pattern string) {
 	R = &Redis{
-		Host:    "127.0.0.1",
-		Port:    "6379",
-		Pattern: "*",
+		Host:    host,
+		Port:    port,
+		Pwd:     pwd,
+		Pattern: pattern,
 	}
 	conn, err := redis.Dial(REDIS_NETWORK, R.Host+":"+R.Port)
 	if err != nil {
-		println("redis connect fail")
-		utils.Logger.Println(err.Error())
-		os.Exit(1)
+		utils.Exit(err)
 	}
 	R.Redis = conn
 }
@@ -52,7 +50,6 @@ func (r *Redis) SelectDb(db int) (output [][]string) {
 	_, err := redis.String(r.Redis.Do("SELECT", db))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	r.CurrentKey = ""
@@ -71,7 +68,6 @@ func (r *Redis) Keys() (output [][]string, keys []string) {
 	}
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	r.CurrentKey = ""
@@ -84,7 +80,6 @@ func (r *Redis) Del() (output [][]string, err error) {
 	res, err := redis.Int64(r.Redis.Do("DEL", r.CurrentKey))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	r.CurrentKey = ""
@@ -98,14 +93,12 @@ func (r *Redis) Info() (output [][]string, res string, info [][]string) {
 	res, err := redis.String(r.Redis.Do("INFO"))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	output = append(output, []string{"DBSIZE", OUTPUT_COMMAND})
 	dbsize, err := redis.Int64(r.Redis.Do("DBSIZE"))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	info = append(info, []string{"dbsize", strconv.FormatInt(dbsize, 10)})
@@ -124,7 +117,6 @@ func (r *Redis) KeyDetail(key string) (output [][]string, res interface{}, info 
 	keyType, err := redis.String(r.Redis.Do("TYPE", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Println(err)
 		return
 	}
 	r.CurrentKey = key
@@ -135,7 +127,6 @@ func (r *Redis) KeyDetail(key string) (output [][]string, res interface{}, info 
 	object, err := redis.String(r.Redis.Do("DEBUG", "OBJECT", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Println(err)
 		return
 	}
 	objectArr := strings.Split(object, " ")
@@ -155,7 +146,6 @@ func (r *Redis) KeyDetail(key string) (output [][]string, res interface{}, info 
 	ttlres, err := redis.Int64(r.Redis.Do("TTL", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	info = append(info, []string{"ttl", strconv.FormatInt(ttlres, 10)})
@@ -196,7 +186,6 @@ func (r *Redis) getString(key string) (output [][]string, res string, info [][]s
 	res, err := redis.String(r.Redis.Do("GET", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 
@@ -204,7 +193,6 @@ func (r *Redis) getString(key string) (output [][]string, res string, info [][]s
 	lenres, err := redis.Int64(r.Redis.Do("STRLEN", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	info = append(info, []string{"len", strconv.FormatInt(lenres, 10)})
@@ -216,7 +204,6 @@ func (r *Redis) getHash(key string) (output [][]string, res map[string]string, i
 	res, err := redis.StringMap(r.Redis.Do("HGETALL", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 
@@ -224,7 +211,6 @@ func (r *Redis) getHash(key string) (output [][]string, res map[string]string, i
 	lenres, err := redis.Int64(r.Redis.Do("HLEN", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	info = append(info, []string{"hlen", strconv.FormatInt(lenres, 10)})
@@ -236,7 +222,6 @@ func (r *Redis) getSet(key string) (output [][]string, res []string, info [][]st
 	res, err := redis.Strings(r.Redis.Do("SMEMBERS", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 
@@ -244,7 +229,6 @@ func (r *Redis) getSet(key string) (output [][]string, res []string, info [][]st
 	lenres, err := redis.Int64(r.Redis.Do("SCARD", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	info = append(info, []string{"scard", strconv.FormatInt(lenres, 10)})
@@ -256,7 +240,6 @@ func (r *Redis) getZset(key string) (output [][]string, res map[string]string, i
 	res, err := redis.StringMap(r.Redis.Do("ZRANGE", key, 0, -1, "WITHSCORES"))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 
@@ -264,7 +247,6 @@ func (r *Redis) getZset(key string) (output [][]string, res map[string]string, i
 	lenres, err := redis.Int64(r.Redis.Do("ZCARD", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	info = append(info, []string{"zcard", strconv.FormatInt(lenres, 10)})
@@ -276,7 +258,6 @@ func (r *Redis) getList(key string) (output [][]string, res []string, info [][]s
 	res, err := redis.Strings(r.Redis.Do("LRANGE", key, 0, -1))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 
@@ -284,7 +265,6 @@ func (r *Redis) getList(key string) (output [][]string, res []string, info [][]s
 	lenres, err := redis.Int64(r.Redis.Do("LLEN", key))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	info = append(info, []string{"llen", strconv.FormatInt(lenres, 10)})
@@ -312,13 +292,12 @@ func (r *Redis) SetKeyDetail(content string) (output [][]string) {
 
 func (r *Redis) setString(content string) (output [][]string, err error) {
 	output = append(output, []string{"SET " + r.CurrentKey + " " + content, OUTPUT_COMMAND})
-	res, err := redis.Int64(r.Redis.Do("set", r.CurrentKey, content))
+	res, err := redis.String(r.Redis.Do("SET", r.CurrentKey, content))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
-	output = append(output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
+	output = append(output, []string{res, OUTPUT_RES})
 	return
 }
 
@@ -341,7 +320,6 @@ func (r *Redis) setHash(content string) (output [][]string, err error) {
 	res, err := redis.String(r.Redis.Do("HMSET", args...))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	r.CurrentKey = key
@@ -367,7 +345,6 @@ func (r *Redis) setSet(content string) (output [][]string, err error) {
 	res, err := redis.Int64(r.Redis.Do("SADD", args...))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	r.CurrentKey = key
@@ -395,7 +372,6 @@ func (r *Redis) setZset(content string) (output [][]string, err error) {
 	res, err := redis.Int64(r.Redis.Do("ZADD", args...))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	r.CurrentKey = key
@@ -421,7 +397,6 @@ func (r *Redis) setList(content string) (output [][]string, err error) {
 	res, err := redis.Int64(r.Redis.Do("RPUSH", args...))
 	if err != nil {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
-		utils.Logger.Fatalln(err)
 		return
 	}
 	r.CurrentKey = key

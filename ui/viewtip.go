@@ -22,7 +22,6 @@ func (t *TipView) Layout(g *gocui.Gui) error {
 	maxX, maxY := Ui.G.Size()
 	if v, err := g.SetView(t.Name, 0, maxY-2, maxX-20, maxY, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
 			return err
 		}
 		v.Frame = false

@@ -28,7 +28,6 @@ func (c *CommandView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	if v, err := g.SetView(c.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2-5, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
 			return err
 		}
 		v.Title = c.Title
@@ -64,7 +63,7 @@ func (c *CommandView) tab(g *gocui.Gui, v *gocui.View) error {
 		nextViewName = confirmBtn.Name
 	}
 	if _, err := Ui.G.SetCurrentView(nextViewName); err != nil {
-		utils.Logger.Fatalln(err)
+		utils.Error.Println(err)
 		return err
 	}
 	return nil
@@ -74,15 +73,15 @@ func (c *CommandView) hide(g *gocui.Gui, v *gocui.View) error {
 	c.unbindShortCuts()
 	gView.bindShortCuts()
 	if err := Ui.G.DeleteView(confirmBtn.Name); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 		return err
 	}
 	if err := Ui.G.DeleteView(cancelBtn.Name); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 		return err
 	}
 	if err := Ui.G.DeleteView(c.Name); err != nil {
-		utils.Logger.Println(err)
+		utils.Error.Println(err)
 		return err
 	}
 	Ui.NextView.setCurrent(Ui.NextView)

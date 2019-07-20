@@ -31,24 +31,24 @@ Keybinding               | Scope                | Description
 <kbd>Ctrl+e</kbd>        | keys                 | Jump to last key
 <kbd>i</kbd>             | Detail               | Toggle to insert mode
 <kbd>Esc</kbd>           | Detail               | Toggle to normal mode
-<kbd>Ctrl+y</kbd>        | Detail               | Cope detail to clipbpard
+<kbd>Ctrl+y</kbd>        | Detail               | Copy detail to clipbpard
 <kbd>Ctrl+p</kbd>        | Detail               | Paste detail to detail view
 <kbd>Ctrl+l</kbd>        | Detail               | Clear detail
 <kbd>Ctrl+s</kbd>        | Detail               | Save detail
 <kbd>Ctrl+b</kbd>        | Detail               | Jump to detail begining
 <kbd>Ctrl+e</kbd>        | Detail               | Jump to end of detail
-<kbd>Esc</kbd>           | Help modal           | CLose help modal
+<kbd>Esc</kbd>           | Help modal           | Close help modal
 <kbd>Enter</kbd>         | Delete key modal     | Confirm delete key when focus on CONFIRM button
-<kbd>Esc</kbd>           | Delete key modal     | CLose key delete modal
+<kbd>Esc</kbd>           | Delete key modal     | Close key delete modal
 <kbd>Tab</kbd>           | Delete key modal     | Toggle focus button
-<kbd>Esc</kbd>           | Filter key modal     | CLose key filter modal
+<kbd>Esc</kbd>           | Filter key modal     | Close key filter modal
 <kbd>Enter</kbd>         | Filter key modal     | Confirm filter when focus on CONFIRM button
 <kbd>Tab</kbd>           | Delete key modal     | Toggle focus
 <kbd>Down</kbd>          | Db modal             | Move down one view line
 <kbd>Up</kbd>            | Db modal             | Move up one view
 <kbd>MouseLeft</kbd>     | Db modal             | Select current db
 <kbd>Enter</kbd>         | Db modal             | Select current db
-<kbd>Esc</kbd>           | Db modal             | CLose db modal
+<kbd>Esc</kbd>           | Db modal             | Close db modal
 
 
 ## Bugs

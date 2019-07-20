@@ -23,7 +23,6 @@ func (i *InfoView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	if v, err := g.SetView(i.Name, maxX-29, 0, maxX-1, maxY-15, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
 			return err
 		}
 		v.Title = i.Title

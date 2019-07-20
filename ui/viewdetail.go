@@ -3,7 +3,6 @@ package ui
 import (
 	"gosrg/config"
 	"gosrg/redis"
-	"gosrg/utils"
 
 	"github.com/atotto/clipboard"
 	"github.com/jessewkun/gocui"
@@ -35,7 +34,6 @@ func (d *DetailView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	if v, err := g.SetView(d.Name, maxX/3-14, 0, maxX-30, maxY-15, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
 			return err
 		}
 		v.Title = d.Title
@@ -99,7 +97,6 @@ func (d *DetailView) formatOutput(arg interface{}) error {
 func (d *DetailView) copy(g *gocui.Gui, v *gocui.View) error {
 	if err := clipboard.WriteAll(v.ViewBuffer()); err != nil {
 		opView.error(err.Error())
-		utils.Logger.Println(err)
 		return err
 	}
 	opView.info("copy success")
@@ -116,7 +113,6 @@ func (d *DetailView) paste(g *gocui.Gui, v *gocui.View) error {
 	text, err := clipboard.ReadAll()
 	if err != nil {
 		opView.error(err.Error())
-		utils.Logger.Println(err)
 		return err
 	}
 	line := d.getCurrentLine()
@@ -161,7 +157,6 @@ func (d *DetailView) paste(g *gocui.Gui, v *gocui.View) error {
 func (d *DetailView) setLine(cy int, text string) error {
 	if err := d.View.SetLine(cy, text); err != nil {
 		opView.error(err.Error())
-		utils.Logger.Println(err)
 		return err
 	}
 	return nil

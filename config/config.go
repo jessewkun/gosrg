@@ -4,7 +4,7 @@ const PROJECT_URL = "https://github.com/jessewkun/gosrg"
 const PROJECT_NAME = "Gosrg"
 const PROJECT_VERSION = "unversioned"
 
-const DEBUG = true
+const DEBUG = false
 
 const HELP_CONTENT = `
 [Global]
@@ -41,8 +41,6 @@ const HELP_CONTENT = `
  Enter : Confirm delete key
  Tab   : Toggle button
 `
-
-const LOG_FILE = "./gosrg.log"
 
 const REDIS_MAX_DB_NUM = 15
 

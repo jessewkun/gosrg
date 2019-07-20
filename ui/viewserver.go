@@ -25,7 +25,6 @@ func (s *ServerView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	if v, err := g.SetView(s.Name, 0, 0, maxX/3-15, maxY/10, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
 			return err
 		}
 		v.Title = s.Title

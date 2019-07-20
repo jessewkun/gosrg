@@ -3,7 +3,6 @@ package ui
 import (
 	"gosrg/config"
 	"gosrg/redis"
-	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
 )
@@ -34,7 +33,6 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	if v, err := g.SetView(k.Name, 0, maxY/10+1, maxX/3-15, maxY-2, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
 			return err
 		}
 		v.Title = k.Title

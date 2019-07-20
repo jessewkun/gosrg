@@ -3,7 +3,6 @@ package ui
 import (
 	"gosrg/config"
 	"gosrg/redis"
-	"gosrg/utils"
 	"strconv"
 	"strings"
 
@@ -90,7 +89,6 @@ func (db *DbView) choice(g *gocui.Gui, v *gocui.View) error {
 		if output := redis.R.SelectDb(dbNo); len(output) > 0 {
 			redis.R.Db = dbNo
 			opView.formatOutput(output)
-			utils.Logger.Println("select db to " + tmp[2])
 		}
 		return db.hide(g, v)
 	}

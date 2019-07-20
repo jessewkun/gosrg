@@ -2,7 +2,6 @@ package ui
 
 import (
 	"gosrg/redis"
-	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
 )
@@ -23,7 +22,6 @@ func (op *OutputView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	if v, err := g.SetView(op.Name, maxX/3-14, maxY-14, maxX-1, maxY-2, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
-			utils.Logger.Fatalln(err)
 			return err
 		}
 		v.Title = op.Title
