@@ -38,6 +38,8 @@ Keybinding               | Scope                | Description
 <kbd>Ctrl+b</kbd>        | Detail               | Jump to detail begining
 <kbd>Ctrl+e</kbd>        | Detail               | Jump to end of detail
 <kbd>Esc</kbd>           | Help modal           | Close help modal
+<kbd>Down</kbd>          | Help modal           | Move down one view line
+<kbd>Up</kbd>            | Help modal           | Move up one view line
 <kbd>Enter</kbd>         | Delete key modal     | Confirm delete key when focus on CONFIRM button
 <kbd>Esc</kbd>           | Delete key modal     | Close key delete modal
 <kbd>Tab</kbd>           | Delete key modal     | Toggle focus button

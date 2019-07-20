@@ -37,6 +37,7 @@ func (db *DbView) Layout(g *gocui.Gui) error {
 		}
 		v.Title = db.Title
 		v.Wrap = true
+		v.Highlight = true
 		db.View = v
 		db.initialize()
 	}
