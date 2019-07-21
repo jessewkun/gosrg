@@ -2,7 +2,7 @@
 
 Terminal GUI management tool for Redis
 
-
+![Gosrg](https://raw.githubusercontent.com/jessewkun/gosrg/master/docs/images/Screenshots.png)
 
 ## Installation and usage
 
