@@ -60,13 +60,19 @@ Keybinding               | Scope                | Description
 <kbd>Ctrl+y</kbd>        | keys                 | Copy current key to clipbpard
 <kbd>i</kbd>             | Detail               | Toggle to insert mode
 <kbd>Esc</kbd>           | Detail               | Toggle to normal mode
+<kbd>Down</kbd>          | Detail               | Move down one line
+<kbd>Up</kbd>            | Detail               | Move up one line
+<kbd>Ctrl+b</kbd>        | Detail               | Jump to detail begining
+<kbd>Ctrl+e</kbd>        | Detail               | Jump to end of detail
 <kbd>Ctrl+y</kbd>        | Detail               | Copy detail to clipbpard
 <kbd>Ctrl+p</kbd>        | Detail               | Paste detail to detail view
 <kbd>Ctrl+l</kbd>        | Detail               | Clear detail
 <kbd>Ctrl+s</kbd>        | Detail               | Save detail
-<kbd>Ctrl+b</kbd>        | Detail               | Jump to detail begining
 <kbd>Ctrl+y</kbd>        | Info                 | Copy Info to clipbpard
-<kbd>Ctrl+e</kbd>        | Detail               | Jump to end of detail
+<kbd>Down</kbd>          | Output               | Move down one line
+<kbd>Up</kbd>            | Output               | Move up one line
+<kbd>Ctrl+b</kbd>        | Output               | Jump to output begining
+<kbd>Ctrl+e</kbd>        | Output               | Jump to end of output
 <kbd>Esc</kbd>           | Help modal           | Close help modal
 <kbd>Down</kbd>          | Help modal           | Move down one view line
 <kbd>Up</kbd>            | Help modal           | Move up one view line
