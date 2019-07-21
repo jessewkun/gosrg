@@ -191,26 +191,6 @@ func (gv *GView) deleteLine(y int) error {
 	return nil
 }
 
-func (gv *GView) command(str string) {
-	gv.outputln(utils.Now() + utils.Bule("[COMMAND]") + str)
-	utils.Command.Println(str)
-}
-
-func (gv *GView) info(str string) {
-	gv.outputln(utils.Now() + utils.Tianqing("[INFO]") + str)
-	utils.Info.Println(str)
-}
-
-func (gv *GView) res(str string) {
-	gv.outputln(utils.Now() + utils.Green("[RESULT]") + str)
-	utils.Result.Println(str)
-}
-
-func (gv *GView) error(str string) {
-	gv.outputln(utils.Now() + utils.Red("[ERROR]") + str)
-	utils.Error.Println(str)
-}
-
 func (gv *GView) debug(arg ...interface{}) {
 	if config.DEBUG {
 		arg = append([]interface{}{utils.Now() + utils.Orange("[DEBUG]")}, arg...)

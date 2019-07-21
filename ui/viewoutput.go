@@ -1,7 +1,9 @@
 package ui
 
 import (
+	"gosrg/config"
 	"gosrg/redis"
+	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
 )
@@ -16,6 +18,12 @@ func init() {
 	opView = new(OutputView)
 	opView.Name = "output"
 	opView.Title = " Output "
+	opView.ShortCuts = []ShortCut{
+		ShortCut{Key: gocui.KeyArrowUp, Level: LOCAL_Y, Handler: opView.up},
+		ShortCut{Key: gocui.KeyArrowDown, Level: LOCAL_Y, Handler: opView.down},
+		ShortCut{Key: gocui.KeyCtrlB, Level: LOCAL_Y, Handler: opView.begin},
+		ShortCut{Key: gocui.KeyCtrlE, Level: LOCAL_Y, Handler: opView.end},
+	}
 }
 
 func (op *OutputView) Layout(g *gocui.Gui) error {
@@ -26,11 +34,40 @@ func (op *OutputView) Layout(g *gocui.Gui) error {
 		}
 		v.Title = op.Title
 		v.Wrap = true
-		v.Autoscroll = true
 		op.View = v
 		op.initialize()
 	}
 	return nil
+}
+
+func (op *OutputView) focus(arg ...interface{}) error {
+	Ui.G.Cursor = true
+	tView.output(config.TipsMap[op.Name])
+	return nil
+}
+
+func (op *OutputView) command(str string) {
+	op.outputln(utils.Now() + utils.Bule("[COMMAND]") + str)
+	utils.Command.Println(str)
+	op.cursorEnd(false)
+}
+
+func (op *OutputView) info(str string) {
+	op.outputln(utils.Now() + utils.Tianqing("[INFO]") + str)
+	utils.Info.Println(str)
+	op.cursorEnd(false)
+}
+
+func (op *OutputView) res(str string) {
+	op.outputln(utils.Now() + utils.Green("[RESULT]") + str)
+	utils.Result.Println(str)
+	op.cursorEnd(false)
+}
+
+func (op *OutputView) error(str string) {
+	op.outputln(utils.Now() + utils.Red("[ERROR]") + str)
+	utils.Error.Println(str)
+	op.cursorEnd(false)
 }
 
 func (op *OutputView) formatOutput(str [][]string) {
@@ -51,4 +88,20 @@ func (op *OutputView) formatOutput(str [][]string) {
 			op.debug(item[0])
 		}
 	}
+}
+
+func (op *OutputView) up(g *gocui.Gui, v *gocui.View) error {
+	return op.cursorUp()
+}
+
+func (op *OutputView) down(g *gocui.Gui, v *gocui.View) error {
+	return op.cursorDown()
+}
+
+func (op *OutputView) begin(g *gocui.Gui, v *gocui.View) error {
+	return op.cursorBegin()
+}
+
+func (op *OutputView) end(g *gocui.Gui, v *gocui.View) error {
+	return op.cursorEnd(false)
 }
