@@ -3,6 +3,7 @@ package ui
 import (
 	"gosrg/config"
 	"gosrg/utils"
+	"strings"
 
 	"github.com/jessewkun/gocui"
 )
@@ -12,6 +13,8 @@ var pView *ProjectView
 type ProjectView struct {
 	GView
 }
+
+const MAX_LEN = 18
 
 func init() {
 	pView = new(ProjectView)
@@ -23,7 +26,7 @@ func init() {
 
 func (p *ProjectView) Layout(g *gocui.Gui) error {
 	maxX, maxY := Ui.G.Size()
-	if v, err := g.SetView(p.Name, maxX-19, maxY-2, maxX-1, maxY, 0); err != nil {
+	if v, err := g.SetView(p.Name, maxX-20, maxY-2, maxX-1, maxY, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			return err
 		}
@@ -35,7 +38,14 @@ func (p *ProjectView) Layout(g *gocui.Gui) error {
 }
 
 func (p *ProjectView) initialize() error {
-	p.output(utils.Pink(utils.UnderLine(config.PROJECT_NAME + " " + config.PROJECT_VERSION)))
+	str := config.PROJECT_NAME + " " + config.PROJECT_VERSION
+	l := len(str)
+	if MAX_LEN > l {
+		str = strings.Repeat(" ", MAX_LEN-l) + utils.Pink(utils.UnderLine(str))
+	} else {
+		str = utils.Pink(utils.UnderLine(str))
+	}
+	p.output(str)
 	return nil
 }
 

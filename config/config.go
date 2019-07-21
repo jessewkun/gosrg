@@ -2,7 +2,7 @@ package config
 
 const PROJECT_URL = "https://github.com/jessewkun/gosrg"
 const PROJECT_NAME = "Gosrg"
-const PROJECT_VERSION = "unversioned"
+const PROJECT_VERSION = "v0.1"
 
 const DEBUG = false
 

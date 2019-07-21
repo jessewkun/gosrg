@@ -35,13 +35,13 @@ Options:
 #   port: 6379
 #   password: ""
 #   pattrn: "*"
-$   gosrg
+$ gosrg
 
 # Connect redis with custom configuration
-$   gosrg -h=192.168.33.10 -p=6380 -P=123456 -f=abc
+$ gosrg -h=192.168.33.10 -p=6380 -P=123456 -f=abc
 ```
 
-### Commands
+### Shortcuts
 
 Keybinding               | Scope                | Description
 -------------------------|----------------------|--------------------------------------------------
