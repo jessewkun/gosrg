@@ -49,7 +49,6 @@ func (c *CommandView) initialize() error {
 
 func (c *CommandView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
-	c.cursorEnd(true)
 	tView.output(config.TipsMap[c.Name])
 	return nil
 }
