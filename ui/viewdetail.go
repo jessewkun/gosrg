@@ -98,7 +98,7 @@ func (d *DetailView) copy(g *gocui.Gui, v *gocui.View) error {
 		opView.error(err.Error())
 		return err
 	}
-	opView.info("copy success")
+	opView.info("Copy detail success")
 	return nil
 }
 

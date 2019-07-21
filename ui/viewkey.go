@@ -4,6 +4,7 @@ import (
 	"gosrg/config"
 	"gosrg/redis"
 
+	"github.com/atotto/clipboard"
 	"github.com/jessewkun/gocui"
 )
 
@@ -26,6 +27,7 @@ func init() {
 		ShortCut{Key: gocui.KeyCtrlR, Level: LOCAL_Y, Handler: kView.refresh},
 		ShortCut{Key: gocui.KeyCtrlB, Level: LOCAL_Y, Handler: kView.begin},
 		ShortCut{Key: gocui.KeyCtrlE, Level: LOCAL_Y, Handler: kView.end},
+		ShortCut{Key: gocui.KeyCtrlY, Level: LOCAL_Y, Handler: kView.copy},
 	}
 }
 
@@ -121,4 +123,13 @@ func (k *KeyView) begin(g *gocui.Gui, v *gocui.View) error {
 func (k *KeyView) end(g *gocui.Gui, v *gocui.View) error {
 	k.cursorEnd(false)
 	return k.click(g, v)
+}
+
+func (k *KeyView) copy(g *gocui.Gui, v *gocui.View) error {
+	if err := clipboard.WriteAll(k.getCurrentLine()); err != nil {
+		opView.error(err.Error())
+		return err
+	}
+	opView.info("Copy key success")
+	return nil
 }

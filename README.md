@@ -29,6 +29,7 @@ Keybinding               | Scope                | Description
 <kbd>Ctrl+f</kbd>        | keys                 | Display key filter modal
 <kbd>Ctrl+b</kbd>        | keys                 | Jump to first key
 <kbd>Ctrl+e</kbd>        | keys                 | Jump to last key
+<kbd>Ctrl+y</kbd>        | keys                 | Copy current key to clipbpard
 <kbd>i</kbd>             | Detail               | Toggle to insert mode
 <kbd>Esc</kbd>           | Detail               | Toggle to normal mode
 <kbd>Ctrl+y</kbd>        | Detail               | Copy detail to clipbpard
@@ -36,6 +37,7 @@ Keybinding               | Scope                | Description
 <kbd>Ctrl+l</kbd>        | Detail               | Clear detail
 <kbd>Ctrl+s</kbd>        | Detail               | Save detail
 <kbd>Ctrl+b</kbd>        | Detail               | Jump to detail begining
+<kbd>Ctrl+y</kbd>        | Info                 | Copy Info to clipbpard
 <kbd>Ctrl+e</kbd>        | Detail               | Jump to end of detail
 <kbd>Esc</kbd>           | Help modal           | Close help modal
 <kbd>Down</kbd>          | Help modal           | Move down one view line
