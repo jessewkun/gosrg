@@ -18,7 +18,7 @@ type ServerView struct {
 func init() {
 	sView = new(ServerView)
 	sView.Name = "server"
-	sView.Title = " Server Info "
+	sView.Title = " Server "
 }
 
 func (s *ServerView) Layout(g *gocui.Gui) error {

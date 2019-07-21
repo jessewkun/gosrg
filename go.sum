@@ -10,3 +10,4 @@ github.com/jessewkun/gocui v0.6.0 h1:6QqXmB8gEl8mbPCt//Gx/C/+we6Ol19jBo+0SzBesOY
 github.com/jessewkun/gocui v0.6.0/go.mod h1:RVL0tl/Qo6dhucntMwVO3/I1Sta3LDkYq58a0YdyhVw=
 github.com/mattn/go-runewidth v0.0.4 h1:2BvfKmzob6Bmd4YsL0zygOqfdFnK7GR4QL06Do4/p7Y=
 github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
+

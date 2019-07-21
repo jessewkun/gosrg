@@ -64,7 +64,6 @@ func (k *KeyView) initialize() error {
 func (k *KeyView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
 	tView.output(config.TipsMap[k.Name])
-	// 暂时关闭 key view 的 KeyDetail, 因为要看 info 的时候必须经过 key, 如果开启的话就会覆盖掉 detail 了
 	// return k.click(Ui.G, k.View)
 	return nil
 }

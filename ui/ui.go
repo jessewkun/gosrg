@@ -201,17 +201,14 @@ func (gv *GView) debug(arg ...interface{}) {
 
 func InitUI() {
 	Ui.AllView = map[string]GHandler{
-		"global": gView,
-		"server": sView,
-		"info":   iView,
-		"key":    kView,
-		// "keydel":  kdView,
+		"global":  gView,
+		"server":  sView,
+		"info":    iView,
+		"key":     kView,
 		"detail":  dView,
 		"output":  opView,
 		"tip":     tView,
 		"project": pView,
-		// "help":    hView,
-		// "db":      dbView,
 	}
 	Ui.NextView = sView
 	Ui.G.SetManager(iView, tView, pView, opView, dView, sView, kView)

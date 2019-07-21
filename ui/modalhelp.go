@@ -62,15 +62,9 @@ func (h *HelpView) hide(g *gocui.Gui, v *gocui.View) error {
 }
 
 func (h *HelpView) up(g *gocui.Gui, v *gocui.View) error {
-	if err := h.cursorUp(); err != nil {
-		return err
-	}
-	return nil
+	return h.cursorUp()
 }
 
 func (h *HelpView) down(g *gocui.Gui, v *gocui.View) error {
-	if err := h.cursorDown(); err != nil {
-		return err
-	}
-	return nil
+	return h.cursorDown()
 }
