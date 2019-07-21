@@ -9,9 +9,37 @@ Terminal GUI management tool for Redis
 ```
 $ go get github.com/jessewkun/gosrg
 $ "$GOPATH/bin/gosrg" --help
+Usage:
+  gosrg -h -p -P -f
+
+Options:
+  -help show help
+  -P	redis password
+  -f	default key filter (default "*")
+  -h	redis host (default "127.0.0.1")
+  -l	default log path (default "/var/log/gosrg.log")
+  -p	redis port (default "6379")
+  -v	show version
 ```
+> Warning:
+- `-f` Used to specify default pattern for command `keys`, if this option is not specified, Gosrg will execute `keys *`
+- For the hash type, Gosrg will execute `hgetall`
+>>
 [Binary releases](https://github.com/jessewkun/gosrg/releases) are also available.
 
+
+## Example
+```
+# Connect redis with default configuration
+#   host: 127.0.0.1
+#   port: 6379
+#   password: ""
+#   pattrn: "*"
+$   gosrg
+
+# Connect redis with custom configuration
+$   gosrg -h=192.168.33.10 -p=6380 -P=123456 -f=abc
+```
 
 ### Commands
 
