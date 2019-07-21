@@ -38,10 +38,20 @@ func InitRedis(host string, port string, pwd string, pattern string) {
 		Pwd:     pwd,
 		Pattern: pattern,
 	}
+
 	conn, err := redis.Dial(REDIS_NETWORK, R.Host+":"+R.Port)
 	if err != nil {
 		utils.Exit(err)
 	}
+
+	if R.Pwd != "" {
+		if _, err := conn.Do("AUTH", R.Pwd); err != nil {
+			conn.Close()
+			utils.Exit(err)
+		}
+	}
+	utils.Info.Println("Redis conn ok")
+
 	R.Redis = conn
 }
 
