@@ -283,6 +283,7 @@ func (r *Redis) SetKeyDetail(content string) (output [][]string) {
 	if r.CurrentKey == "" || r.CurrentKeyType == "" {
 		return
 	}
+	content = utils.Trim(content)
 	switch r.CurrentKeyType {
 	case "string":
 		output, _ = r.setString(content)
@@ -311,18 +312,23 @@ func (r *Redis) setString(content string) (output [][]string, err error) {
 
 func (r *Redis) setHash(content string) (output [][]string, err error) {
 	key := r.CurrentKey
-	output, err = r.Del()
-	if err != nil {
-		return output, err
-	}
 	tmpArr := strings.Split(content, "\n")
 	var args []interface{}
 	temp := key
 	args = append(args, key)
-	for _, v := range tmpArr {
+	for k, v := range tmpArr {
 		t := strings.Split(v, SEPARATOR)
+		if len(t) != 2 {
+			output = append(output, []string{"Line " + strconv.Itoa(k+1) + " include incorrect format data", OUTPUT_ERROR})
+			return output, err
+		}
 		temp += " " + t[0] + " " + t[1]
 		args = append(args, t[0], t[1])
+	}
+
+	output, err = r.Del()
+	if err != nil {
+		return output, err
 	}
 	output = append(output, []string{"HMSET " + temp, OUTPUT_COMMAND})
 	res, err := redis.String(r.Redis.Do("HMSET", args...))
@@ -338,16 +344,16 @@ func (r *Redis) setHash(content string) (output [][]string, err error) {
 
 func (r *Redis) setSet(content string) (output [][]string, err error) {
 	key := r.CurrentKey
-	output, err = r.Del()
-	if err != nil {
-		return output, err
-	}
 	tmpArr := strings.Split(content, "\n")
 	content = key + " " + strings.Join(tmpArr, " ")
 	var args []interface{}
 	args = append(args, key)
 	for _, v := range tmpArr {
 		args = append(args, v)
+	}
+	output, err = r.Del()
+	if err != nil {
+		return output, err
 	}
 	output = append(output, []string{"SADD " + content, OUTPUT_COMMAND})
 	res, err := redis.Int64(r.Redis.Do("SADD", args...))
@@ -363,18 +369,22 @@ func (r *Redis) setSet(content string) (output [][]string, err error) {
 
 func (r *Redis) setZset(content string) (output [][]string, err error) {
 	key := r.CurrentKey
-	output, err = r.Del()
-	if err != nil {
-		return output, err
-	}
 	tmpArr := strings.Split(content, "\n")
 	var args []interface{}
 	temp := key
 	args = append(args, key)
-	for _, v := range tmpArr {
+	for k, v := range tmpArr {
 		t := strings.Split(v, SEPARATOR)
+		if len(t) != 2 {
+			output = append(output, []string{"Line " + strconv.Itoa(k+1) + " include incorrect format data", OUTPUT_ERROR})
+			return output, err
+		}
 		temp += " " + t[1] + " " + t[0]
 		args = append(args, t[1], t[0])
+	}
+	output, err = r.Del()
+	if err != nil {
+		return output, err
 	}
 	output = append(output, []string{"ZADD " + temp, OUTPUT_COMMAND})
 	res, err := redis.Int64(r.Redis.Do("ZADD", args...))
@@ -390,16 +400,16 @@ func (r *Redis) setZset(content string) (output [][]string, err error) {
 
 func (r *Redis) setList(content string) (output [][]string, err error) {
 	key := r.CurrentKey
-	output, err = r.Del()
-	if err != nil {
-		return output, err
-	}
 	tmpArr := strings.Split(content, "\n")
 	content = key + " " + strings.Join(tmpArr, " ")
 	var args []interface{}
 	args = append(args, key)
 	for _, v := range tmpArr {
 		args = append(args, v)
+	}
+	output, err = r.Del()
+	if err != nil {
+		return output, err
 	}
 	output = append(output, []string{"RPUSH " + content, OUTPUT_COMMAND})
 	res, err := redis.Int64(r.Redis.Do("RPUSH", args...))
