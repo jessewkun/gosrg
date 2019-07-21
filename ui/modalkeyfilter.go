@@ -58,10 +58,12 @@ func (kf *KeyFilterView) focus(arg ...interface{}) error {
 func (kf *KeyFilterView) tab(g *gocui.Gui, v *gocui.View) error {
 	nextViewName := ""
 	currentView := Ui.G.CurrentView().Name()
-	if currentView == confirmBtn.Name {
+	if currentView == kf.Name {
+		nextViewName = confirmBtn.Name
+	} else if currentView == confirmBtn.Name {
 		nextViewName = cancelBtn.Name
 	} else {
-		nextViewName = confirmBtn.Name
+		nextViewName = kf.Name
 	}
 	if _, err := Ui.G.SetCurrentView(nextViewName); err != nil {
 		utils.Error.Println(err)
