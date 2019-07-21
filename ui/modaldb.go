@@ -87,10 +87,9 @@ func (db *DbView) choice(g *gocui.Gui, v *gocui.View) error {
 	if str := db.getCurrentLine(); str != "" {
 		tmp := strings.Split(str, " ")
 		dbNo, _ := strconv.Atoi(tmp[2])
-		if output := redis.R.SelectDb(dbNo); len(output) > 0 {
-			redis.R.Db = dbNo
-			opView.formatOutput(output)
-		}
+		output := redis.R.SelectDb(dbNo)
+		redis.R.Db = dbNo
+		opView.formatOutput(output)
 		return db.hide(g, v)
 	}
 

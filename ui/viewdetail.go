@@ -55,9 +55,8 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 		opView.info("Saving is only worked in insert mode, pressing 'i' to switch insert mode")
 		return nil
 	}
-	if output := redis.R.SetKeyDetail(v.ViewBuffer()); len(output) > 0 {
-		opView.formatOutput(output)
-	}
+	output := redis.R.SetKeyDetail(v.ViewBuffer())
+	opView.formatOutput(output)
 	return nil
 }
 
@@ -181,11 +180,13 @@ func (d *DetailView) end(g *gocui.Gui, v *gocui.View) error {
 func (d *DetailView) insertMode(g *gocui.Gui, v *gocui.View) error {
 	d.View.Editable = true
 	d.View.Title = " Detail (Insert mode) "
+	opView.info("Switch to insert mode")
 	return nil
 }
 
 func (d *DetailView) normalmode(g *gocui.Gui, v *gocui.View) error {
 	d.View.Editable = false
 	d.View.Title = " Detail (Normal mode) "
+	opView.info("Switch to normal mode")
 	return nil
 }

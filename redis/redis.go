@@ -80,8 +80,6 @@ func (r *Redis) Keys() (output [][]string, keys []string) {
 		output = append(output, []string{err.Error(), OUTPUT_ERROR})
 		return
 	}
-	r.CurrentKey = ""
-	r.CurrentKeyType = ""
 	return
 }
 
