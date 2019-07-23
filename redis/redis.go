@@ -29,7 +29,13 @@ type Redis struct {
 	CurrentKey     string
 	CurrentKeyType string
 	Pattern        string
+	Cmd            string
+	Output         [][]string
 }
+
+type CommandHandler func(content string) error
+
+var commandMap map[string]CommandHandler
 
 func InitRedis(host string, port string, pwd string, pattern string) {
 	R = &Redis{
@@ -53,6 +59,32 @@ func InitRedis(host string, port string, pwd string, pattern string) {
 	utils.Info.Println("Redis conn ok")
 
 	R.Redis = conn
+	registerHandler()
+}
+
+func registerHandler() {
+	commandMap = map[string]CommandHandler{
+		"select": R.selectHandler,
+		"keys":   R.KeysHandler,
+	}
+}
+
+func (r *Redis) Exec(cmd string, content string) error {
+	fun, ok := commandMap[cmd]
+	if !ok {
+		utils.Error.Println("redis cmd " + cmd + " handler is not existed")
+		return nil
+	}
+	r.Cmd = cmd
+	return fun(content)
+}
+
+func (r *Redis) Clear() {
+	r.Cmd = ""
+	r.Output = [][]string{}
+	r.CurrentKey = ""
+	r.CurrentKeyType = ""
+	return
 }
 
 func (r *Redis) SelectDb(db int) (output [][]string) {

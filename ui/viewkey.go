@@ -49,6 +49,7 @@ func (k *KeyView) initialize() error {
 	k.clear()
 	k.cursorBegin()
 	output, keys := redis.R.Keys()
+	// redis.R.Exec("keys", "")
 	opView.formatOutput(output)
 	for i, key := range keys {
 		if i+1 == len(keys) {
