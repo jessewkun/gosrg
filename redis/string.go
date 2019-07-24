@@ -14,7 +14,7 @@ func (r *Redis) getHandler(key string) error {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	r.setHandler(key)
+	r.strlenHandler(key)
 	return nil
 }
 
