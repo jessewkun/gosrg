@@ -15,7 +15,7 @@ Usage:
 Options:
   -help show help
   -P	redis password
-  -f	default key filter (default "*")
+  -f	default key filter pattern (default "*")
   -h	redis host (default "127.0.0.1")
   -l	default log path (default "/var/log/gosrg.log")
   -p	redis port (default "6379")
@@ -76,11 +76,11 @@ Keybinding               | Scope                | Description
 <kbd>Esc</kbd>           | Help modal           | Close help modal
 <kbd>Down</kbd>          | Help modal           | Move down one view line
 <kbd>Up</kbd>            | Help modal           | Move up one view line
-<kbd>Enter</kbd>         | Delete key modal     | Confirm delete key when focus on CONFIRM button
+<kbd>Enter</kbd>         | Delete key modal     | Confirm delete key
 <kbd>Esc</kbd>           | Delete key modal     | Close key delete modal
 <kbd>Tab</kbd>           | Delete key modal     | Toggle focus button
 <kbd>Esc</kbd>           | Filter key modal     | Close key filter modal
-<kbd>Enter</kbd>         | Filter key modal     | Confirm filter when focus on CONFIRM button
+<kbd>Enter</kbd>         | Filter key modal     | Confirm filter pattern
 <kbd>Tab</kbd>           | Delete key modal     | Toggle focus
 <kbd>Down</kbd>          | Db modal             | Move down one view line
 <kbd>Up</kbd>            | Db modal             | Move up one view
