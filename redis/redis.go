@@ -76,6 +76,7 @@ func (r *Redis) Exec(cmd string, content string) error {
 		return nil
 	}
 	r.Cmd = cmd
+	r.Clear()
 	return fun(content)
 }
 
