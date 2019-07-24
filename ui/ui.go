@@ -123,7 +123,7 @@ func (gv *GView) focus(arg ...interface{}) error {
 	if tip, ok := config.TipsMap[gv.Name]; ok {
 		tView.output(tip)
 	} else {
-		tView.output("")
+		tView.clear()
 	}
 	return nil
 }
