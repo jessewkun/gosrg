@@ -40,8 +40,8 @@ func (c *CommandView) Layout(g *gocui.Gui) error {
 }
 
 func (c *CommandView) initialize() error {
-	c.btn()
 	gView.unbindShortCuts()
+	c.btn()
 	c.setCurrent(c)
 	c.bindShortCuts()
 	return nil

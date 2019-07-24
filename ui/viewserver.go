@@ -19,6 +19,9 @@ func init() {
 	sView = new(ServerView)
 	sView.Name = "server"
 	sView.Title = " Server "
+	sView.ShortCuts = []ShortCut{
+		ShortCut{Key: gocui.KeyCtrlN, Level: GLOBAL_Y, Handler: sView.newConn},
+	}
 }
 
 func (s *ServerView) Layout(g *gocui.Gui) error {
@@ -55,4 +58,8 @@ func (s *ServerView) focus(arg ...interface{}) error {
 		iView.formatOuput(info)
 	}
 	return nil
+}
+
+func (s *ServerView) newConn(g *gocui.Gui, v *gocui.View) error {
+	return connView.Layout(g)
 }
