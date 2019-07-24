@@ -84,8 +84,8 @@ func (kd *KeyDelView) hide(g *gocui.Gui, v *gocui.View) error {
 func (kd *KeyDelView) btn() error {
 	maxX, maxY := Ui.G.Size()
 	confirmBtn = NewButtonWidget("confirmdel", maxX/3-5, maxY/3-1, "CONFIRM", func(g *gocui.Gui, v *gocui.View) error {
-		output, _ := redis.R.Del()
-		opView.formatOutput(output)
+		redis.R.Exec("del", "")
+		opView.formatOutput()
 		kView.deleteCursorLine()
 		kd.hide(g, v)
 		return nil

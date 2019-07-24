@@ -29,7 +29,7 @@ func initFlag() {
 	flag.StringVar(&host, "h", "127.0.0.1", "redis host")
 	flag.StringVar(&port, "p", "6379", "redis port")
 	flag.StringVar(&pwd, "P", "", "redis password")
-	flag.StringVar(&pattern, "f", "*", "default key filter")
+	flag.StringVar(&pattern, "f", "*", "default key filter pattern")
 	flag.StringVar(&logPath, "l", "/var/log/gosrg.log", "default log path")
 
 	flag.Usage = Usage

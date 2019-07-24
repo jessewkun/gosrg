@@ -49,10 +49,9 @@ func (s *ServerView) focus(arg ...interface{}) error {
 	s.initialize()
 	iView.clear()
 	tView.output(config.TipsMap[s.Name])
-	if output, res, info := redis.R.Info(); len(output) > 0 {
-		opView.formatOutput(output)
-		dView.output(utils.Trim(res))
-		iView.formatOuput(info)
-	}
+	redis.R.Exec("info", "")
+	opView.formatOutput()
+	dView.output(utils.Trim(redis.R.Detail.(string)))
+	iView.formatOuput()
 	return nil
 }

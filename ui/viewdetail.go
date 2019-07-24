@@ -55,8 +55,8 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 		opView.info("Saving is only worked in insert mode, pressing 'i' to switch insert mode")
 		return nil
 	}
-	output := redis.R.SetKeyDetail(v.ViewBuffer())
-	opView.formatOutput(output)
+	redis.R.SetKey(v.ViewBuffer())
+	opView.formatOutput()
 	return nil
 }
 
@@ -65,10 +65,10 @@ func (d *DetailView) output(arg interface{}) error {
 	return d.GView.output(arg)
 }
 
-func (d *DetailView) formatOutput(arg interface{}) error {
+func (d *DetailView) formatOutput() error {
 	d.clear()
 	d.cursorBegin()
-	switch t := arg.(type) {
+	switch t := redis.R.Detail.(type) {
 	case string:
 		d.output(t)
 	case []string:

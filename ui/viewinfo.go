@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"gosrg/redis"
 	"gosrg/utils"
 	"strings"
 
@@ -37,9 +38,9 @@ func (i *InfoView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (i *InfoView) formatOuput(info [][]string) error {
+func (i *InfoView) formatOuput() error {
 	i.clear()
-	for _, v := range info {
+	for _, v := range redis.R.Info {
 		i.outputln(utils.Yellow(strings.ToLower(v[0])+":") + v[1])
 	}
 	return nil

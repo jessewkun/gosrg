@@ -70,8 +70,8 @@ func (op *OutputView) error(str string) {
 	op.cursorEnd(false)
 }
 
-func (op *OutputView) formatOutput(str [][]string) {
-	for _, item := range str {
+func (op *OutputView) formatOutput() {
+	for _, item := range redis.R.Output {
 		if len(item) != 2 {
 			continue
 		}
