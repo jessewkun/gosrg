@@ -179,14 +179,16 @@ func (gv *GView) getCurrentLine() string {
 }
 
 func (gv *GView) deleteCursorLine() error {
-	_, cy := gv.View.Cursor()
-	return gv.deleteLine(cy)
-}
-
-func (gv *GView) deleteLine(y int) error {
-	if err := gv.View.DeleteLine(y); err != nil {
+	cx, cy := gv.View.Cursor()
+	ox, oy := gv.View.Origin()
+	if err := gv.View.DeleteLine(cy); err != nil {
 		utils.Error.Println(err)
 		return err
+	}
+	if cy > 0 {
+		return gv.setCursor(cx, cy-1)
+	} else if oy > 0 {
+		return gv.View.SetOrigin(ox, oy-1)
 	}
 	return nil
 }
