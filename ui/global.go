@@ -19,6 +19,7 @@ func init() {
 		ShortCut{Key: 'h', Level: GLOBAL_N, Handler: gView.showHelp},
 		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: gView.tab},
 		ShortCut{Key: gocui.KeyCtrlD, Level: GLOBAL_Y, Handler: gView.showDb},
+		ShortCut{Key: gocui.KeyCtrlN, Level: GLOBAL_Y, Handler: gView.newConn},
 		// ShortCut{Key: gocui.KeyCtrlE, Level: GLOBAL_Y, Handler: gView.showCommand},
 	}
 }
@@ -46,4 +47,8 @@ func (gl *GLobalView) showDb(g *gocui.Gui, v *gocui.View) error {
 
 func (gl *GLobalView) showCommand(g *gocui.Gui, v *gocui.View) error {
 	return cView.Layout(g)
+}
+
+func (gl *GLobalView) newConn(g *gocui.Gui, v *gocui.View) error {
+	return connView.Layout(g)
 }

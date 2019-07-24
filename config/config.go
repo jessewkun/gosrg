@@ -6,40 +6,67 @@ const PROJECT_VERSION = "v0.1"
 
 const DEBUG = false
 
-const HELP_CONTENT = `
-[Global]
- Tab    : Toggle view
- Ctrl-c : Quit
- h      : Show help modal
- Esc    : Close modal
+const HELP_CONTENT = `[Global]
+	Ctrl-c : Quit
+	h      : Display help modal
+	Tab    : Toggle next view
+	ctrl-d : Display database modal
+	ctrl-n : Display new redis connection modal
+
+[help]
+	↑↓  : Move up/down one line
+	Esc   : Close current modal
+
+[Database]
+	↑↓      : Move up/down one line
+	Enter     : Select current database
+	MouseLeft : Select current database
+	Esc   	: Close current modal
+
+[Create new redis connection]
+	Enter : Confirm create new redis connection
+	Tab   : Toggle focus
+	Esc   : Close current modal
 
 [Keys]
- ↑↓      : Toggle keys when cursor focus on key view
- MouseLeft : Toggle keys when cursor focus on key view
- Ctrl+f    : Open key filter modal
- Ctrl+r    : Refrsh keys
- Ctrl+b    : Jump to the first key
- Ctrl+e    : Jump to the last key
- Delete    : Delete key
-
-[Detail]
- i      : Insert mode
- Esc    : Normal mode
- Ctrl-s : Save detail when cursor focus on detail view
- Ctrl+b : Jump to the beginning of the detail
- Ctrl+e : Jump to the tail of the detail
- Ctrl+y : Copy the detail to clipboard
- Ctrl+p : Paste the content from clipboard to detail view
- Ctrl+l : Clear the detail view
-
-[Db]
- ↑↓      : Chose database when cursor focus on db modal
- Enter     : Select database
- MouseLeft : Toggle database when cursor focus on db modal
+	↑↓      : Move up/down one line
+	MouseLeft : Show datail
+	Delete    : Delete key
+	Ctrl+r    : Refresh keys
+	Ctrl+f    : Filter key
+	Ctrl+b    : Jump to first key
+	Ctrl+e    : Jump to last key
+	Ctrl+y    : Copy current key to clipboard
 
 [Delete key]
- Enter : Confirm delete key
- Tab   : Toggle button
+	Enter : Confirm delete key
+	Tab   : Toggle focus
+	Esc   : Close current modal
+
+[Filter key]
+	Enter : Confirm filter pattern
+	Tab   : Toggle focus
+	Esc   : Close current modal
+
+[Detail]
+	i      : Toggle to insert mode
+	Esc    : Toggle to normal mode
+	↑↓   : Move up/down one line
+	Ctrl-s : Save detail
+	Ctrl+b : Jump to the beginning
+	Ctrl+e : Jump to the end
+	Ctrl+y : Copy detail to clipboard
+	Ctrl+p : Paste content
+	Ctrl+l : Clear detail
+
+[Info]
+	Ctrl+y : Copy the info to clipboard
+
+[Output]
+	↑↓    : Move up/down one line
+	Ctrl+b  : Jump to the begining
+	Ctrl+e  : Jump to the end
+
 `
 
 const REDIS_MAX_DB_NUM = 15
@@ -47,15 +74,16 @@ const REDIS_MAX_DB_NUM = 15
 var (
 	TabView = []string{"server", "key", "detail", "info", "output"}
 	TipsMap = map[string]string{
-		"server":    "Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"server":    "Ctrl-n: Create new redis connection | Tab: Toggle view | Ctrl-c: Quit | h: Help",
 		"key":       "↑↓ MouseLeft: Toggle keys | Ctrl+f: Filter | Ctrl+r: Refresh | Deltet: Delete | h: Help",
-		"keydel":    "Enter: Confirm delete the key | Tab: Toggle button | Esc: Close Db modal",
-		"keyfilter": "Enter: Execute keys pattern | Tab: Toggle button | Esc: Close Db modal",
+		"keydel":    "Enter: Confirm delete | Tab: Toggle focus | Esc: Close current modal",
+		"keyfilter": "Enter: Execute keys pattern | Tab: Toggle focus | Esc: Close current modal",
 		"detail":    "Ctrl-s: Save | Ctrl+y: Copy | Ctrl+p: Paste | Ctrl+l: Clear | h: Help",
-		"output":    "Tab: Toggle view | Ctrl-c: Quit | h: Help",
-		"tip":       "Tab: Toggle view | Ctrl-c: Quit | h: Help",
-		"help":      "Esc: Close Help modal",
-		"db":        "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close Db modal",
-		"info":      "Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"output":    "Ctrl-b: Jump to the begining | Ctrl-e: Jump to the end | Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"tip":       "Ctrl-n: Create new redis connection | Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"help":      "Esc: Close current modal",
+		"db":        "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close current modal",
+		"info":      "Ctrl-y: Copy | Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"conn":      "Enter: Confirm create new redis connection | Tab: Toggle button | Esc: Close connection modal",
 	}
 )

@@ -18,7 +18,7 @@ type ConnView struct {
 func init() {
 	connView = new(ConnView)
 	connView.Name = "conn"
-	connView.Title = " Create new redis conn "
+	connView.Title = " Create new redis connection "
 	connView.ShortCuts = []ShortCut{
 		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: connView.hide},
 		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: connView.tab},
