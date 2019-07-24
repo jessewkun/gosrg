@@ -40,9 +40,9 @@ func (r *Redis) hmsetHandler(content string) error {
 	for k, v := range tmpArr {
 		t := strings.Split(v, SEPARATOR)
 		if len(t) != 2 {
-			s := "Line " + strconv.Itoa(k+1) + " include incorrect format data"
-			r.Output = append(r.Output, []string{s, OUTPUT_ERROR})
-			return errors.New(s)
+			err := errors.New("Line " + strconv.Itoa(k+1) + " include incorrect format data")
+			r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+			return err
 		}
 		temp += " " + t[0] + " " + t[1]
 		args = append(args, t[0], t[1])
@@ -58,7 +58,7 @@ func (r *Redis) hmsetHandler(content string) error {
 		return err
 	}
 	r.CurrentKey = key
-	r.CurrentKeyType = "hash"
+	r.CurrentKeyType = TYPE_HASH
 	r.Output = append(r.Output, []string{res, OUTPUT_RES})
 	return nil
 }
