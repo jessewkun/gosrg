@@ -159,6 +159,7 @@ func (r *Redis) SetKey(content string) error {
 	if r.CurrentKey == "" || r.CurrentKeyType == "" {
 		return nil
 	}
+	r.Clear()
 	content = utils.Trim(content)
 	switch r.CurrentKeyType {
 	case "string":
