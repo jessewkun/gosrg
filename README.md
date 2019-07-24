@@ -22,8 +22,8 @@ Options:
   -v	show version
 ```
 > Warning:
-- `-f` Used to specify default pattern for command `keys`, if this option is not specified, Gosrg will execute `keys *`
-- For the hash type, Gosrg will execute `hgetall`
+- The option `-f` used to specify default pattern for command `keys`, if this option is not specified, Gosrg will execute `keys *`
+- Gosrg will execute `hgetall` when key type is hash
 >>
 [Binary releases](https://github.com/jessewkun/gosrg/releases) are also available.
 
