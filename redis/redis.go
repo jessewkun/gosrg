@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"errors"
 	"gosrg/utils"
 	"strings"
 
@@ -115,8 +116,9 @@ func (r *Redis) Exec(cmd string, content string) error {
 	cmd = strings.ToLower(cmd)
 	fun, ok := commandMap[cmd]
 	if !ok {
-		utils.Error.Println("redis cmd " + cmd + " handler is not existed")
-		return nil
+		err := errors.New("redis cmd " + cmd + " handler is not existed")
+		utils.Error.Println(err.Error())
+		return err
 	}
 	r.Cmd = cmd
 	r.Clear()
@@ -130,13 +132,13 @@ func (r *Redis) Send(ommandName string, args ...interface{}) {
 func (r *Redis) GetKey(key string) error {
 	r.Clear()
 	if err := r.typeHandler(key); err != nil {
-		return nil
+		return err
 	}
 	if err := r.objectHandler(key); err != nil {
-		return nil
+		return err
 	}
 	if err := r.ttlHandler(key); err != nil {
-		return nil
+		return err
 	}
 
 	switch r.CurrentKeyType {
