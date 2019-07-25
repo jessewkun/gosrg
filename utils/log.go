@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"gosrg/config"
 	"log"
 	"os"
 )
@@ -29,10 +28,5 @@ func InitLog(logPath string) {
 
 func Exit(err interface{}) {
 	Error.Println(err)
-	if config.DEBUG {
-		Error.Fatalln(err)
-	} else {
-		log.Println(err)
-		os.Exit(0)
-	}
+	os.Exit(0)
 }

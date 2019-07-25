@@ -193,14 +193,6 @@ func (gv *GView) deleteCursorLine() error {
 	return nil
 }
 
-func (gv *GView) debug(arg ...interface{}) {
-	if config.DEBUG {
-		arg = append([]interface{}{utils.Now() + utils.Orange("[DEBUG]")}, arg...)
-		gv.outputln(arg)
-		utils.Debug.Println(arg...)
-	}
-}
-
 func InitUI() {
 	Ui.AllView = map[string]GHandler{
 		"global":  gView,

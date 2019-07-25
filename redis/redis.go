@@ -16,7 +16,6 @@ const (
 	OUTPUT_INFO    = "i"
 	OUTPUT_ERROR   = "e"
 	OUTPUT_RES     = "r"
-	OUTPUT_DEBUG   = "d"
 	SEPARATOR      = " ==> "
 	TYPE_STRING    = "string"
 	TYPE_HASH      = "hash"

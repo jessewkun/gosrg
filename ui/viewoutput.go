@@ -84,8 +84,6 @@ func (op *OutputView) formatOutput() {
 			op.error(item[0])
 		case redis.OUTPUT_RES:
 			op.res(item[0])
-		case redis.OUTPUT_DEBUG:
-			op.debug(item[0])
 		}
 	}
 }
