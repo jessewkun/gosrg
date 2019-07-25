@@ -18,6 +18,11 @@ const (
 	OUTPUT_RES     = "r"
 	OUTPUT_DEBUG   = "d"
 	SEPARATOR      = " ==> "
+	TYPE_STRING    = "string"
+	TYPE_HASH      = "hash"
+	TYPE_LIST      = "list"
+	TYPE_SET       = "set"
+	TYPE_ZSET      = "zset"
 )
 
 var IS_BOOT = false
@@ -31,7 +36,6 @@ type Redis struct {
 	CurrentKey     string
 	CurrentKeyType string
 	Pattern        string
-	Cmd            string
 	Output         [][]string
 	Keys           []string
 	Detail         interface{}
@@ -117,16 +121,15 @@ func (r *Redis) Exec(cmd string, content string) error {
 	fun, ok := commandMap[cmd]
 	if !ok {
 		err := errors.New("redis cmd " + cmd + " handler is not existed")
-		utils.Error.Println(err.Error())
+		utils.Error.Println(err)
 		return err
 	}
-	r.Cmd = cmd
 	r.Clear()
 	return fun(content)
 }
 
-func (r *Redis) Send(ommandName string, args ...interface{}) {
-	// keyType, err := redis.String(r.Conn.Do(ommandName, args...))
+func (r *Redis) Send(commandName string, args ...interface{}) {
+	// keyType, err := redis.String(r.Conn.Do(commandName, args...))
 }
 
 func (r *Redis) GetKey(key string) error {
@@ -142,15 +145,15 @@ func (r *Redis) GetKey(key string) error {
 	}
 
 	switch r.CurrentKeyType {
-	case "string":
+	case TYPE_STRING:
 		return r.getHandler(key)
-	case "hash":
+	case TYPE_HASH:
 		return r.hgetallHandler(key)
-	case "set":
+	case TYPE_SET:
 		return r.smemberHandler(key)
-	case "zset":
+	case TYPE_ZSET:
 		return r.zrangeHandler(key)
-	case "list":
+	case TYPE_LIST:
 		return r.lrangeHandler(key)
 	}
 
@@ -164,15 +167,15 @@ func (r *Redis) SetKey(content string) error {
 	r.Clear()
 	content = utils.Trim(content)
 	switch r.CurrentKeyType {
-	case "string":
+	case TYPE_STRING:
 		return r.setHandler(content)
-	case "hash":
+	case TYPE_HASH:
 		return r.hmsetHandler(content)
-	case "set":
+	case TYPE_SET:
 		return r.saddHandler(content)
-	case "zset":
+	case TYPE_ZSET:
 		return r.zaddHandler(content)
-	case "list":
+	case TYPE_LIST:
 		return r.rpushHandler(content)
 	}
 	return nil

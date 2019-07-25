@@ -49,7 +49,7 @@ func (r *Redis) rpushHandler(content string) error {
 		return err
 	}
 	r.CurrentKey = key
-	r.CurrentKeyType = "list"
+	r.CurrentKeyType = TYPE_LIST
 	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
 	return nil
 }

@@ -58,7 +58,7 @@ func (r *Redis) zaddHandler(content string) error {
 		return err
 	}
 	r.CurrentKey = key
-	r.CurrentKeyType = "zset"
+	r.CurrentKeyType = TYPE_ZSET
 	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
 	return nil
 }

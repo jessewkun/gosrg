@@ -49,7 +49,7 @@ func (r *Redis) saddHandler(content string) error {
 		return err
 	}
 	r.CurrentKey = key
-	r.CurrentKeyType = "set"
+	r.CurrentKeyType = TYPE_SET
 	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
 	return nil
 }

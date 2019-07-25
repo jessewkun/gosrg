@@ -58,7 +58,7 @@ func (r *Redis) hmsetHandler(content string) error {
 		return err
 	}
 	r.CurrentKey = key
-	r.CurrentKeyType = "hash"
+	r.CurrentKeyType = TYPE_HASH
 	r.Output = append(r.Output, []string{res, OUTPUT_RES})
 	return nil
 }
