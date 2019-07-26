@@ -10,7 +10,6 @@ var (
 	Result  *log.Logger
 	Info    *log.Logger
 	Error   *log.Logger
-	Debug   *log.Logger
 )
 
 func InitLog(logPath string) {
@@ -23,10 +22,9 @@ func InitLog(logPath string) {
 	Result = log.New(file, "[RESULT] ", log.LstdFlags|log.Lshortfile)
 	Info = log.New(file, "[INFO] ", log.LstdFlags|log.Lshortfile)
 	Error = log.New(file, "[ERROR] ", log.LstdFlags|log.Lshortfile)
-	Debug = log.New(file, "[DEBUG] ", log.LstdFlags|log.Lshortfile)
 }
 
 func Exit(err interface{}) {
-	Error.Println(err)
-	os.Exit(0)
+	log.Println(err)
+	Error.Fatalln(err)
 }
