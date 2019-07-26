@@ -44,16 +44,26 @@ func (r *Redis) delHandler(content string) error {
 	return nil
 }
 
-func (r *Redis) typeHandler(key string) error {
-	r.Output = append(r.Output, []string{"TYPE " + key, OUTPUT_COMMAND})
-	keyType, err := redis.String(r.Conn.Do("TYPE", key))
+func (r *Redis) typeHandler(content string) error {
+	r.Output = append(r.Output, []string{"TYPE " + r.CurrentKey, OUTPUT_COMMAND})
+	keyType, err := redis.String(r.Conn.Do("TYPE", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	r.CurrentKey = key
 	r.CurrentKeyType = keyType
 	r.Output = append(r.Output, []string{keyType, OUTPUT_RES})
 	r.Info = append(r.Info, []string{"type", keyType})
+	return nil
+}
+
+func (r *Redis) dbsizeHandler(content string) error {
+	r.Output = append(r.Output, []string{"DBSIZE", OUTPUT_COMMAND})
+	dbsize, err := redis.Int64(r.Conn.Do("DBSIZE"))
+	if err != nil {
+		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		return err
+	}
+	r.Info = append(r.Info, []string{"dbsize", strconv.FormatInt(dbsize, 10)})
 	return nil
 }

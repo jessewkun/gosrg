@@ -2,6 +2,7 @@ package ui
 
 import (
 	"gosrg/config"
+	"gosrg/redis"
 	"gosrg/utils"
 	"strings"
 
@@ -56,10 +57,12 @@ func (c *CommandView) focus(arg ...interface{}) error {
 func (c *CommandView) tab(g *gocui.Gui, v *gocui.View) error {
 	nextViewName := ""
 	currentView := Ui.G.CurrentView().Name()
-	if currentView == confirmBtn.Name {
+	if currentView == c.Name {
+		nextViewName = confirmBtn.Name
+	} else if currentView == confirmBtn.Name {
 		nextViewName = cancelBtn.Name
 	} else {
-		nextViewName = confirmBtn.Name
+		nextViewName = c.Name
 	}
 	if _, err := Ui.G.SetCurrentView(nextViewName); err != nil {
 		utils.Error.Println(err)
@@ -91,11 +94,22 @@ func (c *CommandView) btn() error {
 	maxX, maxY := Ui.G.Size()
 	confirmBtn = NewButtonWidget("confirfilter", maxX/3-5, maxY/3-1, "CONFIRM", func(g *gocui.Gui, v *gocui.View) error {
 		str := utils.Trim(c.View.ViewBuffer())
-		tmp := strings.Split(str, " ")
-		if tmp[0] == "" {
-			return c.hide(g, v)
+		if str == "" {
+			opView.error("The command is incorrect")
+			return nil
 		}
-		// redis.R.Send(tmp[0], tmp[1:])
+		argv := strings.Split(str, " ")
+		if _, err := redis.R.CommandIsExisted(argv[0]); err != nil {
+			opView.error(err.Error())
+			return nil
+		}
+		content := ""
+		if len(argv) > 1 {
+			content = strings.Join(argv[1:], " ")
+		}
+		redis.R.Exec(argv[0], content)
+		opView.formatOutput()
+		dView.formatOutput()
 		c.hide(g, v)
 		return nil
 	})

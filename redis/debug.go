@@ -6,9 +6,9 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) objectHandler(key string) error {
-	r.Output = append(r.Output, []string{"DEBUG OBJECT " + key, OUTPUT_COMMAND})
-	object, err := redis.String(r.Conn.Do("DEBUG", "OBJECT", key))
+func (r *Redis) objectHandler(content string) error {
+	r.Output = append(r.Output, []string{"DEBUG OBJECT " + r.CurrentKey, OUTPUT_COMMAND})
+	object, err := redis.String(r.Conn.Do("DEBUG", "OBJECT", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err

@@ -6,21 +6,20 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) getHandler(key string) error {
+func (r *Redis) getHandler(content string) error {
 	var err error
-	r.Output = append(r.Output, []string{"GET " + key, OUTPUT_COMMAND})
-	r.Detail, err = redis.String(r.Conn.Do("GET", key))
+	r.Output = append(r.Output, []string{"GET " + r.CurrentKey, OUTPUT_COMMAND})
+	r.Detail, err = redis.String(r.Conn.Do("GET", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	r.strlenHandler(key)
 	return nil
 }
 
-func (r *Redis) strlenHandler(key string) error {
-	r.Output = append(r.Output, []string{"STRLEN " + key, OUTPUT_COMMAND})
-	lenres, err := redis.Int64(r.Conn.Do("STRLEN", key))
+func (r *Redis) strlenHandler(content string) error {
+	r.Output = append(r.Output, []string{"STRLEN " + r.CurrentKey, OUTPUT_COMMAND})
+	lenres, err := redis.Int64(r.Conn.Do("STRLEN", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err

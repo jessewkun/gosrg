@@ -9,9 +9,9 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) zcardHandler(key string) error {
-	r.Output = append(r.Output, []string{"ZCARD " + key, OUTPUT_COMMAND})
-	lenres, err := redis.Int64(r.Conn.Do("ZCARD", key))
+func (r *Redis) zcardHandler(content string) error {
+	r.Output = append(r.Output, []string{"ZCARD " + r.CurrentKey, OUTPUT_COMMAND})
+	lenres, err := redis.Int64(r.Conn.Do("ZCARD", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
@@ -20,15 +20,14 @@ func (r *Redis) zcardHandler(key string) error {
 	return nil
 }
 
-func (r *Redis) zrangeHandler(key string) error {
+func (r *Redis) zrangeHandler(content string) error {
 	var err error
-	r.Output = append(r.Output, []string{"ZRANGE " + key + " 0 -1 WITHSCORES", OUTPUT_COMMAND})
-	r.Detail, err = redis.StringMap(r.Conn.Do("ZRANGE", key, 0, -1, "WITHSCORES"))
+	r.Output = append(r.Output, []string{"ZRANGE " + r.CurrentKey + " 0 -1 WITHSCORES", OUTPUT_COMMAND})
+	r.Detail, err = redis.StringMap(r.Conn.Do("ZRANGE", r.CurrentKey, 0, -1, "WITHSCORES"))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	r.zcardHandler(key)
 	return nil
 }
 

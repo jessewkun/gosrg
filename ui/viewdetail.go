@@ -60,11 +60,6 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
-func (d *DetailView) output(arg interface{}) error {
-	d.clear()
-	return d.GView.output(arg)
-}
-
 func (d *DetailView) formatOutput() error {
 	d.clear()
 	d.cursorBegin()

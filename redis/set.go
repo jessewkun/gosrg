@@ -9,19 +9,18 @@ import (
 
 func (r *Redis) smemberHandler(key string) error {
 	var err error
-	r.Output = append(r.Output, []string{"SMEMBERS " + key, OUTPUT_COMMAND})
-	r.Detail, err = redis.Strings(r.Conn.Do("SMEMBERS", key))
+	r.Output = append(r.Output, []string{"SMEMBERS " + r.CurrentKey, OUTPUT_COMMAND})
+	r.Detail, err = redis.Strings(r.Conn.Do("SMEMBERS", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	r.scardHandler(key)
 	return nil
 }
 
 func (r *Redis) scardHandler(key string) error {
-	r.Output = append(r.Output, []string{"SCARD " + key, OUTPUT_COMMAND})
-	lenres, err := redis.Int64(r.Conn.Do("SCARD", key))
+	r.Output = append(r.Output, []string{"SCARD " + r.CurrentKey, OUTPUT_COMMAND})
+	lenres, err := redis.Int64(r.Conn.Do("SCARD", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err

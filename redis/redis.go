@@ -115,45 +115,75 @@ func (r *Redis) Clear() {
 	return
 }
 
-func (r *Redis) Exec(cmd string, content string) error {
+func (r *Redis) CommandIsExisted(cmd string) (CommandHandler, error) {
 	cmd = strings.ToLower(cmd)
 	fun, ok := commandMap[cmd]
 	if !ok {
-		err := errors.New("redis cmd " + cmd + " handler is not existed")
+		err := errors.New("unknown command `" + cmd + "`")
 		utils.Error.Println(err)
+		return nil, err
+	}
+	return fun, nil
+}
+
+func (r *Redis) Exec(cmd string, content string) error {
+	fun, err := r.CommandIsExisted(cmd)
+	if err != nil {
 		return err
 	}
 	r.Clear()
 	return fun(content)
 }
 
-func (r *Redis) Send(commandName string, args ...interface{}) {
-	// keyType, err := redis.String(r.Conn.Do(commandName, args...))
-}
-
 func (r *Redis) GetKey(key string) error {
 	r.Clear()
-	if err := r.typeHandler(key); err != nil {
+	r.CurrentKey = key
+	if err := r.typeHandler(""); err != nil {
 		return err
 	}
-	if err := r.objectHandler(key); err != nil {
+	if err := r.objectHandler(""); err != nil {
 		return err
 	}
-	if err := r.ttlHandler(key); err != nil {
+	if err := r.ttlHandler(""); err != nil {
 		return err
 	}
 
 	switch r.CurrentKeyType {
 	case TYPE_STRING:
-		return r.getHandler(key)
+		if err := r.getHandler(""); err != nil {
+			return err
+		}
+		if err := r.strlenHandler(""); err != nil {
+			return err
+		}
 	case TYPE_HASH:
-		return r.hgetallHandler(key)
+		if err := r.hgetallHandler(""); err != nil {
+			return err
+		}
+		if err := r.hlenHandler(""); err != nil {
+			return err
+		}
 	case TYPE_SET:
-		return r.smemberHandler(key)
+		if err := r.smemberHandler(""); err != nil {
+			return err
+		}
+		if err := r.scardHandler(""); err != nil {
+			return err
+		}
 	case TYPE_ZSET:
-		return r.zrangeHandler(key)
+		if err := r.zrangeHandler(""); err != nil {
+			return err
+		}
+		if err := r.zcardHandler(""); err != nil {
+			return err
+		}
 	case TYPE_LIST:
-		return r.lrangeHandler(key)
+		if err := r.lrangeHandler(""); err != nil {
+			return err
+		}
+		if err := r.llenHandler(""); err != nil {
+			return err
+		}
 	}
 
 	return nil

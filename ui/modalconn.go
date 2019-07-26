@@ -97,7 +97,7 @@ func (c *ConnView) btn() error {
 		temp := [4]string{}
 		temp2 := strings.Split(str, ":")
 		if len(temp2) != 2 && len(temp2) != 3 && len(temp2) != 4 {
-			opView.info("The parameteris incorrect, please use the colon to splicing the host, port, password and pattern")
+			opView.error("The parameteris incorrect, please use the colon to splicing the host, port, password and pattern")
 			return nil
 		}
 		if temp2[0] == redis.R.Host && temp2[1] == redis.R.Port {

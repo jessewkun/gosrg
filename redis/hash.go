@@ -8,21 +8,20 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) hgetallHandler(key string) error {
+func (r *Redis) hgetallHandler(content string) error {
 	var err error
-	r.Output = append(r.Output, []string{"HGETALl " + key, OUTPUT_COMMAND})
-	r.Detail, err = redis.StringMap(r.Conn.Do("HGETALL", key))
+	r.Output = append(r.Output, []string{"HGETALl " + r.CurrentKey, OUTPUT_COMMAND})
+	r.Detail, err = redis.StringMap(r.Conn.Do("HGETALL", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	r.hlenHandler(key)
 	return nil
 }
 
-func (r *Redis) hlenHandler(key string) error {
-	r.Output = append(r.Output, []string{"HLEN " + key, OUTPUT_COMMAND})
-	lenres, err := redis.Int64(r.Conn.Do("HLEN", key))
+func (r *Redis) hlenHandler(content string) error {
+	r.Output = append(r.Output, []string{"HLEN " + r.CurrentKey, OUTPUT_COMMAND})
+	lenres, err := redis.Int64(r.Conn.Do("HLEN", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err

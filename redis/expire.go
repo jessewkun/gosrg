@@ -6,9 +6,9 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) ttlHandler(key string) error {
-	r.Output = append(r.Output, []string{"TTL " + key, OUTPUT_COMMAND})
-	ttlres, err := redis.Int64(r.Conn.Do("TTL", key))
+func (r *Redis) ttlHandler(content string) error {
+	r.Output = append(r.Output, []string{"TTL " + r.CurrentKey, OUTPUT_COMMAND})
+	ttlres, err := redis.Int64(r.Conn.Do("TTL", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err

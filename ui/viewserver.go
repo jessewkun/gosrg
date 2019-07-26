@@ -3,7 +3,6 @@ package ui
 import (
 	"gosrg/config"
 	"gosrg/redis"
-	"gosrg/utils"
 	"strconv"
 
 	"github.com/jessewkun/gocui"
@@ -47,11 +46,10 @@ func (s *ServerView) initialize() error {
 func (s *ServerView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = false
 	s.initialize()
-	iView.clear()
 	tView.output(config.TipsMap[s.Name])
 	redis.R.Exec("info", "")
 	opView.formatOutput()
-	dView.output(utils.Trim(redis.R.Detail.(string)))
+	dView.formatOutput()
 	iView.formatOuput()
 	return nil
 }

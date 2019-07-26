@@ -7,21 +7,21 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) lrangeHandler(key string) error {
+func (r *Redis) lrangeHandler(contnt string) error {
 	var err error
-	r.Output = append(r.Output, []string{"LRANGE " + key + " 0 -1", OUTPUT_COMMAND})
-	r.Detail, err = redis.Strings(r.Conn.Do("LRANGE", key, 0, -1))
+	r.Output = append(r.Output, []string{"LRANGE " + r.CurrentKey + " 0 -1", OUTPUT_COMMAND})
+	r.Detail, err = redis.Strings(r.Conn.Do("LRANGE", r.CurrentKey, 0, -1))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	r.llenHandler(key)
+
 	return nil
 }
 
-func (r *Redis) llenHandler(key string) error {
-	r.Output = append(r.Output, []string{"LLEN " + key, OUTPUT_COMMAND})
-	lenres, err := redis.Int64(r.Conn.Do("LLEN", key))
+func (r *Redis) llenHandler(content string) error {
+	r.Output = append(r.Output, []string{"LLEN " + r.CurrentKey, OUTPUT_COMMAND})
+	lenres, err := redis.Int64(r.Conn.Do("LLEN", r.CurrentKey))
 	if err != nil {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
