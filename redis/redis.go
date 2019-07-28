@@ -152,37 +152,19 @@ func (r *Redis) Exec(cmd string, content string) error {
 	}
 	r.Clear()
 	if mc, ok := multCommand[cmd]; ok {
-		if err := commandMap[cmd](content); err != nil {
-			return err
-		}
-		for _, item := range mc {
-			if err := commandMap[item](content); err != nil {
-				return err
-			}
-		}
-		return nil
+		return r.mult(cmd, mc, content)
 	}
 	return fun(content)
 }
 
-func (r *Redis) multInfo() error {
-	r.Clear()
-	if err := r.infoHandler(""); err != nil {
+func (r *Redis) mult(cmd string, mc []string, content string) error {
+	if err := commandMap[cmd](content); err != nil {
 		return err
 	}
-	if err := r.dbsizeHandler(""); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *Redis) multRename(content string) error {
-	r.Clear()
-	if err := r.renameHandler(content); err != nil {
-		return err
-	}
-	if err := r.keysHandler(""); err != nil {
-		return err
+	for _, item := range mc {
+		if err := commandMap[item](content); err != nil {
+			return err
+		}
 	}
 	return nil
 }
