@@ -44,6 +44,7 @@ type Redis struct {
 type CommandHandler func(content string) error
 
 var commandMap map[string]CommandHandler
+var multCommand map[string][]string
 
 func InitRedis(host string, port string, pwd string, pattern string) error {
 	conn, err := redis.Dial(REDIS_NETWORK, host+":"+port)
@@ -82,28 +83,46 @@ func InitRedis(host string, port string, pwd string, pattern string) error {
 
 func registerHandler() {
 	commandMap = map[string]CommandHandler{
-		"select":  R.selectHandler,
-		"keys":    R.keysHandler,
-		"del":     R.delHandler,
-		"info":    R.infoHandler,
-		"type":    R.typeHandler,
-		"object":  R.objectHandler,
-		"ttl":     R.ttlHandler,
-		"get":     R.getHandler,
-		"set":     R.setHandler,
-		"strlen":  R.strlenHandler,
-		"hgetall": R.hgetallHandler,
-		"hmset":   R.hmsetHandler,
-		"hlen":    R.hlenHandler,
-		"smember": R.smemberHandler,
-		"scard":   R.scardHandler,
-		"sadd":    R.saddHandler,
-		"zcard":   R.zcardHandler,
-		"zrange":  R.zrangeHandler,
-		"zadd":    R.zaddHandler,
-		"lrange":  R.lrangeHandler,
-		"llen":    R.llenHandler,
-		"rpush":   R.rpushHandler,
+		"select":    R.selectHandler,
+		"keys":      R.keysHandler,
+		"del":       R.delHandler,
+		"info":      R.infoHandler,
+		"type":      R.typeHandler,
+		"dbsize":    R.dbsizeHandler,
+		"object":    R.objectHandler,
+		"ttl":       R.ttlHandler,
+		"get":       R.getHandler,
+		"set":       R.setHandler,
+		"strlen":    R.strlenHandler,
+		"hgetall":   R.hgetallHandler,
+		"hmset":     R.hmsetHandler,
+		"hlen":      R.hlenHandler,
+		"smember":   R.smemberHandler,
+		"scard":     R.scardHandler,
+		"sadd":      R.saddHandler,
+		"zcard":     R.zcardHandler,
+		"zrange":    R.zrangeHandler,
+		"zadd":      R.zaddHandler,
+		"lrange":    R.lrangeHandler,
+		"llen":      R.llenHandler,
+		"rpush":     R.rpushHandler,
+		"exists":    R.existsHandler,
+		"rename":    R.renameHandler,
+		"renamenx":  R.renamenxHandler,
+		"move":      R.moveHandler,
+		"randomkey": R.randomkeyHandler,
+		"flushdb":   R.flushdbHandler,
+		"flushall":  R.flushallHandler,
+		"swapdb":    R.swapdbHandler,
+	}
+	multCommand = map[string][]string{
+		"info":     []string{"dbsize"},
+		"rename":   []string{"keys"},
+		"renamenx": []string{"keys"},
+		"move":     []string{"keys"},
+		"flushdb":  []string{"keys"},
+		"flushall": []string{"keys"},
+		"swapdb":   []string{"keys"},
 	}
 }
 
@@ -132,15 +151,37 @@ func (r *Redis) Exec(cmd string, content string) error {
 		return err
 	}
 	r.Clear()
+	if mc, ok := multCommand[cmd]; ok {
+		if err := commandMap[cmd](content); err != nil {
+			return err
+		}
+		for _, item := range mc {
+			if err := commandMap[item](content); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
 	return fun(content)
 }
 
-func (r *Redis) MultInfo() error {
+func (r *Redis) multInfo() error {
 	r.Clear()
 	if err := r.infoHandler(""); err != nil {
 		return err
 	}
 	if err := r.dbsizeHandler(""); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *Redis) multRename(content string) error {
+	r.Clear()
+	if err := r.renameHandler(content); err != nil {
+		return err
+	}
+	if err := r.keysHandler(""); err != nil {
 		return err
 	}
 	return nil

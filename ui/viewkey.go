@@ -46,10 +46,16 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 }
 
 func (k *KeyView) initialize() error {
+	opView.formatOutput()
+	redis.R.Exec("keys", "")
+	k.formatOutput()
+	k.View.Title = " Keys " + redis.R.Pattern + " "
+	return nil
+}
+
+func (k *KeyView) formatOutput() error {
 	k.clear()
 	k.cursorBegin()
-	redis.R.Exec("keys", "")
-	opView.formatOutput()
 	l := len(redis.R.Keys)
 	for i, key := range redis.R.Keys {
 		if i+1 == l {
@@ -58,7 +64,6 @@ func (k *KeyView) initialize() error {
 			kView.outputln(key)
 		}
 	}
-	k.View.Title = " Keys " + redis.R.Pattern + " "
 	return nil
 }
 
@@ -91,7 +96,7 @@ func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 		redis.R.GetKey(key)
 		opView.formatOutput()
 		dView.formatOutput()
-		iView.formatOuput()
+		iView.formatOutput()
 	}
 
 	return nil

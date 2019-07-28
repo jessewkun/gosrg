@@ -9,6 +9,7 @@ const HELP_CONTENT = `[Global]
 	h      : Display help modal
 	Tab    : Toggle next view
 	ctrl-d : Display database modal
+	ctrl-t : Display command modal
 	ctrl-n : Display new redis connection modal
 
 [Server]

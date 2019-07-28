@@ -38,7 +38,7 @@ func (i *InfoView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (i *InfoView) formatOuput() error {
+func (i *InfoView) formatOutput() error {
 	i.clear()
 	for _, v := range redis.R.Info {
 		i.outputln(utils.Yellow(strings.ToLower(v[0])+":") + v[1])

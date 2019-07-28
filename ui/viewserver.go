@@ -56,9 +56,9 @@ func (s *ServerView) focus(arg ...interface{}) error {
 
 func (s *ServerView) refresh(g *gocui.Gui, v *gocui.View) error {
 	s.initialize()
-	redis.R.MultInfo()
+	redis.R.Exec("info", "")
 	opView.formatOutput()
 	dView.formatOutput()
-	iView.formatOuput()
+	iView.formatOutput()
 	return nil
 }

@@ -110,6 +110,8 @@ func (c *CommandView) btn() error {
 		redis.R.Exec(argv[0], content)
 		opView.formatOutput()
 		dView.formatOutput()
+		iView.formatOutput()
+		kView.formatOutput()
 		c.hide(g, v)
 		return nil
 	})
