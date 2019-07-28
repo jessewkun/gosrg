@@ -135,6 +135,17 @@ func (r *Redis) Exec(cmd string, content string) error {
 	return fun(content)
 }
 
+func (r *Redis) MultInfo() error {
+	r.Clear()
+	if err := r.infoHandler(""); err != nil {
+		return err
+	}
+	if err := r.dbsizeHandler(""); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *Redis) GetKey(key string) error {
 	r.Clear()
 	r.CurrentKey = key

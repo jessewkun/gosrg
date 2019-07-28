@@ -47,7 +47,7 @@ func (s *ServerView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = false
 	s.initialize()
 	tView.output(config.TipsMap[s.Name])
-	redis.R.Exec("info", "")
+	redis.R.MultInfo()
 	opView.formatOutput()
 	dView.formatOutput()
 	iView.formatOuput()

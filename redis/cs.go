@@ -12,8 +12,5 @@ func (r *Redis) infoHandler(content string) error {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	if err := r.dbsizeHandler(""); err != nil {
-		return err
-	}
 	return nil
 }
