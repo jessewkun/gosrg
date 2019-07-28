@@ -18,6 +18,9 @@ func init() {
 	sView = new(ServerView)
 	sView.Name = "server"
 	sView.Title = " Server "
+	sView.ShortCuts = []ShortCut{
+		ShortCut{Key: gocui.KeyCtrlR, Level: LOCAL_Y, Handler: sView.refresh},
+	}
 }
 
 func (s *ServerView) Layout(g *gocui.Gui) error {
@@ -31,6 +34,7 @@ func (s *ServerView) Layout(g *gocui.Gui) error {
 		s.View = v
 		s.initialize()
 		s.setCurrent(s)
+		sView.refresh(g, v)
 	}
 	return nil
 }
@@ -47,6 +51,11 @@ func (s *ServerView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = false
 	s.initialize()
 	tView.output(config.TipsMap[s.Name])
+	return nil
+}
+
+func (s *ServerView) refresh(g *gocui.Gui, v *gocui.View) error {
+	s.initialize()
 	redis.R.MultInfo()
 	opView.formatOutput()
 	dView.formatOutput()

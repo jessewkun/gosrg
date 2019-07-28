@@ -11,6 +11,9 @@ const HELP_CONTENT = `[Global]
 	ctrl-d : Display database modal
 	ctrl-n : Display new redis connection modal
 
+[Server]
+	Ctrl+r   : Refresh redis info
+
 [help]
 	↑↓  : Move up/down one line
 	Esc   : Close current modal
@@ -72,7 +75,7 @@ const REDIS_MAX_DB_NUM = 15
 var (
 	TabView = []string{"server", "key", "detail", "info", "output"}
 	TipsMap = map[string]string{
-		"server":    "Ctrl-n: Create new redis connection | Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"server":    "Ctrl-r: Refresh redis info | Tab: Toggle view | Ctrl-c: Quit | h: Help",
 		"key":       "↑↓ MouseLeft: Toggle keys | Ctrl+f: Filter | Ctrl+r: Refresh | Deltet: Delete | h: Help",
 		"keydel":    "Enter: Confirm delete | Tab: Toggle focus | Esc: Close current modal",
 		"keyfilter": "Enter: Execute keys pattern | Tab: Toggle focus | Esc: Close current modal",
