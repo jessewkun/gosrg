@@ -39,12 +39,7 @@ func (r *Redis) zaddHandler(content string) error {
 	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
 	return nil
 }
-func (r *Redis) zscoreHandler(content string) error {
-	return nil
-}
-func (r *Redis) zincrbyHandler(content string) error {
-	return nil
-}
+
 func (r *Redis) zcardHandler(content string) error {
 	r.Output = append(r.Output, []string{"ZCARD " + r.CurrentKey, OUTPUT_COMMAND})
 	lenres, err := redis.Int64(r.Conn.Do("ZCARD", r.CurrentKey))
@@ -55,9 +50,7 @@ func (r *Redis) zcardHandler(content string) error {
 	r.Info = append(r.Info, []string{"zcard", strconv.FormatInt(lenres, 10)})
 	return nil
 }
-func (r *Redis) zcountHandler(content string) error {
-	return nil
-}
+
 func (r *Redis) zrangeHandler(content string) error {
 	var err error
 	r.Output = append(r.Output, []string{"ZRANGE " + r.CurrentKey + " 0 -1 WITHSCORES", OUTPUT_COMMAND})
@@ -66,47 +59,5 @@ func (r *Redis) zrangeHandler(content string) error {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	return nil
-}
-func (r *Redis) zrevrangeHandler(content string) error {
-	return nil
-}
-func (r *Redis) zrangebyscoreHandler(content string) error {
-	return nil
-}
-func (r *Redis) zrevrangebyscoreHandler(content string) error {
-	return nil
-}
-func (r *Redis) zrankHandler(content string) error {
-	return nil
-}
-func (r *Redis) zrevrankHandler(content string) error {
-	return nil
-}
-func (r *Redis) zremHandler(content string) error {
-	return nil
-}
-func (r *Redis) zremrangebyrankHandler(content string) error {
-	return nil
-}
-func (r *Redis) zremrangebyscoreHandler(content string) error {
-	return nil
-}
-func (r *Redis) zrangebylexHandler(content string) error {
-	return nil
-}
-func (r *Redis) zlexcountHandler(content string) error {
-	return nil
-}
-func (r *Redis) zremrangebylexHandler(content string) error {
-	return nil
-}
-func (r *Redis) zscanHandler(content string) error {
-	return nil
-}
-func (r *Redis) zunionstoreHandler(content string) error {
-	return nil
-}
-func (r *Redis) zinterstoreHandler(content string) error {
 	return nil
 }

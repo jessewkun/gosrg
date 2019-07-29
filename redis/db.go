@@ -152,13 +152,6 @@ func (r *Redis) randomkeyHandler(content string) error {
 	return nil
 }
 
-func (r *Redis) scanHandler(content string) error {
-	return nil
-}
-func (r *Redis) sortHandler(content string) error {
-	return nil
-}
-
 func (r *Redis) flushdbHandler(content string) error {
 	r.Output = append(r.Output, []string{"FLUSHDB", OUTPUT_COMMAND})
 	res, err := redis.String(r.Conn.Do("FLUSHDB"))

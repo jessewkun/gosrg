@@ -8,22 +8,6 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) hsetHandler(content string) error {
-	return nil
-}
-func (r *Redis) hsetnxHandler(content string) error {
-	return nil
-}
-func (r *Redis) hgetHandler(content string) error {
-	return nil
-}
-func (r *Redis) hexistsHandler(content string) error {
-	return nil
-}
-func (r *Redis) hdelHandler(content string) error {
-	return nil
-}
-
 func (r *Redis) hlenHandler(content string) error {
 	r.Output = append(r.Output, []string{"HLEN " + r.CurrentKey, OUTPUT_COMMAND})
 	lenres, err := redis.Int64(r.Conn.Do("HLEN", r.CurrentKey))
@@ -35,15 +19,6 @@ func (r *Redis) hlenHandler(content string) error {
 	return nil
 }
 
-func (r *Redis) hstrlenHandler(content string) error {
-	return nil
-}
-func (r *Redis) hincrbyHandler(content string) error {
-	return nil
-}
-func (r *Redis) hincrbyfloatHandler(content string) error {
-	return nil
-}
 func (r *Redis) hmsetHandler(content string) error {
 	key := r.CurrentKey
 	tmpArr := strings.Split(content, "\n")
@@ -75,15 +50,7 @@ func (r *Redis) hmsetHandler(content string) error {
 	r.Output = append(r.Output, []string{res, OUTPUT_RES})
 	return nil
 }
-func (r *Redis) hmgetHandler(content string) error {
-	return nil
-}
-func (r *Redis) hkeysHandler(content string) error {
-	return nil
-}
-func (r *Redis) hvalsHandler(content string) error {
-	return nil
-}
+
 func (r *Redis) hgetallHandler(content string) error {
 	var err error
 	r.Output = append(r.Output, []string{"HGETALl " + r.CurrentKey, OUTPUT_COMMAND})
@@ -92,8 +59,5 @@ func (r *Redis) hgetallHandler(content string) error {
 		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
 		return err
 	}
-	return nil
-}
-func (r *Redis) hscanHandler(content string) error {
 	return nil
 }
