@@ -9,28 +9,6 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) zcardHandler(content string) error {
-	r.Output = append(r.Output, []string{"ZCARD " + r.CurrentKey, OUTPUT_COMMAND})
-	lenres, err := redis.Int64(r.Conn.Do("ZCARD", r.CurrentKey))
-	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
-		return err
-	}
-	r.Info = append(r.Info, []string{"zcard", strconv.FormatInt(lenres, 10)})
-	return nil
-}
-
-func (r *Redis) zrangeHandler(content string) error {
-	var err error
-	r.Output = append(r.Output, []string{"ZRANGE " + r.CurrentKey + " 0 -1 WITHSCORES", OUTPUT_COMMAND})
-	r.Detail, err = redis.StringMap(r.Conn.Do("ZRANGE", r.CurrentKey, 0, -1, "WITHSCORES"))
-	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
-		return err
-	}
-	return nil
-}
-
 func (r *Redis) zaddHandler(content string) error {
 	key := r.CurrentKey
 	tmpArr := strings.Split(content, "\n")
@@ -59,5 +37,76 @@ func (r *Redis) zaddHandler(content string) error {
 	r.CurrentKey = key
 	r.CurrentKeyType = TYPE_ZSET
 	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
+	return nil
+}
+func (r *Redis) zscoreHandler(content string) error {
+	return nil
+}
+func (r *Redis) zincrbyHandler(content string) error {
+	return nil
+}
+func (r *Redis) zcardHandler(content string) error {
+	r.Output = append(r.Output, []string{"ZCARD " + r.CurrentKey, OUTPUT_COMMAND})
+	lenres, err := redis.Int64(r.Conn.Do("ZCARD", r.CurrentKey))
+	if err != nil {
+		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		return err
+	}
+	r.Info = append(r.Info, []string{"zcard", strconv.FormatInt(lenres, 10)})
+	return nil
+}
+func (r *Redis) zcountHandler(content string) error {
+	return nil
+}
+func (r *Redis) zrangeHandler(content string) error {
+	var err error
+	r.Output = append(r.Output, []string{"ZRANGE " + r.CurrentKey + " 0 -1 WITHSCORES", OUTPUT_COMMAND})
+	r.Detail, err = redis.StringMap(r.Conn.Do("ZRANGE", r.CurrentKey, 0, -1, "WITHSCORES"))
+	if err != nil {
+		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		return err
+	}
+	return nil
+}
+func (r *Redis) zrevrangeHandler(content string) error {
+	return nil
+}
+func (r *Redis) zrangebyscoreHandler(content string) error {
+	return nil
+}
+func (r *Redis) zrevrangebyscoreHandler(content string) error {
+	return nil
+}
+func (r *Redis) zrankHandler(content string) error {
+	return nil
+}
+func (r *Redis) zrevrankHandler(content string) error {
+	return nil
+}
+func (r *Redis) zremHandler(content string) error {
+	return nil
+}
+func (r *Redis) zremrangebyrankHandler(content string) error {
+	return nil
+}
+func (r *Redis) zremrangebyscoreHandler(content string) error {
+	return nil
+}
+func (r *Redis) zrangebylexHandler(content string) error {
+	return nil
+}
+func (r *Redis) zlexcountHandler(content string) error {
+	return nil
+}
+func (r *Redis) zremrangebylexHandler(content string) error {
+	return nil
+}
+func (r *Redis) zscanHandler(content string) error {
+	return nil
+}
+func (r *Redis) zunionstoreHandler(content string) error {
+	return nil
+}
+func (r *Redis) zinterstoreHandler(content string) error {
 	return nil
 }

@@ -7,28 +7,6 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (r *Redis) smemberHandler(key string) error {
-	var err error
-	r.Output = append(r.Output, []string{"SMEMBERS " + r.CurrentKey, OUTPUT_COMMAND})
-	r.Detail, err = redis.Strings(r.Conn.Do("SMEMBERS", r.CurrentKey))
-	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
-		return err
-	}
-	return nil
-}
-
-func (r *Redis) scardHandler(key string) error {
-	r.Output = append(r.Output, []string{"SCARD " + r.CurrentKey, OUTPUT_COMMAND})
-	lenres, err := redis.Int64(r.Conn.Do("SCARD", r.CurrentKey))
-	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
-		return err
-	}
-	r.Info = append(r.Info, []string{"scard", strconv.FormatInt(lenres, 10)})
-	return nil
-}
-
 func (r *Redis) saddHandler(content string) error {
 	key := r.CurrentKey
 	tmpArr := strings.Split(content, "\n")
@@ -50,5 +28,61 @@ func (r *Redis) saddHandler(content string) error {
 	r.CurrentKey = key
 	r.CurrentKeyType = TYPE_SET
 	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
+	return nil
+}
+func (r *Redis) sismemberHandler(content string) error {
+	return nil
+}
+func (r *Redis) spopHandler(content string) error {
+	return nil
+}
+func (r *Redis) srandmemberHandler(content string) error {
+	return nil
+}
+func (r *Redis) sremHandler(content string) error {
+	return nil
+}
+func (r *Redis) smoveHandler(content string) error {
+	return nil
+}
+func (r *Redis) scardHandler(key string) error {
+	r.Output = append(r.Output, []string{"SCARD " + r.CurrentKey, OUTPUT_COMMAND})
+	lenres, err := redis.Int64(r.Conn.Do("SCARD", r.CurrentKey))
+	if err != nil {
+		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		return err
+	}
+	r.Info = append(r.Info, []string{"scard", strconv.FormatInt(lenres, 10)})
+	return nil
+}
+func (r *Redis) smembersHandler(key string) error {
+	var err error
+	r.Output = append(r.Output, []string{"SMEMBERS " + r.CurrentKey, OUTPUT_COMMAND})
+	r.Detail, err = redis.Strings(r.Conn.Do("SMEMBERS", r.CurrentKey))
+	if err != nil {
+		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		return err
+	}
+	return nil
+}
+func (r *Redis) sscanHandler(content string) error {
+	return nil
+}
+func (r *Redis) sinterHandler(content string) error {
+	return nil
+}
+func (r *Redis) sinterstoreHandler(content string) error {
+	return nil
+}
+func (r *Redis) sunionHandler(content string) error {
+	return nil
+}
+func (r *Redis) sunionstoreHandler(content string) error {
+	return nil
+}
+func (r *Redis) sdiffHandler(content string) error {
+	return nil
+}
+func (r *Redis) sdiffstoreHandler(content string) error {
 	return nil
 }

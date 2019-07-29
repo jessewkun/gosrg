@@ -6,7 +6,22 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
+func (r *Redis) pingHandler(content string) error {
+	return nil
+}
+func (r *Redis) echoHandler(content string) error {
+	return nil
+}
 func (r *Redis) objectHandler(content string) error {
+	return nil
+}
+func (r *Redis) slowlogHandler(content string) error {
+	return nil
+}
+func (r *Redis) monitorHandler(content string) error {
+	return nil
+}
+func (r *Redis) debugObjectHandler(content string) error {
 	r.Output = append(r.Output, []string{"DEBUG OBJECT " + r.CurrentKey, OUTPUT_COMMAND})
 	object, err := redis.String(r.Conn.Do("DEBUG", "OBJECT", r.CurrentKey))
 	if err != nil {
@@ -25,5 +40,8 @@ func (r *Redis) objectHandler(content string) error {
 			r.Info = append(r.Info, []string{tmp[0], tmp[1]})
 		}
 	}
+	return nil
+}
+func (r *Redis) debugSegfaultHandler(content string) error {
 	return nil
 }
