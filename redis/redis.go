@@ -64,7 +64,7 @@ func InitRedis(host string, port string, pwd string, pattern string) error {
 			utils.Exit(err)
 		}
 	}
-	utils.Info.Println("Redis conn ok")
+	utils.Info.Println("connect to " + host + ":" + port + " success")
 	IS_BOOT = true
 	R = &Redis{
 		Host: host,
