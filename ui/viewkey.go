@@ -46,8 +46,8 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 }
 
 func (k *KeyView) initialize() error {
-	opView.formatOutput()
 	redis.R.Exec("keys", "")
+	opView.formatOutput()
 	k.formatOutput()
 	k.View.Title = " Keys " + redis.R.Pattern + " "
 	return nil
