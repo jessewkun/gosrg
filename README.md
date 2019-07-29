@@ -50,6 +50,7 @@ Keybinding               | Scope                | Description
 <kbd>Tab</kbd>           | Global               | Toggle next view
 <kbd>Ctrl+d</kbd>        | Global               | Display database modal
 <kbd>Ctrl+n</kbd>        | Global               | Display new redis connection modal
+<kbd>Ctrl+t</kbd>        | Global               | Display command modal
 <kbd>Ctrl+r</kbd>        | Server               | Refresh redis info
 <kbd>Down</kbd>          | Help modal           | Move down one line
 <kbd>Up</kbd>            | Help modal           | Move up one line

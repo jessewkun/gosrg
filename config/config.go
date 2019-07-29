@@ -25,6 +25,11 @@ const HELP_CONTENT = `[Global]
 	MouseLeft : Select current database
 	Esc   	: Close current modal
 
+[Command]
+	Enter : Confirm execute command
+	Tab   : Toggle focus
+	Esc   : Close current modal
+
 [Create new redis connection]
 	Enter : Confirm create new redis connection
 	Tab   : Toggle focus
@@ -76,7 +81,7 @@ const REDIS_MAX_DB_NUM = 15
 var (
 	TabView = []string{"server", "key", "detail", "info", "output"}
 	TipsMap = map[string]string{
-		"server":    "Ctrl-r: Refresh redis info | Tab: Toggle view | Ctrl-c: Quit | h: Help",
+		"server":    "Ctrl-r: Refresh redis info | Ctrl-d: Select db | Ctrl-t: Execute command | Tab: Toggle view | Ctrl-c: Quit | h: Help",
 		"key":       "↑↓ MouseLeft: Toggle keys | Ctrl+f: Filter | Ctrl+r: Refresh | Deltet: Delete | h: Help",
 		"keydel":    "Enter: Confirm delete | Tab: Toggle focus | Esc: Close current modal",
 		"keyfilter": "Enter: Execute keys pattern | Tab: Toggle focus | Esc: Close current modal",
@@ -86,6 +91,7 @@ var (
 		"help":      "Esc: Close current modal",
 		"db":        "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close current modal",
 		"info":      "Ctrl-y: Copy | Tab: Toggle view | Ctrl-c: Quit | h: Help",
-		"conn":      "Enter: Confirm create new redis connection | Tab: Toggle button | Esc: Close connection modal",
+		"conn":      "Enter: Confirm create new redis connection | Tab: Toggle focus | Esc: Close current modal",
+		"command":   "Enter: Confirm execute command | Tab: Toggle focus | Esc: Close current modal",
 	}
 )
