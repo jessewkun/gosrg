@@ -4,7 +4,6 @@ BINARY_PATH = /usr/local/bin/
 BUILD_VERSION := v0.1.3
 BUILD_TIME    := $(shell date "+%F %T")
 COMMIT_SHA1   := $(shell git rev-parse HEAD )
-# LDFLAGS = "-w -s -X $(BINARY_NAME)/config.GitCommit=$(COMMIT_SHA1)"
 
 default: build
 

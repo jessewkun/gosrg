@@ -9,6 +9,12 @@ Terminal GUI management tool for Redis
 ```
 $ go get github.com/jessewkun/gosrg
 $ "$GOPATH/bin/gosrg" --help
+Terminal GUI management tool for Redis
+
+Version: v0.1.3
+Build Time: 2019-08-01 18:25:49
+Commit SHA1: ed505c85a92acd30194f8033d71b438a7e645d6a
+
 Usage:
   gosrg -h -p -P -f
 
