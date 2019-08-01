@@ -49,36 +49,6 @@ type ShortCut struct {
 	Handler func(*gocui.Gui, *gocui.View) error
 }
 
-type ButtonWidget struct {
-	Name    string
-	x, y    int
-	w       int
-	label   string
-	handler func(g *gocui.Gui, v *gocui.View) error
-}
-
-var confirmBtn *ButtonWidget
-var cancelBtn *ButtonWidget
-
-func NewButtonWidget(name string, x, y int, label string, handler func(g *gocui.Gui, v *gocui.View) error) *ButtonWidget {
-	return &ButtonWidget{Name: name, x: x, y: y, w: len(label) + 1, label: label, handler: handler}
-}
-
-func (w *ButtonWidget) Layout(g *gocui.Gui) error {
-	if v, err := Ui.G.SetView(w.Name, w.x, w.y, w.x+w.w, w.y+2, 0); err != nil {
-		if !gocui.IsUnknownView(err) {
-			return err
-		}
-		Ui.G.Cursor = false
-		if err := Ui.G.SetKeybinding(w.Name, gocui.KeyEnter, gocui.ModNone, w.handler); err != nil {
-			utils.Error.Println(err)
-			return err
-		}
-		fmt.Fprint(v, w.label)
-	}
-	return nil
-}
-
 func (gv *GView) Layout(g *gocui.Gui) error {
 	return nil
 }
