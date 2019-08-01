@@ -2,7 +2,12 @@ package config
 
 const PROJECT_URL = "https://github.com/jessewkun/gosrg"
 const PROJECT_NAME = "Gosrg"
-const PROJECT_VERSION = "v0.1"
+
+var (
+	Version   = "v0.1.3"
+	GitCommit = ""
+	BuildTime = ""
+)
 
 const HELP_CONTENT = `[Global]
 	Ctrl-c : Quit

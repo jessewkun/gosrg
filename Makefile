@@ -1,12 +1,26 @@
 GO := GO111MODULE=on go
 BINARY_NAME = gosrg
 BINARY_PATH = /usr/local/bin/
+BUILD_VERSION := v0.1.3
+BUILD_TIME    := $(shell date "+%F %T")
+COMMIT_SHA1   := $(shell git rev-parse HEAD )
+# LDFLAGS = "-w -s -X $(BINARY_NAME)/config.GitCommit=$(COMMIT_SHA1)"
 
 default: build
 
 build: main.go go.sum go.mod
-	@$(GO) build -ldflags "-s -w" -o $(BINARY_NAME)
+	@$(GO) build -ldflags \
+	"-w -s                \
+	-X '$(BINARY_NAME)/config.Version=$(BUILD_VERSION)' \
+	-X '$(BINARY_NAME)/config.GitCommit=$(COMMIT_SHA1)' \
+	-X '$(BINARY_NAME)/config.BuildTime=$(BUILD_TIME)' \
+	" \
+	-o $(BINARY_NAME)
 	@echo "$(BINARY_NAME) build success"
+	@echo "Version: $(BUILD_VERSION)"
+	@echo "Build Time: $(BUILD_TIME)"
+	@echo "Commit_SHA1: $(COMMIT_SHA1)"
+
 
 test:
 	@# 日志权限检查

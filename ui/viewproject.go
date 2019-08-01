@@ -38,7 +38,7 @@ func (p *ProjectView) Layout(g *gocui.Gui) error {
 }
 
 func (p *ProjectView) initialize() error {
-	str := config.PROJECT_NAME + " " + config.PROJECT_VERSION
+	str := config.PROJECT_NAME + " " + config.Version
 	l := len(str)
 	if MAX_LEN > l {
 		str = strings.Repeat(" ", MAX_LEN-l) + utils.Pink(utils.UnderLine(str))

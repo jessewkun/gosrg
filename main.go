@@ -40,18 +40,24 @@ func initFlag() {
 		os.Exit(0)
 	}
 	if version {
-		fmt.Println(config.PROJECT_NAME + "/" + config.PROJECT_VERSION)
+		fmt.Println(config.PROJECT_NAME + "/" + config.Version)
 		os.Exit(0)
 	}
 }
 
 func Usage() {
-	fmt.Fprintf(os.Stderr, `%s/%s
+	fmt.Fprintf(os.Stderr, `%s
+Terminal GUI management tool for Redis
+
+Version: %s
+Build Time: %s
+Commit SHA1: %s
+
 Usage:
   gosrg -h -p -P -f
 
 Options:
-`, config.PROJECT_NAME, config.PROJECT_VERSION)
+`, config.PROJECT_NAME, config.Version, config.BuildTime, config.GitCommit)
 	flag.PrintDefaults()
 }
 
