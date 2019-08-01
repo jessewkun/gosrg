@@ -60,7 +60,7 @@ func (c *ConnView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
 	temp := [4]string{}
 	temp2 := strings.Split(str, ":")
 	if len(temp2) != 2 && len(temp2) != 3 && len(temp2) != 4 {
-		opView.error("The parameteris incorrect, please use the colon to splicing the host, port, password and pattern")
+		opView.error("The parameter is incorrect, please use the colon to splicing the host, port, password and pattern")
 		return nil
 	}
 	if temp2[0] == redis.R.Host && temp2[1] == redis.R.Port {

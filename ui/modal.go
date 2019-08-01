@@ -39,10 +39,10 @@ func (m *Modal) tab(g *gocui.Gui, v *gocui.View) error {
 }
 
 func (m *Modal) hide(g *gocui.Gui, v *gocui.View) error {
-	utils.Info.Println(m)
 	m.unbindShortCuts()
 	gView.bindShortCuts()
 	for _, b := range m.Buttons {
+		b.unbindShortCuts()
 		if err := Ui.G.DeleteView(b.Name); err != nil {
 			utils.Error.Println(err)
 			return err
@@ -53,14 +53,8 @@ func (m *Modal) hide(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 	Ui.NextView.setCurrent(Ui.NextView)
-	utils.Info.Println(m)
 	m.Buttons = []*ButtonWidget{}
 	m.FocusIndex = 0
-	return nil
-}
-
-func (m *Modal) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
-	m.hide(g, v)
 	return nil
 }
 
@@ -69,15 +63,13 @@ func (m *Modal) CancelmHandler(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
-func (m *Modal) btn(ci ButtonInterfacer) error {
-	utils.Info.Println(m)
+func (m *Modal) btn(bi ButtonInterfacer) error {
 	maxX, maxY := Ui.G.Size()
-	m.Buttons = append(m.Buttons, NewButtonWidget("confirmconn", maxX/3-5, maxY/3-1, "CONFIRM", ci.ConfirmHandler))
-	m.Buttons = append(m.Buttons, NewButtonWidget("cancelconn", maxX/3+5, maxY/3-1, "CANCEL", ci.CancelmHandler))
+	m.Buttons = append(m.Buttons, NewButtonWidget("confirmconn", maxX/3-5, maxY/3-1, "CONFIRM", bi.ConfirmHandler))
+	m.Buttons = append(m.Buttons, NewButtonWidget("cancelconn", maxX/3+5, maxY/3-1, "CANCEL", bi.CancelmHandler))
 	for _, b := range m.Buttons {
 		b.Layout(Ui.G)
 	}
 	Ui.G.SetCurrentView(m.Buttons[0].Name)
-	utils.Info.Println(m)
 	return nil
 }

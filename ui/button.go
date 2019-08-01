@@ -15,9 +15,6 @@ type ButtonWidget struct {
 	handler func(g *gocui.Gui, v *gocui.View) error
 }
 
-// var confirmBtn *ButtonWidget
-// var cancelBtn *ButtonWidget
-
 type ButtonInterfacer interface {
 	ConfirmHandler(g *gocui.Gui, v *gocui.View) error
 	CancelmHandler(g *gocui.Gui, v *gocui.View) error
@@ -40,4 +37,8 @@ func (w *ButtonWidget) Layout(g *gocui.Gui) error {
 		fmt.Fprint(v, w.label)
 	}
 	return nil
+}
+
+func (w *ButtonWidget) unbindShortCuts() {
+	Ui.G.DeleteKeybindings(w.Name)
 }
