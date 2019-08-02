@@ -132,6 +132,11 @@ func (gv *GView) setCurrent(v GHandler, arg ...interface{}) error {
 	return nil
 }
 
+func RestNextView() {
+	Ui.TabNo = 0
+	Ui.NextView = sView
+}
+
 func setNextView() {
 	Ui.TabNo++
 	next := Ui.TabNo % len(config.TabView)
@@ -186,7 +191,6 @@ func InitUI() {
 func Render() {
 	for {
 		res := <-ResultChan
-		utils.Info.Println(res)
 		for rtype, item := range res {
 			switch rtype {
 			case redis.RES_OUTPUT_COMMAND:

@@ -76,8 +76,7 @@ func (c *ConnView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
 		kView.clear()
 		iView.clear()
 		opView.clear()
-		opView.info("connect to " + temp[0] + ":" + temp[1] + " success")
-		Ui.NextView = sView
+		RestNextView()
 		c.hide(g, v)
 		kView.initialize()
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Redis) hlenHandler(content string) error {
-	r.Send(RES_OUTPUT_COMMAND, "HELN  "+r.CurrentKey)
+	r.Send(RES_OUTPUT_COMMAND, "HELN "+r.CurrentKey)
 	lenres, err := redis.Int64(r.Conn.Do("HLEN", r.CurrentKey))
 	if err != nil {
 		r.Send(RES_OUTPUT_ERROR, err.Error())
