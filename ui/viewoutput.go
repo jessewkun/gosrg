@@ -1,9 +1,11 @@
 package ui
 
 import (
+	"fmt"
 	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
+	"strconv"
 
 	"github.com/jessewkun/gocui"
 )
@@ -35,7 +37,6 @@ func (op *OutputView) Layout(g *gocui.Gui) error {
 		v.Title = op.Title
 		v.Wrap = true
 		op.View = v
-		op.initialize()
 	}
 	return nil
 }
@@ -70,20 +71,22 @@ func (op *OutputView) error(str string) {
 	op.cursorEnd(false)
 }
 
-func (op *OutputView) formatOutput() {
-	for _, item := range redis.R.Output {
-		if len(item) != 2 {
-			continue
-		}
-		switch item[1] {
-		case redis.OUTPUT_COMMAND:
-			op.command(item[0])
-		case redis.OUTPUT_INFO:
-			op.info(item[0])
-		case redis.OUTPUT_ERROR:
-			op.error(item[0])
-		case redis.OUTPUT_RES:
-			op.res(item[0])
+func (op *OutputView) formatOutput(rtype int, argv interface{}) {
+	switch rtype {
+	case redis.RES_OUTPUT_COMMAND:
+		op.command(argv.(string))
+	case redis.RES_OUTPUT_INFO:
+		op.info(argv.(string))
+	case redis.RES_OUTPUT_ERROR:
+		op.error(argv.(string))
+	case redis.RES_OUTPUT_RES:
+		switch t := argv.(type) {
+		case int64:
+			op.res(strconv.FormatInt(t, 10))
+		case string:
+			op.res(t)
+		default:
+			opView.error(fmt.Sprintf("Unexpected type %T\n", t))
 		}
 	}
 }

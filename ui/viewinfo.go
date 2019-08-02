@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"gosrg/redis"
 	"gosrg/utils"
 	"strings"
 
@@ -33,17 +32,16 @@ func (i *InfoView) Layout(g *gocui.Gui) error {
 		v.Title = i.Title
 		v.Wrap = true
 		i.View = v
-		i.initialize()
 	}
 	return nil
 }
 
-func (i *InfoView) formatOutput() error {
-	i.clear()
-	for _, v := range redis.R.Info {
-		i.outputln(utils.Yellow(strings.ToLower(v[0])+":") + v[1])
+func (i *InfoView) formatOutput(argv interface{}) {
+	if info, ok := argv.([]string); ok {
+		i.outputln(utils.Yellow(strings.ToLower(info[0])+":") + info[1])
+	} else {
+		opView.error("argv does not contain a variable of type []string")
 	}
-	return nil
 }
 
 func (i *InfoView) copy(g *gocui.Gui, v *gocui.View) error {

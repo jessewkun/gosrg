@@ -19,36 +19,36 @@ func (r *Redis) saddHandler(content string) error {
 	if err := r.delHandler(""); err != nil {
 		return err
 	}
-	r.Output = append(r.Output, []string{"SADD " + content, OUTPUT_COMMAND})
+	r.Send(RES_OUTPUT_COMMAND, "SADD "+content)
 	res, err := redis.Int64(r.Conn.Do("SADD", args...))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
 	r.CurrentKey = key
 	r.CurrentKeyType = TYPE_SET
-	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
+	r.Send(RES_OUTPUT_RES, res)
 	return nil
 }
 
 func (r *Redis) scardHandler(key string) error {
-	r.Output = append(r.Output, []string{"SCARD " + r.CurrentKey, OUTPUT_COMMAND})
+	r.Send(RES_OUTPUT_COMMAND, "SCARD "+r.CurrentKey)
 	lenres, err := redis.Int64(r.Conn.Do("SCARD", r.CurrentKey))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
-	r.Info = append(r.Info, []string{"scard", strconv.FormatInt(lenres, 10)})
+	r.Send(RES_INFO, []string{"scard", strconv.FormatInt(lenres, 10)})
 	return nil
 }
 
 func (r *Redis) smembersHandler(key string) error {
-	var err error
-	r.Output = append(r.Output, []string{"SMEMBERS " + r.CurrentKey, OUTPUT_COMMAND})
-	r.Detail, err = redis.Strings(r.Conn.Do("SMEMBERS", r.CurrentKey))
+	r.Send(RES_OUTPUT_COMMAND, "SMEMBERS "+r.CurrentKey)
+	res, err := redis.Strings(r.Conn.Do("SMEMBERS", r.CurrentKey))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
+	r.Send(RES_DETAIL, res)
 	return nil
 }

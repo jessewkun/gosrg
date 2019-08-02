@@ -19,37 +19,36 @@ func (r *Redis) rpushHandler(content string) error {
 	if err := r.delHandler(""); err != nil {
 		return err
 	}
-	r.Output = append(r.Output, []string{"RPUSH " + content, OUTPUT_COMMAND})
+	r.Send(RES_OUTPUT_COMMAND, "RPUSH "+content)
 	res, err := redis.Int64(r.Conn.Do("RPUSH", args...))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
 	r.CurrentKey = key
 	r.CurrentKeyType = TYPE_LIST
-	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
+	r.Send(RES_OUTPUT_RES, res)
 	return nil
 }
 
 func (r *Redis) llenHandler(content string) error {
-	r.Output = append(r.Output, []string{"LLEN " + r.CurrentKey, OUTPUT_COMMAND})
+	r.Send(RES_OUTPUT_COMMAND, "LLEN "+r.CurrentKey)
 	lenres, err := redis.Int64(r.Conn.Do("LLEN", r.CurrentKey))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
-	r.Info = append(r.Info, []string{"llen", strconv.FormatInt(lenres, 10)})
+	r.Send(RES_INFO, []string{"llen", strconv.FormatInt(lenres, 10)})
 	return nil
 }
 
 func (r *Redis) lrangeHandler(contnt string) error {
-	var err error
-	r.Output = append(r.Output, []string{"LRANGE " + r.CurrentKey + " 0 -1", OUTPUT_COMMAND})
-	r.Detail, err = redis.Strings(r.Conn.Do("LRANGE", r.CurrentKey, 0, -1))
+	r.Send(RES_OUTPUT_COMMAND, "LRANGE "+r.CurrentKey+" 0 -1")
+	res, err := redis.Strings(r.Conn.Do("LRANGE", r.CurrentKey, 0, -1))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
-
+	r.Send(RES_DETAIL, res)
 	return nil
 }

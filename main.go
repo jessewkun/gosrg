@@ -64,7 +64,6 @@ Options:
 func main() {
 	initFlag()
 	utils.InitLog(logPath)
-	redis.InitRedis(host, port, pwd, pattern)
 
 	var err error
 	ui.Ui.G, err = gocui.NewGui(gocui.Output256, true)
@@ -80,8 +79,12 @@ func main() {
 	ui.Ui.G.SelFgColor = gocui.ColorGreen
 
 	ui.InitUI()
+	redis.InitRedis(host, port, pwd, pattern)
+	ui.ResultChan = redis.R.ResultChan
+	go ui.Render()
 
 	if err := ui.Ui.G.MainLoop(); err != nil && err != gocui.ErrQuit {
+		redis.R.Send(redis.RES_EXIT, 0)
 		utils.Exit(err)
 	}
 }

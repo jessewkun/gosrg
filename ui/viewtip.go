@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"gosrg/config"
 	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
@@ -26,13 +25,7 @@ func (t *TipView) Layout(g *gocui.Gui) error {
 		}
 		v.Frame = false
 		t.View = v
-		t.initialize()
 	}
-	return nil
-}
-
-func (t *TipView) initialize() error {
-	t.output(config.TipsMap[t.Name])
 	return nil
 }
 

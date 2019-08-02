@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"gosrg/redis"
 	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
@@ -25,6 +26,7 @@ func init() {
 }
 
 func (gl *GLobalView) quit(g *gocui.Gui, v *gocui.View) error {
+	redis.R.Send(redis.RES_EXIT, 0)
 	return gocui.ErrQuit
 }
 

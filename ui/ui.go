@@ -3,12 +3,14 @@ package ui
 import (
 	"fmt"
 	"gosrg/config"
+	"gosrg/redis"
 	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
 )
 
 var Ui UI
+var ResultChan chan map[int]interface{}
 
 type GHandler interface {
 	Layout(g *gocui.Gui) error
@@ -178,5 +180,34 @@ func InitUI() {
 	Ui.G.SetManager(iView, tView, pView, opView, dView, sView, kView)
 	for _, item := range Ui.AllView {
 		item.bindShortCuts()
+	}
+}
+
+func Render() {
+	for {
+		res := <-ResultChan
+		utils.Info.Println(res)
+		for rtype, item := range res {
+			switch rtype {
+			case redis.RES_OUTPUT_COMMAND:
+				fallthrough
+			case redis.RES_OUTPUT_INFO:
+				fallthrough
+			case redis.RES_OUTPUT_ERROR:
+				fallthrough
+			case redis.RES_OUTPUT_RES:
+				opView.formatOutput(rtype, item)
+			case redis.RES_KEYS:
+				kView.formatOutput(item)
+			case redis.RES_DETAIL:
+				dView.formatOutput(item)
+			case redis.RES_INFO:
+				iView.formatOutput(item)
+			case redis.RES_EXIT:
+				return
+			default:
+				utils.Error.Println(rtype)
+			}
+		}
 	}
 }

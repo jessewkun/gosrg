@@ -9,13 +9,13 @@ import (
 )
 
 func (r *Redis) hlenHandler(content string) error {
-	r.Output = append(r.Output, []string{"HLEN " + r.CurrentKey, OUTPUT_COMMAND})
+	r.Send(RES_OUTPUT_COMMAND, "HELN  "+r.CurrentKey)
 	lenres, err := redis.Int64(r.Conn.Do("HLEN", r.CurrentKey))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
-	r.Info = append(r.Info, []string{"hlen", strconv.FormatInt(lenres, 10)})
+	r.Send(RES_INFO, []string{"hlen", strconv.FormatInt(lenres, 10)})
 	return nil
 }
 
@@ -29,7 +29,7 @@ func (r *Redis) hmsetHandler(content string) error {
 		t := strings.Split(v, SEPARATOR)
 		if len(t) != 2 {
 			err := errors.New("Line " + strconv.Itoa(k+1) + " include incorrect format data")
-			r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+			r.Send(RES_OUTPUT_ERROR, err.Error())
 			return err
 		}
 		temp += " " + t[0] + " " + t[1]
@@ -39,25 +39,25 @@ func (r *Redis) hmsetHandler(content string) error {
 	if err := r.delHandler(""); err != nil {
 		return err
 	}
-	r.Output = append(r.Output, []string{"HMSET " + temp, OUTPUT_COMMAND})
+	r.Send(RES_OUTPUT_COMMAND, "HMSET "+temp)
 	res, err := redis.String(r.Conn.Do("HMSET", args...))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
 	r.CurrentKey = key
 	r.CurrentKeyType = TYPE_HASH
-	r.Output = append(r.Output, []string{res, OUTPUT_RES})
+	r.Send(RES_OUTPUT_RES, res)
 	return nil
 }
 
 func (r *Redis) hgetallHandler(content string) error {
-	var err error
-	r.Output = append(r.Output, []string{"HGETALl " + r.CurrentKey, OUTPUT_COMMAND})
-	r.Detail, err = redis.StringMap(r.Conn.Do("HGETALL", r.CurrentKey))
+	r.Send(RES_OUTPUT_COMMAND, "HGETALl "+r.CurrentKey)
+	res, err := redis.StringMap(r.Conn.Do("HGETALL", r.CurrentKey))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
+	r.Send(RES_DETAIL, res)
 	return nil
 }

@@ -5,12 +5,12 @@ import (
 )
 
 func (r *Redis) infoHandler(content string) error {
-	var err error
-	r.Output = append(r.Output, []string{"INFO", OUTPUT_COMMAND})
-	r.Detail, err = redis.String(r.Conn.Do("INFO"))
+	r.Send(RES_OUTPUT_COMMAND, "INFO")
+	res, err := redis.String(r.Conn.Do("INFO"))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
+	r.Send(RES_DETAIL, res)
 	return nil
 }

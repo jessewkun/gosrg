@@ -47,24 +47,25 @@ func (k *KeyView) Layout(g *gocui.Gui) error {
 
 func (k *KeyView) initialize() error {
 	redis.R.Exec("keys", "")
-	opView.formatOutput()
-	k.formatOutput()
 	k.View.Title = " Keys " + redis.R.Pattern + " "
 	return nil
 }
 
-func (k *KeyView) formatOutput() error {
-	k.clear()
-	k.cursorBegin()
-	l := len(redis.R.Keys)
-	for i, key := range redis.R.Keys {
-		if i+1 == l {
-			kView.output(key)
-		} else {
-			kView.outputln(key)
+func (k *KeyView) formatOutput(argv interface{}) {
+	if keys, ok := argv.([]string); ok {
+		k.clear()
+		k.cursorBegin()
+		l := len(keys)
+		for i, key := range keys {
+			if i+1 == l {
+				kView.output(key)
+			} else {
+				kView.outputln(key)
+			}
 		}
+	} else {
+		opView.error("argv does not contain a variable of type []string")
 	}
-	return nil
 }
 
 func (k *KeyView) focus(arg ...interface{}) error {
@@ -93,10 +94,8 @@ func (k *KeyView) click(g *gocui.Gui, v *gocui.View) error {
 		if key == redis.R.CurrentKey {
 			return nil
 		}
+		iView.clear()
 		redis.R.GetKey(key)
-		opView.formatOutput()
-		dView.formatOutput()
-		iView.formatOutput()
 	}
 
 	return nil

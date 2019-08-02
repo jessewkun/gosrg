@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"gosrg/config"
 	"gosrg/redis"
 	"strconv"
 
@@ -33,32 +32,21 @@ func (s *ServerView) Layout(g *gocui.Gui) error {
 		v.Wrap = true
 		s.View = v
 		s.initialize()
-		s.setCurrent(s)
-		sView.refresh(g, v)
 	}
 	return nil
 }
 
 func (s *ServerView) initialize() error {
 	s.clear()
+	s.setCurrent(s)
 	s.outputln("Current Host: " + redis.R.Host)
 	s.outputln("Current Port: " + redis.R.Port)
 	s.outputln("Current Db  : " + strconv.Itoa(redis.R.Db))
-	return nil
-}
-
-func (s *ServerView) focus(arg ...interface{}) error {
-	Ui.G.Cursor = false
-	s.initialize()
-	tView.output(config.TipsMap[s.Name])
+	redis.R.Exec("info", "")
 	return nil
 }
 
 func (s *ServerView) refresh(g *gocui.Gui, v *gocui.View) error {
 	s.initialize()
-	redis.R.Exec("info", "")
-	opView.formatOutput()
-	dView.formatOutput()
-	iView.formatOutput()
 	return nil
 }

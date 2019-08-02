@@ -1,8 +1,10 @@
 package ui
 
 import (
+	"fmt"
 	"gosrg/config"
 	"gosrg/redis"
+	"strconv"
 
 	"github.com/atotto/clipboard"
 	"github.com/jessewkun/gocui"
@@ -56,14 +58,15 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 		return nil
 	}
 	redis.R.SetKey(v.ViewBuffer())
-	opView.formatOutput()
 	return nil
 }
 
-func (d *DetailView) formatOutput() error {
+func (d *DetailView) formatOutput(detail interface{}) {
 	d.clear()
 	d.cursorBegin()
-	switch t := redis.R.Detail.(type) {
+	switch t := detail.(type) {
+	case int64:
+		d.output(strconv.FormatInt(t, 10))
 	case string:
 		d.output(t)
 	case []string:
@@ -84,8 +87,9 @@ func (d *DetailView) formatOutput() error {
 				d.GView.outputln(k + redis.SEPARATOR + v)
 			}
 		}
+	default:
+		opView.error(fmt.Sprintf("Unexpected type %T\n", t))
 	}
-	return nil
 }
 
 func (d *DetailView) copy(g *gocui.Gui, v *gocui.View) error {

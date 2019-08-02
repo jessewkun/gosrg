@@ -11,17 +11,26 @@ import (
 var R *Redis
 
 const (
-	REDIS_NETWORK  = "tcp"
-	OUTPUT_COMMAND = "c"
-	OUTPUT_INFO    = "i"
-	OUTPUT_ERROR   = "e"
-	OUTPUT_RES     = "r"
-	SEPARATOR      = " ==> "
-	TYPE_STRING    = "string"
-	TYPE_HASH      = "hash"
-	TYPE_LIST      = "list"
-	TYPE_SET       = "set"
-	TYPE_ZSET      = "zset"
+	RES_EXIT = iota
+	RES_KEYS
+	RES_DETAIL
+	RES_INFO
+	RES_OUTPUT_COMMAND
+	RES_OUTPUT_INFO
+	RES_OUTPUT_ERROR
+	RES_OUTPUT_RES
+)
+
+const (
+	REDIS_NETWORK = "tcp"
+
+	SEPARATOR = " ==> "
+
+	TYPE_STRING = "string"
+	TYPE_HASH   = "hash"
+	TYPE_LIST   = "list"
+	TYPE_SET    = "set"
+	TYPE_ZSET   = "zset"
 )
 
 var IS_BOOT = false
@@ -35,10 +44,7 @@ type Redis struct {
 	CurrentKey     string
 	CurrentKeyType string
 	Pattern        string
-	Output         [][]string
-	Keys           []string
-	Detail         interface{}
-	Info           [][]string
+	ResultChan     chan map[int]interface{}
 }
 
 type CommandHandler func(content string) error
@@ -64,21 +70,38 @@ func InitRedis(host string, port string, pwd string, pattern string) error {
 			utils.Exit(err)
 		}
 	}
-	utils.Info.Println("connect to " + host + ":" + port + " success")
 	IS_BOOT = true
-	R = &Redis{
-		Host: host,
-		Port: port,
-		Pwd:  pwd,
-		Conn: conn,
+	if R == nil {
+		R = &Redis{
+			Host:       host,
+			Port:       port,
+			Pwd:        pwd,
+			Conn:       conn,
+			ResultChan: make(chan map[int]interface{}),
+			Db:         0, // new connection reset db to 0
+		}
+	} else {
+		R.Host = host
+		R.Port = port
+		R.Pwd = pwd
+		R.Conn = conn
+		R.Db = 0
 	}
 	R.Pattern = pattern
 	if len(pattern) == 0 {
 		R.Pattern = "*"
 	}
-	R.Db = 0
+	R.Send(RES_OUTPUT_INFO, "connect to "+host+":"+port+" success")
 	registerHandler()
 	return nil
+}
+
+func (r *Redis) Send(rtype int, data interface{}) {
+	go func() {
+		t := map[int]interface{}{rtype: data}
+		r.ResultChan <- t
+		return
+	}()
 }
 
 func registerHandler() {
@@ -126,20 +149,12 @@ func registerHandler() {
 	}
 }
 
-func (r *Redis) Clear() {
-	r.Output = [][]string{}
-	r.Keys = []string{}
-	r.Detail = nil
-	r.Info = [][]string{}
-	return
-}
-
 func (r *Redis) CommandIsExisted(cmd string) (CommandHandler, error) {
 	cmd = strings.ToLower(cmd)
 	fun, ok := commandMap[cmd]
 	if !ok {
 		err := errors.New("unknown command `" + cmd + "`")
-		utils.Error.Println(err)
+		r.Send(RES_OUTPUT_ERROR, err.Error)
 		return nil, err
 	}
 	return fun, nil
@@ -150,7 +165,6 @@ func (r *Redis) Exec(cmd string, content string) error {
 	if err != nil {
 		return err
 	}
-	r.Clear()
 	if mc, ok := multCommand[cmd]; ok {
 		return r.mult(cmd, mc, content)
 	}
@@ -170,7 +184,6 @@ func (r *Redis) mult(cmd string, mc []string, content string) error {
 }
 
 func (r *Redis) GetKey(key string) error {
-	r.Clear()
 	r.CurrentKey = key
 	if err := r.typeHandler(""); err != nil {
 		return err
@@ -227,7 +240,6 @@ func (r *Redis) SetKey(content string) error {
 	if r.CurrentKey == "" || r.CurrentKeyType == "" {
 		return nil
 	}
-	r.Clear()
 	content = utils.Trim(content)
 	switch r.CurrentKeyType {
 	case TYPE_STRING:

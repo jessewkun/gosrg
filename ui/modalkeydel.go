@@ -50,8 +50,8 @@ func (kd *KeyDelView) initialize() error {
 
 func (kd *KeyDelView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
 	redis.R.Exec("del", "")
-	opView.formatOutput()
 	kView.deleteCursorLine()
+	kView.click(g, v)
 	kd.hide(g, v)
 	return nil
 }

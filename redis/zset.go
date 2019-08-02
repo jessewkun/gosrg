@@ -19,7 +19,7 @@ func (r *Redis) zaddHandler(content string) error {
 		t := strings.Split(v, SEPARATOR)
 		if len(t) != 2 {
 			err := errors.New("Line " + strconv.Itoa(k+1) + " include incorrect format data")
-			r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+			r.Send(RES_OUTPUT_ERROR, err.Error())
 			return err
 		}
 		temp += " " + t[1] + " " + t[0]
@@ -28,36 +28,36 @@ func (r *Redis) zaddHandler(content string) error {
 	if err := r.delHandler(""); err != nil {
 		return err
 	}
-	r.Output = append(r.Output, []string{"ZADD " + temp, OUTPUT_COMMAND})
+	r.Send(RES_OUTPUT_COMMAND, "ZADD "+temp)
 	res, err := redis.Int64(r.Conn.Do("ZADD", args...))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
 	r.CurrentKey = key
 	r.CurrentKeyType = TYPE_ZSET
-	r.Output = append(r.Output, []string{strconv.FormatInt(res, 10), OUTPUT_RES})
+	r.Send(RES_OUTPUT_RES, res)
 	return nil
 }
 
 func (r *Redis) zcardHandler(content string) error {
-	r.Output = append(r.Output, []string{"ZCARD " + r.CurrentKey, OUTPUT_COMMAND})
+	r.Send(RES_OUTPUT_COMMAND, "ZCARD "+r.CurrentKey)
 	lenres, err := redis.Int64(r.Conn.Do("ZCARD", r.CurrentKey))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
-	r.Info = append(r.Info, []string{"zcard", strconv.FormatInt(lenres, 10)})
+	r.Send(RES_INFO, []string{"zcard", strconv.FormatInt(lenres, 10)})
 	return nil
 }
 
 func (r *Redis) zrangeHandler(content string) error {
-	var err error
-	r.Output = append(r.Output, []string{"ZRANGE " + r.CurrentKey + " 0 -1 WITHSCORES", OUTPUT_COMMAND})
-	r.Detail, err = redis.StringMap(r.Conn.Do("ZRANGE", r.CurrentKey, 0, -1, "WITHSCORES"))
+	r.Send(RES_OUTPUT_COMMAND, "ZRANGE "+r.CurrentKey+" 0 -1 WITHSCORES")
+	res, err := redis.StringMap(r.Conn.Do("ZRANGE", r.CurrentKey, 0, -1, "WITHSCORES"))
 	if err != nil {
-		r.Output = append(r.Output, []string{err.Error(), OUTPUT_ERROR})
+		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
+	r.Send(RES_DETAIL, res)
 	return nil
 }
