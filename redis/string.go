@@ -35,6 +35,6 @@ func (r *Redis) strlenHandler(content string) error {
 		r.Send(RES_OUTPUT_ERROR, err.Error())
 		return err
 	}
-	r.Send(RES_INFO, []string{"len", strconv.FormatInt(lenres, 10)})
+	r.Send(RES_INFO, []string{"strlen", strconv.FormatInt(lenres, 10)})
 	return nil
 }

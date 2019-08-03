@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gosrg/config"
 	"gosrg/redis"
+	"gosrg/utils"
 	"strconv"
 
 	"github.com/atotto/clipboard"
@@ -68,6 +69,7 @@ func (d *DetailView) formatOutput(detail interface{}) {
 	case int64:
 		d.output(strconv.FormatInt(t, 10))
 	case string:
+		utils.Info.Println(len(t))
 		d.output(t)
 	case []string:
 		for i, v := range t {

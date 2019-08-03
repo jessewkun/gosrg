@@ -56,6 +56,7 @@ func (s *ServerView) focus(arg ...interface{}) error {
 
 func (s *ServerView) refresh(g *gocui.Gui, v *gocui.View) error {
 	s.initialize()
+	iView.clear()
 	redis.R.Exec("info", "")
 	return nil
 }

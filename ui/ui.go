@@ -106,10 +106,12 @@ func (gv *GView) clear() error {
 }
 
 func (gv *GView) output(arg interface{}) error {
-	if _, err := fmt.Fprint(gv.View, arg); err != nil {
+	n, err := fmt.Fprint(gv.View, arg)
+	if err != nil {
 		utils.Error.Println(err)
 		return err
 	}
+	utils.Info.Println(n)
 
 	return nil
 }
