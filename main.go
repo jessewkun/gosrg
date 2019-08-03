@@ -83,7 +83,7 @@ func main() {
 	ui.ResultChan = redis.R.ResultChan
 	go ui.Render()
 
-	if err := ui.Ui.G.MainLoop(); err != nil && err != gocui.ErrQuit {
+	if err := ui.Ui.G.MainLoop(); err != nil && !gocui.IsQuit(err) {
 		redis.R.Send(redis.RES_EXIT, 0)
 		utils.Exit(err)
 	}

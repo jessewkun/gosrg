@@ -58,19 +58,17 @@ Keybinding               | Scope                | Description
 <kbd>Ctrl+n</kbd>        | Global               | Display new redis connection modal
 <kbd>Ctrl+t</kbd>        | Global               | Display command modal
 <kbd>Ctrl+r</kbd>        | Server               | Refresh redis info
-<kbd>Down</kbd>          | Help modal           | Move down one line
-<kbd>Up</kbd>            | Help modal           | Move up one line
+<kbd>Down/Up</kbd>       | Help modal           | Move down/up one line
 <kbd>Esc</kbd>           | Help modal           | Close current modal
-<kbd>Down</kbd>          | Database modal       | Move down one line
-<kbd>Up</kbd>            | Database modal       | Move up one view
+<kbd>Down/Up</kbd>       | Database modal       | Move down/up one line
 <kbd>MouseLeft</kbd>     | Database modal       | Select current database
 <kbd>Enter</kbd>         | Database modal       | Select current database
 <kbd>Esc</kbd>           | Database modal       | Close current modal
+<kbd>Down/Up</kbd>       | New connection modal | Choose historical connection
 <kbd>Enter</kbd>         | New connection modal | Confirm create new redis connection
 <kbd>Tab</kbd>           | New connection modal | Toggle focus
 <kbd>Esc</kbd>           | New connection modal | Close current modal
-<kbd>Down</kbd>          | Keys                 | Move down one line
-<kbd>Up</kbd>            | Keys                 | Move up one line
+<kbd>Down/Up</kbd>       | Keys                 | Move down/up one line
 <kbd>MouseLeft</kbd>     | Keys                 | Show detail
 <kbd>Backspace</kbd>     | Keys                 | Delete key
 <kbd>Ctrl+r</kbd>        | keys                 | Refresh keys
@@ -86,8 +84,7 @@ Keybinding               | Scope                | Description
 <kbd>Esc</kbd>           | Filter key modal     | Close current modal
 <kbd>i</kbd>             | Detail               | Toggle to insert mode
 <kbd>Esc</kbd>           | Detail               | Toggle to normal mode
-<kbd>Down</kbd>          | Detail               | Move down one line
-<kbd>Up</kbd>            | Detail               | Move up one line
+<kbd>Down/Up</kbd>       | Detail               | Move down/up one line
 <kbd>Ctrl+s</kbd>        | Detail               | Save detail
 <kbd>Ctrl+b</kbd>        | Detail               | Jump to the begining
 <kbd>Ctrl+e</kbd>        | Detail               | Jump to the end
@@ -95,8 +92,7 @@ Keybinding               | Scope                | Description
 <kbd>Ctrl+p</kbd>        | Detail               | Paste content
 <kbd>Ctrl+l</kbd>        | Detail               | Clear detail
 <kbd>Ctrl+y</kbd>        | Info                 | Copy Info to clipbpard
-<kbd>Down</kbd>          | Output               | Move down one line
-<kbd>Up</kbd>            | Output               | Move up one line
+<kbd>Down/Up</kbd>       | Output               | Move down/up one line
 <kbd>Ctrl+b</kbd>        | Output               | Jump to the begining
 <kbd>Ctrl+e</kbd>        | Output               | Jump to the end
 

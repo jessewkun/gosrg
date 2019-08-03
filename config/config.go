@@ -18,14 +18,14 @@ const HELP_CONTENT = `[Global]
 	ctrl-n : Display new redis connection modal
 
 [Server]
-	Ctrl+r   : Refresh redis info
+	Ctrl+r : Refresh redis info
 
 [help]
 	↑↓  : Move up/down one line
-	Esc   : Close current modal
+	Esc : Close current modal
 
 [Database]
-	↑↓      : Move up/down one line
+	↑↓        : Move up/down one line
 	Enter     : Select current database
 	MouseLeft : Select current database
 	Esc   	: Close current modal
@@ -36,12 +36,13 @@ const HELP_CONTENT = `[Global]
 	Esc   : Close current modal
 
 [Create new redis connection]
+	↑↓    : Choose historical connection
 	Enter : Confirm create new redis connection
 	Tab   : Toggle focus
 	Esc   : Close current modal
 
 [Keys]
-	↑↓      : Move up/down one line
+	↑↓        : Move up/down one line
 	MouseLeft : Show datail
 	Delete    : Delete key
 	Ctrl+r    : Refresh keys
@@ -63,7 +64,7 @@ const HELP_CONTENT = `[Global]
 [Detail]
 	i      : Toggle to insert mode
 	Esc    : Toggle to normal mode
-	↑↓   : Move up/down one line
+	↑↓     : Move up/down one line
 	Ctrl-s : Save detail
 	Ctrl+b : Jump to the beginning
 	Ctrl+e : Jump to the end
@@ -75,7 +76,7 @@ const HELP_CONTENT = `[Global]
 	Ctrl+y : Copy the info to clipboard
 
 [Output]
-	↑↓    : Move up/down one line
+	↑↓      : Move up/down one line
 	Ctrl+b  : Jump to the begining
 	Ctrl+e  : Jump to the end
 
@@ -96,7 +97,7 @@ var (
 		"help":      "Esc: Close current modal",
 		"db":        "↑↓ MouseLeft: Toggle database | Enter: Select current database | Esc: Close current modal",
 		"info":      "Ctrl-y: Copy | Tab: Toggle view | Ctrl-c: Quit | h: Help",
-		"conn":      "Enter: Confirm create new redis connection | Tab: Toggle focus | Esc: Close current modal",
+		"conn":      "↑↓: Choose historical connection| Enter: Confirm create new connection | Tab: Toggle focus | Esc: Close current modal",
 		"command":   "Enter: Confirm execute command | Tab: Toggle focus | Esc: Close current modal",
 	}
 )

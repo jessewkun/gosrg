@@ -21,8 +21,10 @@ func init() {
 	connView.Title = " Create new redis connection "
 	connView.TabSelf = true
 	connView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: connView.hide},
+		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: connView.CancelmHandler},
 		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: connView.tab},
+		ShortCut{Key: gocui.KeyArrowUp, Level: LOCAL_Y, Handler: connView.up},
+		ShortCut{Key: gocui.KeyArrowDown, Level: LOCAL_Y, Handler: connView.down},
 	}
 }
 
@@ -46,12 +48,43 @@ func (c *ConnView) initialize() error {
 	c.btn(c)
 	c.setCurrent(c)
 	c.bindShortCuts()
+	c.up(Ui.G, c.View)
 	return nil
 }
 
 func (c *ConnView) focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
 	tView.output(config.TipsMap[c.Name])
+	return nil
+}
+
+func (c *ConnView) up(g *gocui.Gui, v *gocui.View) error {
+	l := len(redis.R.History)
+	if redis.R.Current > 0 && redis.R.Current <= l {
+		redis.R.Current--
+		temp := redis.R.History[redis.R.Current]
+		c.clear()
+		c.output(temp)
+		c.cursorEnd(true)
+	}
+	return nil
+}
+
+func (c *ConnView) down(g *gocui.Gui, v *gocui.View) error {
+	l := len(redis.R.History)
+	if redis.R.Current+1 < l {
+		redis.R.Current++
+		temp := redis.R.History[redis.R.Current]
+		c.clear()
+		c.output(temp)
+		c.cursorEnd(true)
+	}
+	return nil
+}
+
+func (c *ConnView) CancelmHandler(g *gocui.Gui, v *gocui.View) error {
+	redis.R.ResetCurrent()
+	c.hide(g, v)
 	return nil
 }
 
@@ -74,10 +107,10 @@ func (c *ConnView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
 		opView.error(err.Error())
 	} else {
 		kView.clear()
-		iView.clear()
 		opView.clear()
 		RestNextView()
 		c.hide(g, v)
+		sView.refresh(g, sView.View)
 		kView.initialize()
 	}
 	return nil

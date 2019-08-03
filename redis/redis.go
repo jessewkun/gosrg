@@ -45,6 +45,8 @@ type Redis struct {
 	CurrentKeyType string
 	Pattern        string
 	ResultChan     chan map[int]interface{}
+	History        []string
+	Current        int
 }
 
 type CommandHandler func(content string) error
@@ -78,22 +80,38 @@ func InitRedis(host string, port string, pwd string, pattern string) error {
 			Pwd:        pwd,
 			Conn:       conn,
 			ResultChan: make(chan map[int]interface{}),
-			Db:         0, // new connection reset db to 0
+			Db:         0,
 		}
 	} else {
 		R.Host = host
 		R.Port = port
 		R.Pwd = pwd
 		R.Conn = conn
-		R.Db = 0
+		R.Db = 0 // new connection reset db to 0
 	}
 	R.Pattern = pattern
 	if len(pattern) == 0 {
 		R.Pattern = "*"
 	}
+	R.SetHistory()
 	R.Send(RES_OUTPUT_INFO, "connect to "+host+":"+port+" success")
 	registerHandler()
 	return nil
+}
+
+func (r *Redis) SetHistory() {
+	temp := r.Host + ":" + r.Port + ":" + r.Pwd + ":" + r.Pattern
+	l := len(r.History)
+	if l > 0 {
+		r.History = append(r.History[:l-1], temp, "")
+	} else {
+		r.History = append(r.History, temp, "")
+	}
+	r.ResetCurrent()
+}
+
+func (r *Redis) ResetCurrent() {
+	r.Current = len(r.History)
 }
 
 func (r *Redis) Send(rtype int, data interface{}) {
