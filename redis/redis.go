@@ -97,11 +97,11 @@ func InitRedis(host string, port string, pwd string, pattern string) error {
 }
 
 func (r *Redis) Send(rtype int, data interface{}) {
-	go func() {
+	go func(rtype int, data interface{}) {
 		t := map[int]interface{}{rtype: data}
 		r.ResultChan <- t
 		return
-	}()
+	}(rtype, data)
 }
 
 func registerHandler() {
