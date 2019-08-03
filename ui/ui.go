@@ -202,13 +202,25 @@ func Render() {
 			case redis.RES_OUTPUT_ERROR:
 				fallthrough
 			case redis.RES_OUTPUT_RES:
-				opView.formatOutput(rtype, item)
+				Ui.G.Update(func(*gocui.Gui) error {
+					opView.formatOutput(rtype, item)
+					return nil
+				})
 			case redis.RES_KEYS:
-				kView.formatOutput(item)
+				Ui.G.Update(func(*gocui.Gui) error {
+					kView.formatOutput(item)
+					return nil
+				})
 			case redis.RES_DETAIL:
-				dView.formatOutput(item)
+				Ui.G.Update(func(*gocui.Gui) error {
+					dView.formatOutput(item)
+					return nil
+				})
 			case redis.RES_INFO:
-				iView.formatOutput(item)
+				Ui.G.Update(func(*gocui.Gui) error {
+					iView.formatOutput(item)
+					return nil
+				})
 			case redis.RES_EXIT:
 				return
 			default:
