@@ -11,6 +11,7 @@ type Modal struct {
 	TabSelf    bool
 	FocusIndex int
 	Buttons    []*ButtonWidget
+	form       *Form
 }
 
 func (m *Modal) tab(g *gocui.Gui, v *gocui.View) error {
@@ -19,21 +20,29 @@ func (m *Modal) tab(g *gocui.Gui, v *gocui.View) error {
 	if m.TabSelf {
 		l++
 	}
-	m.FocusIndex++
-	nextIndex := m.FocusIndex % l
-	if m.TabSelf {
-		if nextIndex == 0 {
-			nextViewName = m.Name
+	nextIndex := 0
+	if m.form != nil && !m.form.isCursorEnd() {
+		m.form.tabInput()
+	} else {
+		m.FocusIndex++
+		nextIndex = m.FocusIndex % l
+		if m.TabSelf {
+			if nextIndex == 0 {
+				nextViewName = m.Name
+			} else {
+				nextIndex--
+				nextViewName = m.Buttons[nextIndex].Name
+			}
 		} else {
-			nextIndex--
 			nextViewName = m.Buttons[nextIndex].Name
 		}
-	} else {
-		nextViewName = m.Buttons[nextIndex].Name
-	}
-	if _, err := Ui.G.SetCurrentView(nextViewName); err != nil {
-		utils.Error.Println(err)
-		return err
+		_, err := Ui.G.SetCurrentView(nextViewName)
+		if err != nil {
+			utils.Error.Println(err)
+			return err
+		} else if nextViewName == m.Name && m.form != nil {
+			m.form.initCursor(m.GView)
+		}
 	}
 	return nil
 }
@@ -55,6 +64,11 @@ func (m *Modal) hide(g *gocui.Gui, v *gocui.View) error {
 	Ui.NextView.setCurrent(Ui.NextView)
 	m.Buttons = []*ButtonWidget{}
 	m.FocusIndex = 0
+	return nil
+}
+
+func (m *Modal) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
+	m.hide(g, v)
 	return nil
 }
 

@@ -29,6 +29,7 @@ type Form struct {
 	labelColor int
 	MaxLabel   int
 	modal      *Modal
+	Cursor     int
 	Input      []*Input
 }
 
@@ -100,6 +101,7 @@ func (f *Form) initInput(v GView) {
 }
 
 func (f *Form) initCursor(v GView) {
+	f.Cursor = 0
 	v.setCursor(f.MaxLabel+len(LABEL_COLON)+DEFAULT_CURSOR_MARGIN, f.marginTop)
 }
 
@@ -110,22 +112,27 @@ func (f *Form) initForm(v GView) error {
 	return nil
 }
 
-func (f *Form) Edit(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
+func (f *Form) tabInput() {
 	l := len(f.Input) - 1
+	_, cy := f.modal.View.Cursor()
+	if cy < l {
+		NextLine := cy + 1
+		NextLineStr, _ := f.modal.View.Line(NextLine)
+		fView.setCursor(len(NextLineStr), NextLine)
+		f.Cursor++
+	}
+}
+
+func (f *Form) isCursorEnd() bool {
+	return f.Cursor+1 == len(f.Input)
+}
+
+func (f *Form) Edit(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	switch {
 	case ch != 0 && mod == 0:
 		v.EditWrite(ch)
 	case key == gocui.KeyTab:
-		_, cy := v.Cursor()
-		utils.Info.Println(cy)
-		utils.Info.Println()
-		if cy < l {
-			NextLine := cy + 1
-			NextLineStr, _ := v.Line(NextLine)
-			fView.setCursor(len(NextLineStr), NextLine)
-		} else {
-			f.modal.tab(Ui.G, v)
-		}
+		f.tabInput()
 	case key == gocui.KeyBackspace || key == gocui.KeyBackspace2:
 		cx, _ := v.Cursor()
 		utils.Info.Println(cx)

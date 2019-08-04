@@ -11,7 +11,6 @@ var fView *FormView
 
 type FormView struct {
 	Modal
-	f *Form
 }
 
 func init() {
@@ -21,13 +20,13 @@ func init() {
 	fView.TabSelf = true
 	fView.ShortCuts = []ShortCut{
 		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: fView.hide},
-		// ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: fView.tab},
+		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: fView.tab},
 	}
 }
 
 func (c *FormView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
-	if v, err := g.SetView(c.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2-5, 0); err != nil {
+	if v, err := g.SetView(c.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2-3, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			return err
 		}
@@ -36,8 +35,8 @@ func (c *FormView) Layout(g *gocui.Gui) error {
 		v.Editable = true
 		f := new(Form)
 		v.Editor = gocui.EditorFunc(f.Edit)
+		c.form = f
 		c.View = v
-		c.f = f
 		f.modal = &c.Modal
 		c.initialize()
 	}
@@ -54,14 +53,14 @@ func (c *FormView) initialize() error {
 }
 
 func (c *FormView) setForm() {
-	c.f.marginLeft = 2
-	c.f.labelAlign = ALIGN_RIGHT
-	c.f.labelColor = utils.C_GREEN
-	c.f.SetInput("host", TYPE_TEXT)
-	c.f.SetInput("port", TYPE_TEXT)
-	c.f.SetInput("password", TYPE_PASSWORD)
-	c.f.SetInput("pattern", TYPE_TEXT)
-	c.f.initForm(c.Modal.GView)
+	c.form.marginLeft = 2
+	c.form.labelAlign = ALIGN_RIGHT
+	c.form.labelColor = utils.C_GREEN
+	c.form.SetInput("host", TYPE_TEXT)
+	c.form.SetInput("port", TYPE_TEXT)
+	c.form.SetInput("password", TYPE_PASSWORD)
+	c.form.SetInput("pattern", TYPE_TEXT)
+	c.form.initForm(c.Modal.GView)
 }
 
 func (c *FormView) focus(arg ...interface{}) error {
