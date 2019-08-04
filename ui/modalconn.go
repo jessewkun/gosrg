@@ -21,7 +21,7 @@ func init() {
 	connView.Title = " Create new redis connection "
 	connView.TabSelf = true
 	connView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: connView.CancelmHandler},
+		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: connView.CancelHandler},
 		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: connView.tab},
 		ShortCut{Key: gocui.KeyArrowUp, Level: LOCAL_Y, Handler: connView.up},
 		ShortCut{Key: gocui.KeyArrowDown, Level: LOCAL_Y, Handler: connView.down},
@@ -82,7 +82,7 @@ func (c *ConnView) down(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
-func (c *ConnView) CancelmHandler(g *gocui.Gui, v *gocui.View) error {
+func (c *ConnView) CancelHandler(g *gocui.Gui, v *gocui.View) error {
 	redis.R.ResetCurrent()
 	c.hide(g, v)
 	return nil

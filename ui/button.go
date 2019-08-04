@@ -17,7 +17,7 @@ type ButtonWidget struct {
 
 type ButtonInterfacer interface {
 	ConfirmHandler(g *gocui.Gui, v *gocui.View) error
-	CancelmHandler(g *gocui.Gui, v *gocui.View) error
+	CancelHandler(g *gocui.Gui, v *gocui.View) error
 }
 
 func NewButtonWidget(name string, x, y int, label string, handler func(g *gocui.Gui, v *gocui.View) error) *ButtonWidget {
