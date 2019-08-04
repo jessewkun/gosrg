@@ -190,39 +190,41 @@ func InitUI() {
 
 func Render() {
 	for {
-		res := <-ResultChan
-		for rtype, item := range res {
-			switch rtype {
-			case redis.RES_OUTPUT_COMMAND:
-				fallthrough
-			case redis.RES_OUTPUT_INFO:
-				fallthrough
-			case redis.RES_OUTPUT_ERROR:
-				fallthrough
-			case redis.RES_OUTPUT_RES:
-				Ui.G.Update(func(*gocui.Gui) error {
-					opView.formatOutput(rtype, item)
-					return nil
-				})
-			case redis.RES_KEYS:
-				Ui.G.Update(func(*gocui.Gui) error {
-					kView.formatOutput(item)
-					return nil
-				})
-			case redis.RES_DETAIL:
-				Ui.G.Update(func(*gocui.Gui) error {
-					dView.formatOutput(item)
-					return nil
-				})
-			case redis.RES_INFO:
-				Ui.G.Update(func(*gocui.Gui) error {
-					iView.formatOutput(item)
-					return nil
-				})
-			case redis.RES_EXIT:
-				return
-			default:
-				utils.Error.Println(rtype)
+		select {
+		case res := <-ResultChan:
+			for rtype, item := range res {
+				switch rtype {
+				case redis.RES_OUTPUT_COMMAND:
+					fallthrough
+				case redis.RES_OUTPUT_INFO:
+					fallthrough
+				case redis.RES_OUTPUT_ERROR:
+					fallthrough
+				case redis.RES_OUTPUT_RES:
+					Ui.G.Update(func(*gocui.Gui) error {
+						opView.formatOutput(rtype, item)
+						return nil
+					})
+				case redis.RES_KEYS:
+					Ui.G.Update(func(*gocui.Gui) error {
+						kView.formatOutput(item)
+						return nil
+					})
+				case redis.RES_DETAIL:
+					Ui.G.Update(func(*gocui.Gui) error {
+						dView.formatOutput(item)
+						return nil
+					})
+				case redis.RES_INFO:
+					Ui.G.Update(func(*gocui.Gui) error {
+						iView.formatOutput(item)
+						return nil
+					})
+				case redis.RES_EXIT:
+					return
+				default:
+					utils.Error.Println(res)
+				}
 			}
 		}
 	}
