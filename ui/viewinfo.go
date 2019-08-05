@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"gosrg/ui/base"
 	"gosrg/utils"
 	"strings"
 
@@ -11,15 +12,15 @@ import (
 var iView *InfoView
 
 type InfoView struct {
-	GView
+	base.GView
 }
 
 func init() {
 	iView = new(InfoView)
 	iView.Name = "info"
 	iView.Title = " Info "
-	iView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyCtrlY, Level: LOCAL_Y, Handler: iView.copy},
+	iView.ShortCuts = []base.ShortCut{
+		base.ShortCut{Key: gocui.KeyCtrlY, Level: base.SC_LOCAL_Y, Handler: iView.copy},
 	}
 }
 
@@ -38,7 +39,7 @@ func (i *InfoView) Layout(g *gocui.Gui) error {
 
 func (i *InfoView) formatOutput(argv interface{}) {
 	if info, ok := argv.([]string); ok {
-		i.outputln(utils.Yellow(strings.ToLower(info[0])+":") + info[1])
+		i.Outputln(utils.Yellow(strings.ToLower(info[0])+":") + info[1])
 	} else {
 		opView.error("argv does not contain a variable of type []string")
 	}

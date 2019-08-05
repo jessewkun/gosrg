@@ -3,6 +3,7 @@ package ui
 import (
 	"gosrg/config"
 	"gosrg/redis"
+	"gosrg/ui/base"
 	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
@@ -11,7 +12,7 @@ import (
 var connView *ConnView
 
 type ConnView struct {
-	Modal
+	base.Modal
 }
 
 func init() {
@@ -19,11 +20,11 @@ func init() {
 	connView.Name = "conn"
 	connView.Title = " Create new redis connection "
 	connView.TabSelf = true
-	connView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: connView.CancelHandler},
-		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: connView.tab},
-		ShortCut{Key: gocui.KeyArrowUp, Level: LOCAL_Y, Handler: connView.up},
-		ShortCut{Key: gocui.KeyArrowDown, Level: LOCAL_Y, Handler: connView.down},
+	connView.ShortCuts = []base.ShortCut{
+		base.ShortCut{Key: gocui.KeyEsc, Level: base.SC_GLOBAL_Y, Handler: connView.CancelHandler},
+		base.ShortCut{Key: gocui.KeyTab, Level: base.SC_GLOBAL_Y, Handler: connView.Tab},
+		base.ShortCut{Key: gocui.KeyArrowUp, Level: base.SC_LOCAL_Y, Handler: connView.up},
+		base.ShortCut{Key: gocui.KeyArrowDown, Level: base.SC_LOCAL_Y, Handler: connView.down},
 	}
 }
 
@@ -36,47 +37,48 @@ func (c *ConnView) Layout(g *gocui.Gui) error {
 		v.Title = c.Title
 		v.Wrap = true
 		v.Editable = true
-		f := new(Form)
+		f := new(base.Form)
 		v.Editor = gocui.EditorFunc(f.Edit)
-		c.form = f
+		c.Form = f
 		c.View = v
-		f.modal = &c.Modal
-		c.initialize()
+		f.Modal = &c.Modal
+		c.SetG(g)
+		c.Initialize()
 	}
 	return nil
 }
 
-func (c *ConnView) initialize() error {
-	gView.unbindShortCuts()
-	c.initBtn(c)
-	c.setCurrent(c)
+func (c *ConnView) Initialize() error {
+	gView.UnbindShortCuts()
+	c.InitBtn(c)
+	c.SetCurrent(c)
 	c.setForm()
-	c.bindShortCuts()
+	c.BindShortCuts()
 	c.up(Ui.G, c.View)
 	return nil
 }
 
-func (c *ConnView) newBtns() {
+func (c *ConnView) NewBtns(bi base.ButtonInterfacer) {
 	maxX, maxY := Ui.G.Size()
-	confirm := NewButtonWidget("confirm", maxX/3-5, maxY/3+1, "CONFIRM", c.ConfirmHandler)
-	cancel := NewButtonWidget("cancel", maxX/3+5, maxY/3+1, "CANCEL", c.CancelHandler)
-	c.Buttons = []*ButtonWidget{confirm, cancel}
+	confirm := base.NewButtonWidget(c.G, "confirm", maxX/3-5, maxY/3+1, "CONFIRM", c.ConfirmHandler)
+	cancel := base.NewButtonWidget(c.G, "cancel", maxX/3+5, maxY/3+1, "CANCEL", c.CancelHandler)
+	c.Buttons = []*base.ButtonWidget{confirm, cancel}
 }
 
 func (c *ConnView) setForm() {
-	c.form.marginTop = 1
-	c.form.marginLeft = 2
-	c.form.labelAlign = ALIGN_RIGHT
-	c.form.labelColor = utils.C_GREEN
-	c.form.setInput("HOST", "host", "")
-	c.form.setInput("PORT", "port", "")
-	c.form.setInput("PASSWORD", "pwd", "")
-	c.form.setInput("PATTERN", "pattern", "")
+	c.Form.MarginTop = 1
+	c.Form.MarginLeft = 2
+	c.Form.LabelAlign = base.ALIGN_RIGHT
+	c.Form.LabelColor = utils.C_GREEN
+	c.Form.SetInput("HOST", "host", "")
+	c.Form.SetInput("PORT", "port", "")
+	c.Form.SetInput("PASSWORD", "pwd", "")
+	c.Form.SetInput("PATTERN", "pattern", "")
 }
 
-func (c *ConnView) focus(arg ...interface{}) error {
+func (c *ConnView) Focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
-	tView.output(config.TipsMap[c.Name])
+	tView.Output(config.TipsMap[c.Name])
 	return nil
 }
 
@@ -84,8 +86,8 @@ func (c *ConnView) up(g *gocui.Gui, v *gocui.View) error {
 	l := len(redis.R.History)
 	if redis.R.Current > 0 && redis.R.Current <= l {
 		redis.R.Current--
-		c.form.setInputValue(redis.R.History[redis.R.Current])
-		c.form.initForm()
+		c.Form.SetInputValue(redis.R.History[redis.R.Current])
+		c.Form.InitForm()
 	}
 	return nil
 }
@@ -94,20 +96,21 @@ func (c *ConnView) down(g *gocui.Gui, v *gocui.View) error {
 	l := len(redis.R.History)
 	if redis.R.Current+1 < l {
 		redis.R.Current++
-		c.form.setInputValue(redis.R.History[redis.R.Current])
-		c.form.initForm()
+		c.Form.SetInputValue(redis.R.History[redis.R.Current])
+		c.Form.InitForm()
 	}
 	return nil
 }
 
 func (c *ConnView) CancelHandler(g *gocui.Gui, v *gocui.View) error {
 	redis.R.ResetCurrent()
-	c.hide(g, v)
-	return nil
+	c.HideModal(g, v)
+	gView.BindShortCuts()
+	return Ui.NextView.SetCurrent(Ui.NextView)
 }
 
 func (c *ConnView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
-	res := c.form.submit()
+	res := c.Form.Submit()
 	if res["host"] == redis.R.Host && res["port"] == redis.R.Port {
 		opView.info("The new conn is same as the current conn")
 		return nil
@@ -115,12 +118,12 @@ func (c *ConnView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
 	if err := redis.InitRedis(res["host"], res["port"], res["password"], res["pattern"]); err != nil {
 		opView.error(err.Error())
 	} else {
-		kView.clear()
-		opView.clear()
+		kView.Clear()
+		opView.Clear()
 		RestNextView()
-		c.hide(g, v)
+		c.CancelHandler(g, v)
 		sView.refresh(g, sView.View)
-		kView.initialize()
+		kView.Initialize()
 	}
 	return nil
 }

@@ -1,10 +1,10 @@
-package ui
+package base
 
 import (
 	"gosrg/utils"
 )
 
-func (gv *GView) cursorUp() error {
+func (gv *GView) CursorUp() error {
 	ox, oy := gv.View.Origin()
 	cx, cy := gv.View.Cursor()
 	if err := gv.View.SetCursor(cx, cy-1); err != nil && oy > 0 {
@@ -17,7 +17,7 @@ func (gv *GView) cursorUp() error {
 	return nil
 }
 
-func (gv *GView) cursorDown() error {
+func (gv *GView) CursorDown() error {
 	cx, cy := gv.View.Cursor()
 	ox, oy := gv.View.Origin()
 	lineHeight := gv.View.LinesHeight()
@@ -36,7 +36,7 @@ func (gv *GView) cursorDown() error {
 	return nil
 }
 
-func (gv *GView) cursorBegin() error {
+func (gv *GView) CursorBegin() error {
 	if err := gv.View.SetCursor(0, 0); err != nil {
 		utils.Error.Println(err)
 	}
@@ -47,7 +47,7 @@ func (gv *GView) cursorBegin() error {
 	return nil
 }
 
-func (gv *GView) cursorEnd(flag bool) error {
+func (gv *GView) CursorEnd(flag bool) error {
 	_, row := gv.View.Size()
 	row--
 	lineHeight := gv.View.LinesHeight()
@@ -76,7 +76,7 @@ func (gv *GView) cursorEnd(flag bool) error {
 	return nil
 }
 
-func (gv *GView) setCursor(x int, y int) error {
+func (gv *GView) SetCursor(x int, y int) error {
 	if err := gv.View.SetCursor(x, y); err != nil {
 		// if err := gv.View.SetOrigin(x, y); err != nil {
 		// 	utils.Error.Println(err)

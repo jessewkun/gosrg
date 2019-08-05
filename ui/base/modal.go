@@ -1,4 +1,4 @@
-package ui
+package base
 
 import (
 	"gosrg/utils"
@@ -11,12 +11,12 @@ type Modal struct {
 	TabSelf    bool
 	FocusIndex int
 	Buttons    []*ButtonWidget
-	form       *Form
+	Form       *Form
 }
 
-func (m *Modal) tab(g *gocui.Gui, v *gocui.View) error {
-	if m.form != nil && !m.form.isTabEnd() {
-		m.form.tab()
+func (m *Modal) Tab(g *gocui.Gui, v *gocui.View) error {
+	if m.Form != nil && !m.Form.IsTabEnd() {
+		m.Form.Tab()
 	} else {
 		nextViewName := ""
 		l := len(m.Buttons)
@@ -35,60 +35,62 @@ func (m *Modal) tab(g *gocui.Gui, v *gocui.View) error {
 		} else {
 			nextViewName = m.Buttons[nextIndex].Name
 		}
-		_, err := Ui.G.SetCurrentView(nextViewName)
+		_, err := m.G.SetCurrentView(nextViewName)
 		if err != nil {
 			utils.Error.Println(err)
 			return err
-		} else if nextViewName == m.Name && m.form != nil {
-			m.form.tab()
+		} else if nextViewName == m.Name && m.Form != nil {
+			m.Form.Tab()
 		}
 	}
 	return nil
 }
 
-func (m *Modal) hide(g *gocui.Gui, v *gocui.View) error {
-	m.unbindShortCuts()
-	gView.bindShortCuts()
+func (m *Modal) HideModal(g *gocui.Gui, v *gocui.View) error {
+	m.UnbindShortCuts()
 	for _, b := range m.Buttons {
-		b.unbindShortCuts()
-		if err := Ui.G.DeleteView(b.Name); err != nil {
+		b.UnbindShortCuts()
+		if err := m.G.DeleteView(b.Name); err != nil {
 			utils.Error.Println(err)
 			return err
 		}
 	}
-	if err := Ui.G.DeleteView(m.Name); err != nil {
+	if err := m.G.DeleteView(m.Name); err != nil {
 		utils.Error.Println(err)
 		return err
 	}
-	Ui.NextView.setCurrent(Ui.NextView)
 	m.Buttons = []*ButtonWidget{}
 	m.FocusIndex = 0
-	m.form = nil
+	m.Form = nil
 	return nil
 }
 
 func (m *Modal) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
-	m.hide(g, v)
+	m.HideModal(g, v)
+	utils.Info.Println(2)
+	utils.Info.Println(m)
 	return nil
 }
 
 func (m *Modal) CancelHandler(g *gocui.Gui, v *gocui.View) error {
-	m.hide(g, v)
+	m.HideModal(g, v)
+	utils.Info.Println(1)
+	utils.Info.Println(m)
 	return nil
 }
 
-func (m *Modal) newBtns() {
-	maxX, maxY := Ui.G.Size()
-	confirm := NewButtonWidget("confirm", maxX/3-5, maxY/3-1, "CONFIRM", m.ConfirmHandler)
-	cancel := NewButtonWidget("cancel", maxX/3+5, maxY/3-1, "CANCEL", m.CancelHandler)
+func (m *Modal) NewBtns(bi ButtonInterfacer) {
+	maxX, maxY := m.G.Size()
+	confirm := NewButtonWidget(m.G, "confirm", maxX/3-5, maxY/3-1, "CONFIRM", bi.ConfirmHandler)
+	cancel := NewButtonWidget(m.G, "cancel", maxX/3+5, maxY/3-1, "CANCEL", bi.CancelHandler)
 	m.Buttons = []*ButtonWidget{confirm, cancel}
 }
 
-func (m *Modal) initBtn(bi ButtonInterfacer) error {
-	bi.newBtns()
+func (m *Modal) InitBtn(bi ButtonInterfacer) error {
+	bi.NewBtns(bi)
 	for _, b := range m.Buttons {
-		b.Layout(Ui.G)
+		b.Layout(m.G)
 	}
-	Ui.G.SetCurrentView(m.Buttons[0].Name)
+	m.G.SetCurrentView(m.Buttons[0].Name)
 	return nil
 }

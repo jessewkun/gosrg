@@ -2,6 +2,7 @@ package ui
 
 import (
 	"gosrg/config"
+	"gosrg/ui/base"
 	"gosrg/utils"
 	"strings"
 
@@ -11,7 +12,7 @@ import (
 var pView *ProjectView
 
 type ProjectView struct {
-	GView
+	base.GView
 }
 
 const MAX_LEN = 18
@@ -19,8 +20,8 @@ const MAX_LEN = 18
 func init() {
 	pView = new(ProjectView)
 	pView.Name = "project"
-	pView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.MouseLeft, Level: LOCAL_N, Handler: pView.openGit},
+	pView.ShortCuts = []base.ShortCut{
+		base.ShortCut{Key: gocui.MouseLeft, Level: base.SC_LOCAL_N, Handler: pView.openGit},
 	}
 }
 
@@ -32,12 +33,12 @@ func (p *ProjectView) Layout(g *gocui.Gui) error {
 		}
 		v.Frame = false
 		p.View = v
-		p.initialize()
+		p.Initialize()
 	}
 	return nil
 }
 
-func (p *ProjectView) initialize() error {
+func (p *ProjectView) Initialize() error {
 	str := config.PROJECT_NAME + " " + config.Version
 	l := len(str)
 	if MAX_LEN > l {
@@ -45,7 +46,7 @@ func (p *ProjectView) initialize() error {
 	} else {
 		str = utils.Pink(utils.UnderLine(str))
 	}
-	p.output(str)
+	p.Output(str)
 	return nil
 }
 

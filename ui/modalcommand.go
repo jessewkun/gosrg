@@ -2,6 +2,7 @@ package ui
 
 import (
 	"gosrg/config"
+	"gosrg/ui/base"
 	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
@@ -10,7 +11,7 @@ import (
 var cView *CommandView
 
 type CommandView struct {
-	Modal
+	base.Modal
 }
 
 func init() {
@@ -18,9 +19,9 @@ func init() {
 	cView.Name = "command"
 	cView.Title = " Command "
 	cView.TabSelf = true
-	cView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: cView.hide},
-		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: cView.tab},
+	cView.ShortCuts = []base.ShortCut{
+		base.ShortCut{Key: gocui.KeyEsc, Level: base.SC_GLOBAL_Y, Handler: cView.Hide},
+		base.ShortCut{Key: gocui.KeyTab, Level: base.SC_GLOBAL_Y, Handler: cView.Tab},
 	}
 }
 
@@ -33,44 +34,51 @@ func (c *CommandView) Layout(g *gocui.Gui) error {
 		v.Title = c.Title
 		v.Wrap = true
 		v.Editable = true
-		f := new(Form)
+		f := new(base.Form)
 		v.Editor = gocui.EditorFunc(f.Edit)
-		c.form = f
+		c.Form = f
 		c.View = v
-		f.modal = &c.Modal
-		c.initialize()
+		f.Modal = &c.Modal
+		c.SetG(g)
+		c.Initialize()
 	}
 	return nil
 }
 
-func (c *CommandView) initialize() error {
-	gView.unbindShortCuts()
-	c.initBtn(c)
-	c.setCurrent(c)
+func (c *CommandView) Initialize() error {
+	gView.UnbindShortCuts()
+	c.InitBtn(c)
+	c.SetCurrent(c)
 	c.setForm()
-	c.bindShortCuts()
+	c.BindShortCuts()
 	return nil
 }
 
 func (c *CommandView) setForm() {
-	c.form.marginTop = 1
-	c.form.marginLeft = 2
-	c.form.labelAlign = ALIGN_RIGHT
-	c.form.labelColor = utils.C_GREEN
-	c.form.setInput("COMMAND", "cmd", "")
-	c.form.initForm()
+	c.Form.MarginTop = 1
+	c.Form.MarginLeft = 2
+	c.Form.LabelAlign = base.ALIGN_RIGHT
+	c.Form.LabelColor = utils.C_GREEN
+	c.Form.SetInput("COMMAND", "cmd", "")
+	c.Form.InitForm()
 }
 
-func (c *CommandView) focus(arg ...interface{}) error {
+func (c *CommandView) Focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
-	tView.output(config.TipsMap[c.Name])
+	tView.Output(config.TipsMap[c.Name])
 	return nil
 }
 
+func (c *CommandView) Hide(g *gocui.Gui, v *gocui.View) error {
+	c.Modal.HideModal(g, v)
+	gView.BindShortCuts()
+	return Ui.NextView.SetCurrent(Ui.NextView)
+}
+
 func (c *CommandView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
-	res := c.form.submit()
+	res := c.Form.Submit()
 	opView.info("TODO " + res["cmd"])
-	c.hide(g, v)
+	c.Hide(g, v)
 	// str := utils.Trim(c.View.ViewBuffer())
 	// if str == "" {
 	// 	opView.error("The command is incorrect")

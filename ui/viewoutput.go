@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gosrg/config"
 	"gosrg/redis"
+	"gosrg/ui/base"
 	"gosrg/utils"
 	"strconv"
 
@@ -13,18 +14,18 @@ import (
 var opView *OutputView
 
 type OutputView struct {
-	GView
+	base.GView
 }
 
 func init() {
 	opView = new(OutputView)
 	opView.Name = "output"
 	opView.Title = " Output "
-	opView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyArrowUp, Level: LOCAL_Y, Handler: opView.up},
-		ShortCut{Key: gocui.KeyArrowDown, Level: LOCAL_Y, Handler: opView.down},
-		ShortCut{Key: gocui.KeyCtrlB, Level: LOCAL_Y, Handler: opView.begin},
-		ShortCut{Key: gocui.KeyCtrlE, Level: LOCAL_Y, Handler: opView.end},
+	opView.ShortCuts = []base.ShortCut{
+		base.ShortCut{Key: gocui.KeyArrowUp, Level: base.SC_LOCAL_Y, Handler: opView.up},
+		base.ShortCut{Key: gocui.KeyArrowDown, Level: base.SC_LOCAL_Y, Handler: opView.down},
+		base.ShortCut{Key: gocui.KeyCtrlB, Level: base.SC_LOCAL_Y, Handler: opView.begin},
+		base.ShortCut{Key: gocui.KeyCtrlE, Level: base.SC_LOCAL_Y, Handler: opView.end},
 	}
 }
 
@@ -41,34 +42,34 @@ func (op *OutputView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (op *OutputView) focus(arg ...interface{}) error {
+func (op *OutputView) Focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
-	tView.output(config.TipsMap[op.Name])
+	tView.Output(config.TipsMap[op.Name])
 	return nil
 }
 
 func (op *OutputView) command(str string) {
-	op.outputln(utils.Now() + utils.Bule("[COMMAND]") + str)
+	op.Outputln(utils.Now() + utils.Bule("[COMMAND]") + str)
 	utils.Command.Println(str)
-	op.cursorEnd(false)
+	op.CursorEnd(false)
 }
 
 func (op *OutputView) info(str string) {
-	op.outputln(utils.Now() + utils.Tianqing("[INFO]") + str)
+	op.Outputln(utils.Now() + utils.Tianqing("[INFO]") + str)
 	utils.Info.Println(str)
-	op.cursorEnd(false)
+	op.CursorEnd(false)
 }
 
 func (op *OutputView) res(str string) {
-	op.outputln(utils.Now() + utils.Green("[RESULT]") + str)
+	op.Outputln(utils.Now() + utils.Green("[RESULT]") + str)
 	utils.Result.Println(str)
-	op.cursorEnd(false)
+	op.CursorEnd(false)
 }
 
 func (op *OutputView) error(str string) {
-	op.outputln(utils.Now() + utils.Red("[ERROR]") + str)
+	op.Outputln(utils.Now() + utils.Red("[ERROR]") + str)
 	utils.Error.Println(str)
-	op.cursorEnd(false)
+	op.CursorEnd(false)
 }
 
 func (op *OutputView) formatOutput(rtype int, argv interface{}) {
@@ -92,17 +93,17 @@ func (op *OutputView) formatOutput(rtype int, argv interface{}) {
 }
 
 func (op *OutputView) up(g *gocui.Gui, v *gocui.View) error {
-	return op.cursorUp()
+	return op.CursorUp()
 }
 
 func (op *OutputView) down(g *gocui.Gui, v *gocui.View) error {
-	return op.cursorDown()
+	return op.CursorDown()
 }
 
 func (op *OutputView) begin(g *gocui.Gui, v *gocui.View) error {
-	return op.cursorBegin()
+	return op.CursorBegin()
 }
 
 func (op *OutputView) end(g *gocui.Gui, v *gocui.View) error {
-	return op.cursorEnd(false)
+	return op.CursorEnd(false)
 }

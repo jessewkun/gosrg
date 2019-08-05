@@ -1,4 +1,4 @@
-package ui
+package base
 
 import (
 	"math"
@@ -12,12 +12,12 @@ type Input struct {
 }
 
 func (i *Input) padLabel(f *Form) {
-	if f.done {
+	if f.Done {
 		return
 	}
 	padLen := f.MaxLabel - len(i.Label)
 	if padLen > 0 {
-		switch f.labelAlign {
+		switch f.LabelAlign {
 		case ALIGN_LEFT:
 			i.Label += strings.Repeat(PAD_STR, padLen)
 		case ALIGN_MIDDLE:
@@ -34,7 +34,7 @@ func (i *Input) padLabel(f *Form) {
 			i.Label = strings.Repeat(PAD_STR, padLen) + i.Label
 		}
 	}
-	if f.marginLeft > 0 {
-		i.Label = strings.Repeat(PAD_STR, f.marginLeft) + i.Label
+	if f.MarginLeft > 0 {
+		i.Label = strings.Repeat(PAD_STR, f.MarginLeft) + i.Label
 	}
 }

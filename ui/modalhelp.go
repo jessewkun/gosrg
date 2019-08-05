@@ -2,6 +2,7 @@ package ui
 
 import (
 	"gosrg/config"
+	"gosrg/ui/base"
 
 	"github.com/jessewkun/gocui"
 )
@@ -9,17 +10,17 @@ import (
 var hView *HelpView
 
 type HelpView struct {
-	GView
+	base.GView
 }
 
 func init() {
 	hView = new(HelpView)
 	hView.Name = "help"
 	hView.Title = " Help "
-	hView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyEsc, Level: LOCAL_N, Handler: hView.hide},
-		ShortCut{Key: gocui.KeyArrowUp, Level: LOCAL_Y, Handler: hView.up},
-		ShortCut{Key: gocui.KeyArrowDown, Level: LOCAL_Y, Handler: hView.down},
+	hView.ShortCuts = []base.ShortCut{
+		base.ShortCut{Key: gocui.KeyEsc, Level: base.SC_LOCAL_N, Handler: hView.hide},
+		base.ShortCut{Key: gocui.KeyArrowUp, Level: base.SC_LOCAL_Y, Handler: hView.up},
+		base.ShortCut{Key: gocui.KeyArrowDown, Level: base.SC_LOCAL_Y, Handler: hView.down},
 	}
 }
 
@@ -32,22 +33,23 @@ func (h *HelpView) Layout(g *gocui.Gui) error {
 		v.Title = h.Title
 		v.Wrap = true
 		h.View = v
-		h.initialize()
+		h.SetG(g)
+		h.Initialize()
 	}
 	return nil
 }
 
-func (h *HelpView) initialize() error {
-	gView.unbindShortCuts()
-	h.setCurrent(h)
-	h.bindShortCuts()
-	h.output(config.HELP_CONTENT)
+func (h *HelpView) Initialize() error {
+	gView.UnbindShortCuts()
+	h.SetCurrent(h)
+	h.BindShortCuts()
+	h.Output(config.HELP_CONTENT)
 	return nil
 }
 
-func (h *HelpView) focus(arg ...interface{}) error {
+func (h *HelpView) Focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
-	tView.output(config.TipsMap[h.Name])
+	tView.Output(config.TipsMap[h.Name])
 	return nil
 }
 
@@ -55,16 +57,16 @@ func (h *HelpView) hide(g *gocui.Gui, v *gocui.View) error {
 	if err := Ui.G.DeleteView(h.Name); err != nil {
 		return err
 	}
-	h.unbindShortCuts()
-	gView.bindShortCuts()
-	Ui.NextView.setCurrent(Ui.NextView)
+	h.UnbindShortCuts()
+	gView.BindShortCuts()
+	Ui.NextView.SetCurrent(Ui.NextView)
 	return nil
 }
 
 func (h *HelpView) up(g *gocui.Gui, v *gocui.View) error {
-	return h.cursorUp()
+	return h.CursorUp()
 }
 
 func (h *HelpView) down(g *gocui.Gui, v *gocui.View) error {
-	return h.cursorDown()
+	return h.CursorDown()
 }

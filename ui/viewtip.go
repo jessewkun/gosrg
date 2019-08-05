@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"gosrg/ui/base"
 	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
@@ -9,7 +10,7 @@ import (
 var tView *TipView
 
 type TipView struct {
-	GView
+	base.GView
 }
 
 func init() {
@@ -29,10 +30,10 @@ func (t *TipView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (t *TipView) output(arg interface{}) error {
-	t.clear()
+func (t *TipView) Output(arg interface{}) error {
+	t.Clear()
 	if str, ok := arg.(string); ok {
-		return t.GView.output(utils.Bule(str))
+		return t.GView.Output(utils.Bule(str))
 	}
 	return nil
 }

@@ -1,4 +1,4 @@
-package ui
+package base
 
 import (
 	"gosrg/utils"
@@ -19,18 +19,18 @@ const (
 )
 
 type Form struct {
-	done       bool
-	marginLeft int
-	marginTop  int
-	labelAlign int
-	labelColor int
+	Done       bool
+	MarginLeft int
+	MarginTop  int
+	LabelAlign int
+	LabelColor int
 	MaxLabel   int
-	modal      *Modal
+	Modal      *Modal
 	Cursor     int
 	Input      []*Input
 }
 
-func (f *Form) setInput(label string, name string, value string) {
+func (f *Form) SetInput(label string, name string, value string) {
 	f.Input = append(f.Input, &Input{Label: label, Name: name, Value: value})
 	l := len(label)
 	if l > f.MaxLabel {
@@ -39,9 +39,9 @@ func (f *Form) setInput(label string, name string, value string) {
 }
 
 func (f *Form) initTop() {
-	if f.marginTop > 0 {
-		for i := 0; i < f.marginTop; i++ {
-			f.modal.outputln("")
+	if f.MarginTop > 0 {
+		for i := 0; i < f.MarginTop; i++ {
+			f.Modal.Outputln("")
 		}
 	}
 }
@@ -51,14 +51,14 @@ func (f *Form) initInput() {
 	for k, item := range f.Input {
 		item.padLabel(f)
 		t := utils.Bold(item.Label + LABEL_COLON)
-		if f, ok := utils.ColorFunMap[f.labelColor]; ok {
+		if f, ok := utils.ColorFunMap[f.LabelColor]; ok {
 			t = f(t)
 		}
 		t += item.Value
 		if k+1 == l {
-			f.modal.output(t)
+			f.Modal.Output(t)
 		} else {
-			f.modal.outputln(t)
+			f.Modal.Outputln(t)
 		}
 	}
 }
@@ -66,32 +66,32 @@ func (f *Form) initInput() {
 // The input values are only updated when submit, and the value can be modified but not submitted
 func (f *Form) initCursor() {
 	f.Cursor = 0
-	firstLine, _ := f.modal.View.Line(f.marginTop)
-	f.modal.setCursor(len(firstLine), f.marginTop)
+	firstLine, _ := f.Modal.View.Line(f.MarginTop)
+	f.Modal.SetCursor(len(firstLine), f.MarginTop)
 }
 
-func (f *Form) initForm() error {
-	f.modal.clear()
+func (f *Form) InitForm() error {
+	f.Modal.Clear()
 	f.initTop()
 	f.initInput()
 	f.initCursor()
-	f.done = true
+	f.Done = true
 	return nil
 }
 
-func (f *Form) tab() {
-	_, cy := f.modal.View.Cursor()
+func (f *Form) Tab() {
+	_, cy := f.Modal.View.Cursor()
 	if cy < len(f.Input) {
 		NextLine := cy + 1
-		NextLineStr, _ := f.modal.View.Line(NextLine)
-		f.modal.setCursor(len(NextLineStr), NextLine)
+		NextLineStr, _ := f.Modal.View.Line(NextLine)
+		f.Modal.SetCursor(len(NextLineStr), NextLine)
 		f.Cursor++
 	} else {
 		f.initCursor()
 	}
 }
 
-func (f *Form) isTabEnd() bool {
+func (f *Form) IsTabEnd() bool {
 	return f.Cursor+1 == len(f.Input)
 }
 
@@ -100,7 +100,7 @@ func (f *Form) Edit(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	case ch != 0 && mod == 0:
 		v.EditWrite(ch)
 	case key == gocui.KeyTab:
-		f.tab()
+		f.Tab()
 	case key == gocui.KeyBackspace || key == gocui.KeyBackspace2:
 		cx, _ := v.Cursor()
 		if cx > f.MaxLabel+DEFAULT_CURSOR_MARGIN+len(LABEL_COLON) {
@@ -119,15 +119,15 @@ func (f *Form) Edit(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	}
 }
 
-func (f *Form) reset() {
+func (f *Form) Reset() {
 	for _, i := range f.Input {
 		i.Value = ""
 	}
 }
 
-func (f *Form) setInputValue(data map[string]string) {
+func (f *Form) SetInputValue(data map[string]string) {
 	if len(data) < 1 {
-		f.reset()
+		f.Reset()
 		return
 	}
 	for key, item := range data {
@@ -139,11 +139,11 @@ func (f *Form) setInputValue(data map[string]string) {
 	}
 }
 
-func (f *Form) submit() map[string]string {
+func (f *Form) Submit() map[string]string {
 	l := f.MaxLabel + len(LABEL_COLON) + DEFAULT_CURSOR_MARGIN
 	res := make(map[string]string)
-	buf := f.modal.View.ViewBufferLines()
-	buf = buf[f.marginTop:]
+	buf := f.Modal.View.ViewBufferLines()
+	buf = buf[f.MarginTop:]
 	for key, item := range f.Input {
 		res[item.Name] = utils.Trim(buf[key][l:])
 	}

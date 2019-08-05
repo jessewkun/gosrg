@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gosrg/config"
 	"gosrg/redis"
+	"gosrg/ui/base"
 	"strconv"
 
 	"github.com/atotto/clipboard"
@@ -13,22 +14,22 @@ import (
 var dView *DetailView
 
 type DetailView struct {
-	GView
+	base.GView
 }
 
 func init() {
 	dView = new(DetailView)
 	dView.Name = "detail"
 	dView.Title = " Detail (Normal mode) "
-	dView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyCtrlS, Level: LOCAL_Y, Handler: dView.save},
-		ShortCut{Key: gocui.KeyCtrlY, Level: LOCAL_Y, Handler: dView.copy},
-		ShortCut{Key: gocui.KeyCtrlP, Level: LOCAL_Y, Handler: dView.paste},
-		ShortCut{Key: gocui.KeyCtrlL, Level: LOCAL_Y, Handler: dView.clean},
-		ShortCut{Key: gocui.KeyCtrlB, Level: LOCAL_Y, Handler: dView.begin},
-		ShortCut{Key: gocui.KeyCtrlE, Level: LOCAL_Y, Handler: dView.end},
-		ShortCut{Key: 'i', Level: LOCAL_Y, Handler: dView.insertMode},
-		ShortCut{Key: gocui.KeyEsc, Level: LOCAL_Y, Handler: dView.normalmode},
+	dView.ShortCuts = []base.ShortCut{
+		base.ShortCut{Key: gocui.KeyCtrlS, Level: base.SC_LOCAL_Y, Handler: dView.save},
+		base.ShortCut{Key: gocui.KeyCtrlY, Level: base.SC_LOCAL_Y, Handler: dView.copy},
+		base.ShortCut{Key: gocui.KeyCtrlP, Level: base.SC_LOCAL_Y, Handler: dView.paste},
+		base.ShortCut{Key: gocui.KeyCtrlL, Level: base.SC_LOCAL_Y, Handler: dView.clean},
+		base.ShortCut{Key: gocui.KeyCtrlB, Level: base.SC_LOCAL_Y, Handler: dView.begin},
+		base.ShortCut{Key: gocui.KeyCtrlE, Level: base.SC_LOCAL_Y, Handler: dView.end},
+		base.ShortCut{Key: 'i', Level: base.SC_LOCAL_Y, Handler: dView.insertMode},
+		base.ShortCut{Key: gocui.KeyEsc, Level: base.SC_LOCAL_Y, Handler: dView.normalmode},
 	}
 }
 
@@ -46,9 +47,9 @@ func (d *DetailView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (d *DetailView) focus(arg ...interface{}) error {
+func (d *DetailView) Focus(arg ...interface{}) error {
 	Ui.G.Cursor = true
-	tView.output(config.TipsMap[d.Name])
+	tView.Output(config.TipsMap[d.Name])
 	return nil
 }
 
@@ -62,19 +63,19 @@ func (d *DetailView) save(g *gocui.Gui, v *gocui.View) error {
 }
 
 func (d *DetailView) formatOutput(detail interface{}) {
-	d.clear()
-	d.cursorBegin()
+	d.Clear()
+	d.CursorBegin()
 	switch t := detail.(type) {
 	case int64:
-		d.output(strconv.FormatInt(t, 10))
+		d.Output(strconv.FormatInt(t, 10))
 	case string:
-		d.output(t)
+		d.Output(t)
 	case []string:
 		for i, v := range t {
 			if i+1 == len(t) {
-				d.GView.output(v)
+				d.GView.Output(v)
 			} else {
-				d.GView.outputln(v)
+				d.GView.Outputln(v)
 			}
 		}
 	case map[string]string:
@@ -82,9 +83,9 @@ func (d *DetailView) formatOutput(detail interface{}) {
 		for k, v := range t {
 			i++
 			if i == len(t) {
-				d.GView.output(k + redis.SEPARATOR + v)
+				d.GView.Output(k + redis.SEPARATOR + v)
 			} else {
-				d.GView.outputln(k + redis.SEPARATOR + v)
+				d.GView.Outputln(k + redis.SEPARATOR + v)
 			}
 		}
 	default:
@@ -113,7 +114,7 @@ func (d *DetailView) paste(g *gocui.Gui, v *gocui.View) error {
 		opView.error(err.Error())
 		return err
 	}
-	line := d.getCurrentLine()
+	line := d.GetCurrentLine()
 	cx, cy := d.View.Cursor()
 	newText := line[:cx] + text + line[cx:]
 	d.setLine(cy, newText)
@@ -149,7 +150,7 @@ func (d *DetailView) paste(g *gocui.Gui, v *gocui.View) error {
 	// 	i++
 	// }
 	// _, cy = d.View.Cursor()
-	return d.setCursor(newCx, cy)
+	return d.SetCursor(newCx, cy)
 }
 
 func (d *DetailView) setLine(cy int, text string) error {
@@ -165,15 +166,15 @@ func (d *DetailView) clean(g *gocui.Gui, v *gocui.View) error {
 		opView.info("Clearing is only worked in insert mode, pressing 'i' to switch insert mode")
 		return nil
 	}
-	return d.clear()
+	return d.Clear()
 }
 
 func (d *DetailView) begin(g *gocui.Gui, v *gocui.View) error {
-	return d.cursorBegin()
+	return d.CursorBegin()
 }
 
 func (d *DetailView) end(g *gocui.Gui, v *gocui.View) error {
-	return d.cursorEnd(true)
+	return d.CursorEnd(true)
 }
 
 func (d *DetailView) insertMode(g *gocui.Gui, v *gocui.View) error {

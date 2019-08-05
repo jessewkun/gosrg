@@ -1,7 +1,9 @@
 package ui
 
 import (
+	"gosrg/config"
 	"gosrg/redis"
+	"gosrg/ui/base"
 	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
@@ -10,7 +12,7 @@ import (
 var kdView *KeyDelView
 
 type KeyDelView struct {
-	Modal
+	base.Modal
 }
 
 func init() {
@@ -18,9 +20,9 @@ func init() {
 	kdView.Name = "keydel"
 	kdView.Title = " Delete key "
 	kdView.TabSelf = false
-	kdView.ShortCuts = []ShortCut{
-		ShortCut{Key: gocui.KeyEsc, Level: GLOBAL_Y, Handler: kdView.hide},
-		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: kdView.tab},
+	kdView.ShortCuts = []base.ShortCut{
+		base.ShortCut{Key: gocui.KeyEsc, Level: base.SC_GLOBAL_Y, Handler: kdView.Hide},
+		base.ShortCut{Key: gocui.KeyTab, Level: base.SC_GLOBAL_Y, Handler: kdView.Tab},
 	}
 }
 
@@ -33,25 +35,42 @@ func (kd *KeyDelView) Layout(g *gocui.Gui) error {
 		v.Title = kd.Title
 		v.Wrap = true
 		kd.View = v
-		kd.initialize()
+		kd.SetG(g)
+		kd.Initialize()
 	}
 	return nil
 }
 
-func (kd *KeyDelView) initialize() error {
-	gView.unbindShortCuts()
-	kd.setCurrent(kd)
-	kd.initBtn(kd)
-	kd.bindShortCuts()
-	kd.outputln("")
-	kd.outputln(utils.Red("     Confirm delete `" + redis.R.CurrentKey + "` ?"))
+func (kd *KeyDelView) Focus(arg ...interface{}) error {
+	kd.G.Cursor = false
+	if tip, ok := config.TipsMap[kd.Name]; ok {
+		tView.Output(tip)
+	} else {
+		tView.Clear()
+	}
+	return nil
+}
+
+func (kd *KeyDelView) Hide(g *gocui.Gui, v *gocui.View) error {
+	kd.Modal.HideModal(g, v)
+	gView.BindShortCuts()
+	return Ui.NextView.SetCurrent(Ui.NextView)
+}
+
+func (kd *KeyDelView) Initialize() error {
+	gView.UnbindShortCuts()
+	kd.SetCurrent(kd)
+	kd.InitBtn(kd)
+	kd.BindShortCuts()
+	kd.Outputln("")
+	kd.Outputln(utils.Red("     Confirm delete `" + redis.R.CurrentKey + "` ?"))
 	return nil
 }
 
 func (kd *KeyDelView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
 	redis.R.Exec("del", "")
-	kView.deleteCursorLine()
+	kView.DeleteCursorLine()
 	kView.click(g, v)
-	kd.hide(g, v)
+	kd.Hide(g, v)
 	return nil
 }
