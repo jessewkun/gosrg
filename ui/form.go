@@ -78,9 +78,8 @@ func (f *Form) initForm() error {
 }
 
 func (f *Form) tab() {
-	l := len(f.Input) - 1
 	_, cy := f.modal.View.Cursor()
-	if cy < l {
+	if cy < len(f.Input) {
 		NextLine := cy + 1
 		NextLineStr, _ := f.modal.View.Line(NextLine)
 		f.modal.setCursor(len(NextLineStr), NextLine)

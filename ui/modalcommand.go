@@ -2,6 +2,7 @@ package ui
 
 import (
 	"gosrg/config"
+	"gosrg/utils"
 
 	"github.com/jessewkun/gocui"
 )
@@ -32,7 +33,11 @@ func (c *CommandView) Layout(g *gocui.Gui) error {
 		v.Title = c.Title
 		v.Wrap = true
 		v.Editable = true
+		f := new(Form)
+		v.Editor = gocui.EditorFunc(f.Edit)
+		c.form = f
 		c.View = v
+		f.modal = &c.Modal
 		c.initialize()
 	}
 	return nil
@@ -40,10 +45,20 @@ func (c *CommandView) Layout(g *gocui.Gui) error {
 
 func (c *CommandView) initialize() error {
 	gView.unbindShortCuts()
-	c.btn(c)
+	c.initBtn(c)
 	c.setCurrent(c)
+	c.setForm()
 	c.bindShortCuts()
 	return nil
+}
+
+func (c *CommandView) setForm() {
+	c.form.marginTop = 1
+	c.form.marginLeft = 2
+	c.form.labelAlign = ALIGN_RIGHT
+	c.form.labelColor = utils.C_GREEN
+	c.form.setInput("COMMAND", "cmd", "")
+	c.form.initForm()
 }
 
 func (c *CommandView) focus(arg ...interface{}) error {
@@ -53,7 +68,8 @@ func (c *CommandView) focus(arg ...interface{}) error {
 }
 
 func (c *CommandView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
-	opView.info("TODO")
+	res := c.form.submit()
+	opView.info("TODO " + res["cmd"])
 	c.hide(g, v)
 	// str := utils.Trim(c.View.ViewBuffer())
 	// if str == "" {

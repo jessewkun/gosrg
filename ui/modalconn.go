@@ -29,7 +29,7 @@ func init() {
 
 func (c *ConnView) Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
-	if v, err := g.SetView(c.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2-5, 0); err != nil {
+	if v, err := g.SetView(c.Name, maxX/3-10, maxY/3-6, maxX/2+40, maxY/2-3, 0); err != nil {
 		if !gocui.IsUnknownView(err) {
 			return err
 		}
@@ -48,7 +48,7 @@ func (c *ConnView) Layout(g *gocui.Gui) error {
 
 func (c *ConnView) initialize() error {
 	gView.unbindShortCuts()
-	c.btn(c)
+	c.initBtn(c)
 	c.setCurrent(c)
 	c.setForm()
 	c.bindShortCuts()
@@ -56,7 +56,15 @@ func (c *ConnView) initialize() error {
 	return nil
 }
 
+func (c *ConnView) newBtns() {
+	maxX, maxY := Ui.G.Size()
+	confirm := NewButtonWidget("confirm", maxX/3-5, maxY/3+1, "CONFIRM", c.ConfirmHandler)
+	cancel := NewButtonWidget("cancel", maxX/3+5, maxY/3+1, "CANCEL", c.CancelHandler)
+	c.Buttons = []*ButtonWidget{confirm, cancel}
+}
+
 func (c *ConnView) setForm() {
+	c.form.marginTop = 1
 	c.form.marginLeft = 2
 	c.form.labelAlign = ALIGN_RIGHT
 	c.form.labelColor = utils.C_GREEN

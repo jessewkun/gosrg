@@ -46,7 +46,7 @@ func (kf *KeyFilterView) Layout(g *gocui.Gui) error {
 
 func (kf *KeyFilterView) initialize() error {
 	gView.unbindShortCuts()
-	kf.btn(kf)
+	kf.initBtn(kf)
 	kf.setCurrent(kf)
 	kf.setForm()
 	kf.bindShortCuts()
@@ -72,7 +72,6 @@ func (kf *KeyFilterView) focus(arg ...interface{}) error {
 
 func (kf *KeyFilterView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
 	res := kf.form.submit()
-	utils.Info.Println(res)
 	if len(res["pattern"]) == 0 {
 		res["pattern"] = "*"
 	}

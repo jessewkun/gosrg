@@ -77,10 +77,15 @@ func (m *Modal) CancelHandler(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
-func (m *Modal) btn(bi ButtonInterfacer) error {
+func (m *Modal) newBtns() {
 	maxX, maxY := Ui.G.Size()
-	m.Buttons = append(m.Buttons, NewButtonWidget("confirm", maxX/3-5, maxY/3-1, "CONFIRM", bi.ConfirmHandler))
-	m.Buttons = append(m.Buttons, NewButtonWidget("cancel", maxX/3+5, maxY/3-1, "CANCEL", bi.CancelHandler))
+	confirm := NewButtonWidget("confirm", maxX/3-5, maxY/3-1, "CONFIRM", m.ConfirmHandler)
+	cancel := NewButtonWidget("cancel", maxX/3+5, maxY/3-1, "CANCEL", m.CancelHandler)
+	m.Buttons = []*ButtonWidget{confirm, cancel}
+}
+
+func (m *Modal) initBtn(bi ButtonInterfacer) error {
+	bi.newBtns()
 	for _, b := range m.Buttons {
 		b.Layout(Ui.G)
 	}

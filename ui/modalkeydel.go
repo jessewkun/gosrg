@@ -41,7 +41,7 @@ func (kd *KeyDelView) Layout(g *gocui.Gui) error {
 func (kd *KeyDelView) initialize() error {
 	gView.unbindShortCuts()
 	kd.setCurrent(kd)
-	kd.btn(kd)
+	kd.initBtn(kd)
 	kd.bindShortCuts()
 	kd.outputln("")
 	kd.outputln(utils.Red("     Confirm delete `" + redis.R.CurrentKey + "` ?"))
