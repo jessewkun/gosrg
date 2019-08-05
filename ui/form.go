@@ -140,6 +140,7 @@ func (f *Form) submit() map[string]string {
 	l := f.MaxLabel + len(LABEL_COLON) + DEFAULT_CURSOR_MARGIN
 	res := make(map[string]string)
 	buf := f.modal.View.ViewBufferLines()
+	buf = buf[f.marginTop:]
 	for key, item := range f.Input {
 		res[item.Name] = utils.Trim(buf[key][l:])
 	}
