@@ -1,7 +1,7 @@
 GO := GO111MODULE=on go
 BINARY_NAME = gosrg
 BINARY_PATH = /usr/local/bin/
-BUILD_VERSION := v0.1.3
+BUILD_VERSION := v0.1.4
 BUILD_TIME    := $(shell date "+%F %T")
 COMMIT_SHA1   := $(shell git rev-parse HEAD )
 
