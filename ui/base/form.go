@@ -19,17 +19,35 @@ const (
 )
 
 type Form struct {
-	Done       bool
+	// Done used to mark whether form has been initialized
+	Done bool
+
+	// Default left margin
 	MarginLeft int
-	MarginTop  int
+
+	// Default top margin
+	MarginTop int
+
+	// Label alignment, options: ALIGN_LEFT, ALIGN_MIDDLE, ALIGN_RIGHT
 	LabelAlign int
+
+	// Label color, options: utils/tools.go
 	LabelColor int
-	MaxLabel   int
-	Modal      *Modal
-	Cursor     int
-	Input      []*Input
+
+	// MaxLabel means Label maximum length, Used to calculate the label fill length
+	MaxLabel int
+
+	// Modal used to mark current form belongs to which modal
+	Modal *Modal
+
+	// Cursor used to mark which input the cursor is located in
+	Cursor int
+
+	// form input array
+	Input []*Input
 }
 
+// SetInput used to add new input to current form
 func (f *Form) SetInput(label string, name string, value string) {
 	f.Input = append(f.Input, &Input{Label: label, Name: name, Value: value})
 	l := len(label)
@@ -38,6 +56,7 @@ func (f *Form) SetInput(label string, name string, value string) {
 	}
 }
 
+// initTop used to set top margin
 func (f *Form) initTop() {
 	if f.MarginTop > 0 {
 		for i := 0; i < f.MarginTop; i++ {
@@ -46,6 +65,7 @@ func (f *Form) initTop() {
 	}
 }
 
+// initInput used to set top input array
 func (f *Form) initInput() {
 	l := len(f.Input)
 	for k, item := range f.Input {
@@ -63,6 +83,7 @@ func (f *Form) initInput() {
 	}
 }
 
+// initCursor used to set cursor position when form is displayed
 // The input values are only updated when submit, and the value can be modified but not submitted
 func (f *Form) initCursor() {
 	f.Cursor = 0
@@ -70,6 +91,7 @@ func (f *Form) initCursor() {
 	f.Modal.SetCursor(len(firstLine), f.MarginTop)
 }
 
+// InitForm used to initialize the form
 func (f *Form) InitForm() error {
 	f.Modal.Clear()
 	f.initTop()
@@ -79,6 +101,7 @@ func (f *Form) InitForm() error {
 	return nil
 }
 
+// Tab used to move form's sursor
 func (f *Form) Tab() {
 	_, cy := f.Modal.View.Cursor()
 	if cy < len(f.Input) {
@@ -91,10 +114,12 @@ func (f *Form) Tab() {
 	}
 }
 
+// IsTabEnd used to return whether cursor has moved to the end of form
 func (f *Form) IsTabEnd() bool {
 	return f.Cursor+1 == len(f.Input)
 }
 
+// Edit : Modal editor
 func (f *Form) Edit(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	switch {
 	case ch != 0 && mod == 0:
@@ -119,12 +144,14 @@ func (f *Form) Edit(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	}
 }
 
+// Reset used to clear the value of the form
 func (f *Form) Reset() {
 	for _, i := range f.Input {
 		i.Value = ""
 	}
 }
 
+// SetInputValue used to set the value of the form
 func (f *Form) SetInputValue(data map[string]string) {
 	if len(data) < 1 {
 		f.Reset()
@@ -139,6 +166,7 @@ func (f *Form) SetInputValue(data map[string]string) {
 	}
 }
 
+// Submit will return the value of the form
 func (f *Form) Submit() map[string]string {
 	l := f.MaxLabel + len(LABEL_COLON) + DEFAULT_CURSOR_MARGIN
 	res := make(map[string]string)

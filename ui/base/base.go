@@ -26,6 +26,7 @@ type GView struct {
 	ShortCuts []ShortCut
 }
 
+// ShortCut level
 const (
 	SC_GLOBAL_N = iota // global and cannnot unbind
 	SC_GLOBAL_Y        // global and can unbind

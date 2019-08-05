@@ -4,6 +4,7 @@ import (
 	"gosrg/utils"
 )
 
+// CursorUp used to move the cursor up
 func (gv *GView) CursorUp() error {
 	ox, oy := gv.View.Origin()
 	cx, cy := gv.View.Cursor()
@@ -17,6 +18,7 @@ func (gv *GView) CursorUp() error {
 	return nil
 }
 
+// CursorDown used to move the cursor down
 func (gv *GView) CursorDown() error {
 	cx, cy := gv.View.Cursor()
 	ox, oy := gv.View.Origin()
@@ -36,6 +38,7 @@ func (gv *GView) CursorDown() error {
 	return nil
 }
 
+// CursorBegin used to move the cursor to the begining of the view
 func (gv *GView) CursorBegin() error {
 	if err := gv.View.SetCursor(0, 0); err != nil {
 		utils.Error.Println(err)
@@ -47,6 +50,9 @@ func (gv *GView) CursorBegin() error {
 	return nil
 }
 
+// CursorEnd used to move the cursor to the end of the view
+// if flag is true, the cursor will moved to the end of last line,
+// if flag is false, the cursor will moved to the beginning of last line
 func (gv *GView) CursorEnd(flag bool) error {
 	_, row := gv.View.Size()
 	row--
@@ -76,6 +82,7 @@ func (gv *GView) CursorEnd(flag bool) error {
 	return nil
 }
 
+// SetCursor used to set cursor's position
 func (gv *GView) SetCursor(x int, y int) error {
 	if err := gv.View.SetCursor(x, y); err != nil {
 		// if err := gv.View.SetOrigin(x, y); err != nil {

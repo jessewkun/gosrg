@@ -6,11 +6,17 @@ import (
 )
 
 type Input struct {
+	// input label
 	Label string
-	Name  string
+
+	// input name
+	Name string
+
+	// input value
 	Value string
 }
 
+// padLabel used to fill the label to the maximum length
 func (i *Input) padLabel(f *Form) {
 	if f.Done {
 		return
