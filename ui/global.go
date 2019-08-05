@@ -18,7 +18,6 @@ func init() {
 	gView.ShortCuts = []ShortCut{
 		ShortCut{Key: gocui.KeyCtrlC, Level: GLOBAL_N, Handler: gView.quit},
 		ShortCut{Key: 'h', Level: GLOBAL_N, Handler: gView.showHelp},
-		ShortCut{Key: '1', Level: GLOBAL_N, Handler: gView.showForm},
 		ShortCut{Key: gocui.KeyTab, Level: GLOBAL_Y, Handler: gView.tab},
 		ShortCut{Key: gocui.KeyCtrlD, Level: GLOBAL_Y, Handler: gView.showDb},
 		ShortCut{Key: gocui.KeyCtrlN, Level: GLOBAL_Y, Handler: gView.newConn},
@@ -54,8 +53,4 @@ func (gl *GLobalView) showCommand(g *gocui.Gui, v *gocui.View) error {
 
 func (gl *GLobalView) newConn(g *gocui.Gui, v *gocui.View) error {
 	return connView.Layout(g)
-}
-
-func (gl *GLobalView) showForm(g *gocui.Gui, v *gocui.View) error {
-	return fView.Layout(g)
 }

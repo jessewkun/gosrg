@@ -2,8 +2,6 @@ package ui
 
 import (
 	"gosrg/utils"
-	"math"
-	"strings"
 
 	"github.com/jessewkun/gocui"
 )
@@ -15,14 +13,13 @@ const (
 )
 
 const (
-	TYPE_TEXT             = "text"
-	TYPE_PASSWORD         = "password"
 	PAD_STR               = " "
 	LABEL_COLON           = " : "
 	DEFAULT_CURSOR_MARGIN = 2
 )
 
 type Form struct {
+	done       bool
 	marginLeft int
 	marginTop  int
 	labelAlign int
@@ -33,97 +30,65 @@ type Form struct {
 	Input      []*Input
 }
 
-type Input struct {
-	Name string
-	Type string
-}
-
-func (f *Form) tab(g *gocui.Gui, v *gocui.View) error {
-
-	return nil
-}
-
-func (f *Form) SetInput(name string, itype string) {
-	f.Input = append(f.Input, &Input{Name: name, Type: itype})
-	l := len(name)
+func (f *Form) setInput(label string, name string, value string) {
+	f.Input = append(f.Input, &Input{Label: label, Name: name, Value: value})
+	l := len(label)
 	if l > f.MaxLabel {
 		f.MaxLabel = l
 	}
 }
 
-func (i *Input) padLabel(f *Form) {
-	padLen := f.MaxLabel - len(i.Name)
-	if padLen > 0 {
-		switch f.labelAlign {
-		case ALIGN_LEFT:
-			i.Name += strings.Repeat(PAD_STR, padLen)
-		case ALIGN_MIDDLE:
-			if padLen%2 != 0 {
-				t := int(math.Floor(float64(padLen / 2)))
-				left := strings.Repeat(PAD_STR, t)
-				right := strings.Repeat(PAD_STR, t+1)
-				i.Name = left + i.Name + right
-			} else {
-				t := strings.Repeat(PAD_STR, padLen/2)
-				i.Name = t + i.Name + t
-			}
-		case ALIGN_RIGHT:
-			i.Name = strings.Repeat(PAD_STR, padLen) + i.Name
-		}
-	}
-	if f.marginLeft > 0 {
-		i.Name = strings.Repeat(PAD_STR, f.marginLeft) + i.Name
-	}
-}
-
-func (f *Form) initTop(v GView) {
+func (f *Form) initTop() {
 	if f.marginTop > 0 {
 		for i := 0; i < f.marginTop; i++ {
-			v.outputln("")
+			f.modal.outputln("")
 		}
 	}
 }
 
-func (f *Form) initInput(v GView) {
+func (f *Form) initInput() {
 	l := len(f.Input)
 	for k, item := range f.Input {
 		item.padLabel(f)
-		t := utils.Bold(item.Name + LABEL_COLON)
+		t := utils.Bold(item.Label + LABEL_COLON)
 		if f, ok := utils.ColorFunMap[f.labelColor]; ok {
 			t = f(t)
 		}
+		t += item.Value
 		if k+1 == l {
-			v.output(t)
+			f.modal.output(t)
 		} else {
-			v.outputln(t)
+			f.modal.outputln(t)
 		}
 	}
 }
 
-func (f *Form) initCursor(v GView) {
+func (f *Form) initCursor() {
 	f.Cursor = 0
-	v.setCursor(f.MaxLabel+len(LABEL_COLON)+DEFAULT_CURSOR_MARGIN, f.marginTop)
+	f.modal.setCursor(f.MaxLabel+len(LABEL_COLON)+DEFAULT_CURSOR_MARGIN+len(f.Input[0].Value), f.marginTop)
 }
 
-func (f *Form) initForm(v GView) error {
-	f.initTop(v)
-	f.initInput(v)
-	f.initCursor(v)
+func (f *Form) initForm() error {
+	f.modal.clear()
+	f.initTop()
+	f.initInput()
+	f.initCursor()
+	f.done = true
 	return nil
 }
 
-func (f *Form) tabInput() {
+func (f *Form) tab() {
 	l := len(f.Input) - 1
 	_, cy := f.modal.View.Cursor()
 	if cy < l {
 		NextLine := cy + 1
 		NextLineStr, _ := f.modal.View.Line(NextLine)
-		fView.setCursor(len(NextLineStr), NextLine)
+		f.modal.setCursor(len(NextLineStr), NextLine)
 		f.Cursor++
 	}
 }
 
-func (f *Form) isCursorEnd() bool {
+func (f *Form) isTabEnd() bool {
 	return f.Cursor+1 == len(f.Input)
 }
 
@@ -132,12 +97,51 @@ func (f *Form) Edit(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	case ch != 0 && mod == 0:
 		v.EditWrite(ch)
 	case key == gocui.KeyTab:
-		f.tabInput()
+		f.tab()
 	case key == gocui.KeyBackspace || key == gocui.KeyBackspace2:
 		cx, _ := v.Cursor()
-		utils.Info.Println(cx)
 		if cx > f.MaxLabel+DEFAULT_CURSOR_MARGIN+len(LABEL_COLON) {
 			v.EditDelete(true)
 		}
+	case key == gocui.KeyArrowLeft:
+		cx, _ := v.Cursor()
+		if cx > f.MaxLabel+DEFAULT_CURSOR_MARGIN+len(LABEL_COLON) {
+			v.MoveCursor(-1, 0, false)
+		}
+	case key == gocui.KeyArrowRight:
+		cx, cy := v.Cursor()
+		if cx < f.MaxLabel+DEFAULT_CURSOR_MARGIN+len(LABEL_COLON)+len(f.Input[cy].Value) {
+			v.MoveCursor(1, 0, false)
+		}
 	}
+}
+
+func (f *Form) reset() {
+	for _, i := range f.Input {
+		i.Value = ""
+	}
+}
+
+func (f *Form) setInputValue(data map[string]string) {
+	if len(data) < 1 {
+		f.reset()
+		return
+	}
+	for key, item := range data {
+		for _, i := range f.Input {
+			if key == i.Name {
+				i.Value = item
+			}
+		}
+	}
+}
+
+func (f *Form) submit() map[string]string {
+	l := f.MaxLabel + len(LABEL_COLON) + DEFAULT_CURSOR_MARGIN
+	res := make(map[string]string)
+	buf := f.modal.View.ViewBufferLines()
+	for key, item := range f.Input {
+		res[item.Name] = utils.Trim(buf[key][l:])
+	}
+	return res
 }

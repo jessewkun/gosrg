@@ -45,7 +45,7 @@ type Redis struct {
 	CurrentKeyType string
 	Pattern        string
 	ResultChan     chan map[int]interface{}
-	History        []string
+	History        []map[string]string
 	Current        int
 }
 
@@ -100,12 +100,24 @@ func InitRedis(host string, port string, pwd string, pattern string) error {
 }
 
 func (r *Redis) SetHistory() {
-	temp := r.Host + ":" + r.Port + ":" + r.Pwd + ":" + r.Pattern
+	t := map[string]string{
+		"host":    r.Host,
+		"port":    r.Port,
+		"pwd":     r.Pwd,
+		"pattern": r.Pattern,
+	}
 	l := len(r.History)
+	temp := map[string]string{}
 	if l > 0 {
-		r.History = append(r.History[:l-1], temp, "")
+		for _, item := range r.History {
+			if item["host"] == t["host"] && item["port"] == t["port"] {
+				r.ResetCurrent()
+				return
+			}
+		}
+		r.History = append(r.History[:l-1], t, temp)
 	} else {
-		r.History = append(r.History, temp, "")
+		r.History = append(r.History, t, temp)
 	}
 	r.ResetCurrent()
 }

@@ -4,7 +4,6 @@ import (
 	"gosrg/config"
 	"gosrg/redis"
 	"gosrg/utils"
-	"strings"
 
 	"github.com/jessewkun/gocui"
 )
@@ -37,7 +36,11 @@ func (c *ConnView) Layout(g *gocui.Gui) error {
 		v.Title = c.Title
 		v.Wrap = true
 		v.Editable = true
+		f := new(Form)
+		v.Editor = gocui.EditorFunc(f.Edit)
+		c.form = f
 		c.View = v
+		f.modal = &c.Modal
 		c.initialize()
 	}
 	return nil
@@ -47,9 +50,20 @@ func (c *ConnView) initialize() error {
 	gView.unbindShortCuts()
 	c.btn(c)
 	c.setCurrent(c)
+	c.setForm()
 	c.bindShortCuts()
 	c.up(Ui.G, c.View)
 	return nil
+}
+
+func (c *ConnView) setForm() {
+	c.form.marginLeft = 2
+	c.form.labelAlign = ALIGN_RIGHT
+	c.form.labelColor = utils.C_GREEN
+	c.form.setInput("HOST", "host", "")
+	c.form.setInput("PORT", "port", "")
+	c.form.setInput("PASSWORD", "pwd", "")
+	c.form.setInput("PATTERN", "pattern", "")
 }
 
 func (c *ConnView) focus(arg ...interface{}) error {
@@ -62,10 +76,8 @@ func (c *ConnView) up(g *gocui.Gui, v *gocui.View) error {
 	l := len(redis.R.History)
 	if redis.R.Current > 0 && redis.R.Current <= l {
 		redis.R.Current--
-		temp := redis.R.History[redis.R.Current]
-		c.clear()
-		c.output(temp)
-		c.cursorEnd(true)
+		c.form.setInputValue(redis.R.History[redis.R.Current])
+		c.form.initForm()
 	}
 	return nil
 }
@@ -74,10 +86,8 @@ func (c *ConnView) down(g *gocui.Gui, v *gocui.View) error {
 	l := len(redis.R.History)
 	if redis.R.Current+1 < l {
 		redis.R.Current++
-		temp := redis.R.History[redis.R.Current]
-		c.clear()
-		c.output(temp)
-		c.cursorEnd(true)
+		c.form.setInputValue(redis.R.History[redis.R.Current])
+		c.form.initForm()
 	}
 	return nil
 }
@@ -89,21 +99,12 @@ func (c *ConnView) CancelHandler(g *gocui.Gui, v *gocui.View) error {
 }
 
 func (c *ConnView) ConfirmHandler(g *gocui.Gui, v *gocui.View) error {
-	str := utils.Trim(c.View.ViewBuffer())
-	temp := [4]string{}
-	temp2 := strings.Split(str, ":")
-	if len(temp2) != 2 && len(temp2) != 3 && len(temp2) != 4 {
-		opView.error("The parameter is incorrect, please use the colon to splicing the host, port, password and pattern")
-		return nil
-	}
-	if temp2[0] == redis.R.Host && temp2[1] == redis.R.Port {
+	res := c.form.submit()
+	if res["host"] == redis.R.Host && res["port"] == redis.R.Port {
 		opView.info("The new conn is same as the current conn")
 		return nil
 	}
-	for i, v := range temp2 {
-		temp[i] = v
-	}
-	if err := redis.InitRedis(temp[0], temp[1], temp[2], temp[3]); err != nil {
+	if err := redis.InitRedis(res["host"], res["port"], res["password"], res["pattern"]); err != nil {
 		opView.error(err.Error())
 	} else {
 		kView.clear()

@@ -15,17 +15,16 @@ type Modal struct {
 }
 
 func (m *Modal) tab(g *gocui.Gui, v *gocui.View) error {
-	nextViewName := ""
-	l := len(m.Buttons)
-	if m.TabSelf {
-		l++
-	}
-	nextIndex := 0
-	if m.form != nil && !m.form.isCursorEnd() {
-		m.form.tabInput()
+	if m.form != nil && !m.form.isTabEnd() {
+		m.form.tab()
 	} else {
+		nextViewName := ""
+		l := len(m.Buttons)
+		if m.TabSelf {
+			l++
+		}
 		m.FocusIndex++
-		nextIndex = m.FocusIndex % l
+		nextIndex := m.FocusIndex % l
 		if m.TabSelf {
 			if nextIndex == 0 {
 				nextViewName = m.Name
@@ -41,7 +40,7 @@ func (m *Modal) tab(g *gocui.Gui, v *gocui.View) error {
 			utils.Error.Println(err)
 			return err
 		} else if nextViewName == m.Name && m.form != nil {
-			m.form.initCursor(m.GView)
+			m.form.initCursor()
 		}
 	}
 	return nil
@@ -64,6 +63,7 @@ func (m *Modal) hide(g *gocui.Gui, v *gocui.View) error {
 	Ui.NextView.setCurrent(Ui.NextView)
 	m.Buttons = []*ButtonWidget{}
 	m.FocusIndex = 0
+	m.form = nil
 	return nil
 }
 
