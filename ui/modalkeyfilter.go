@@ -75,7 +75,6 @@ func (kf *KeyFilterView) Focus() error {
 func (kf *KeyFilterView) CancelHandler(g *gocui.Gui, v *gocui.View) error {
 	kf.HideModal(g, v)
 	gView.BindShortCuts()
-	utils.Info.Println(Ui.NextView)
 	return Ui.NextView.SetCurrent(Ui.NextView)
 }
 
