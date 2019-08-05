@@ -40,7 +40,7 @@ func (m *Modal) tab(g *gocui.Gui, v *gocui.View) error {
 			utils.Error.Println(err)
 			return err
 		} else if nextViewName == m.Name && m.form != nil {
-			m.form.initCursor()
+			m.form.tab()
 		}
 	}
 	return nil

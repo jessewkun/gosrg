@@ -63,9 +63,11 @@ func (f *Form) initInput() {
 	}
 }
 
+// The input values are only updated when submit, and the value can be modified but not submitted
 func (f *Form) initCursor() {
 	f.Cursor = 0
-	f.modal.setCursor(f.MaxLabel+len(LABEL_COLON)+DEFAULT_CURSOR_MARGIN+len(f.Input[0].Value), f.marginTop)
+	firstLine, _ := f.modal.View.Line(f.marginTop)
+	f.modal.setCursor(len(firstLine), f.marginTop)
 }
 
 func (f *Form) initForm() error {
@@ -84,6 +86,8 @@ func (f *Form) tab() {
 		NextLineStr, _ := f.modal.View.Line(NextLine)
 		f.modal.setCursor(len(NextLineStr), NextLine)
 		f.Cursor++
+	} else {
+		f.initCursor()
 	}
 }
 
