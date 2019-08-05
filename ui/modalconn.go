@@ -76,7 +76,7 @@ func (c *ConnView) setForm() {
 	c.Form.SetInput("PATTERN", "pattern", "")
 }
 
-func (c *ConnView) Focus(arg ...interface{}) error {
+func (c *ConnView) Focus() error {
 	Ui.G.Cursor = true
 	tView.Output(config.TipsMap[c.Name])
 	return nil

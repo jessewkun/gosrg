@@ -42,7 +42,7 @@ func (op *OutputView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (op *OutputView) Focus(arg ...interface{}) error {
+func (op *OutputView) Focus() error {
 	Ui.G.Cursor = true
 	tView.Output(config.TipsMap[op.Name])
 	return nil

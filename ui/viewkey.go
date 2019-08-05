@@ -69,7 +69,7 @@ func (k *KeyView) formatOutput(argv interface{}) {
 	}
 }
 
-func (k *KeyView) Focus(arg ...interface{}) error {
+func (k *KeyView) Focus() error {
 	Ui.G.Cursor = true
 	tView.Output(config.TipsMap[k.Name])
 	// return k.click(Ui.G, k.View)

@@ -63,7 +63,7 @@ func (c *CommandView) setForm() {
 	c.Form.InitForm()
 }
 
-func (c *CommandView) Focus(arg ...interface{}) error {
+func (c *CommandView) Focus() error {
 	Ui.G.Cursor = true
 	tView.Output(config.TipsMap[c.Name])
 	return nil

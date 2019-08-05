@@ -47,7 +47,7 @@ func (h *HelpView) Initialize() error {
 	return nil
 }
 
-func (h *HelpView) Focus(arg ...interface{}) error {
+func (h *HelpView) Focus() error {
 	Ui.G.Cursor = true
 	tView.Output(config.TipsMap[h.Name])
 	return nil

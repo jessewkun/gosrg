@@ -64,7 +64,7 @@ func (kf *KeyFilterView) setForm() {
 	kf.Form.InitForm()
 }
 
-func (kf *KeyFilterView) Focus(arg ...interface{}) error {
+func (kf *KeyFilterView) Focus() error {
 	Ui.G.Cursor = true
 	kf.Output(redis.R.Pattern)
 	kf.CursorEnd(true)

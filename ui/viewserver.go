@@ -47,7 +47,7 @@ func (s *ServerView) Initialize() error {
 	return nil
 }
 
-func (s *ServerView) Focus(arg ...interface{}) error {
+func (s *ServerView) Focus() error {
 	Ui.G.Cursor = false
 	s.Initialize()
 	tView.Output(config.TipsMap[s.Name])

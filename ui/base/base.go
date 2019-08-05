@@ -12,8 +12,8 @@ type GInterfacer interface {
 	SetG(g *gocui.Gui)
 	Initialize() error
 	BindShortCuts() error
-	Focus(arg ...interface{}) error
-	SetCurrent(v GInterfacer, arg ...interface{}) error
+	Focus() error
+	SetCurrent(v GInterfacer) error
 	Output(arg interface{}) error
 	Outputln(arg interface{}) error
 }
@@ -105,17 +105,17 @@ func (gv *GView) Outputln(arg interface{}) error {
 	return nil
 }
 
-func (gv *GView) Focus(arg ...interface{}) error {
+func (gv *GView) Focus() error {
 	gv.G.Cursor = false
 	return nil
 }
 
-func (gv *GView) SetCurrent(v GInterfacer, arg ...interface{}) error {
+func (gv *GView) SetCurrent(v GInterfacer) error {
 	if _, err := gv.G.SetCurrentView(gv.Name); err != nil {
 		utils.Error.Println(err)
 		return err
 	}
-	v.Focus(arg...)
+	v.Focus()
 	return nil
 }
 

@@ -47,7 +47,7 @@ func (d *DetailView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (d *DetailView) Focus(arg ...interface{}) error {
+func (d *DetailView) Focus() error {
 	Ui.G.Cursor = true
 	tView.Output(config.TipsMap[d.Name])
 	return nil

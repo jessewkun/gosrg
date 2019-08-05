@@ -61,7 +61,7 @@ func (db *DbView) Initialize() error {
 	return nil
 }
 
-func (db *DbView) Focus(arg ...interface{}) error {
+func (db *DbView) Focus() error {
 	db.G.Cursor = false
 	if tip, ok := config.TipsMap[db.Name]; ok {
 		tView.Output(tip)

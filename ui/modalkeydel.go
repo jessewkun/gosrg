@@ -41,7 +41,7 @@ func (kd *KeyDelView) Layout(g *gocui.Gui) error {
 	return nil
 }
 
-func (kd *KeyDelView) Focus(arg ...interface{}) error {
+func (kd *KeyDelView) Focus() error {
 	kd.G.Cursor = false
 	if tip, ok := config.TipsMap[kd.Name]; ok {
 		tView.Output(tip)
