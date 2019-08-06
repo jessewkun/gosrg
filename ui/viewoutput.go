@@ -49,25 +49,25 @@ func (op *OutputView) Focus() error {
 }
 
 func (op *OutputView) command(str string) {
-	op.Outputln(utils.Now() + utils.Bule("[COMMAND]") + str)
+	op.Outputln(utils.Now() + utils.Bule("[COMMAND] ") + str)
 	utils.Command.Println(str)
 	op.CursorEnd(false)
 }
 
 func (op *OutputView) info(str string) {
-	op.Outputln(utils.Now() + utils.Tianqing("[INFO]") + str)
+	op.Outputln(utils.Now() + utils.Tianqing("[INFO] ") + str)
 	utils.Info.Println(str)
 	op.CursorEnd(false)
 }
 
 func (op *OutputView) res(str string) {
-	op.Outputln(utils.Now() + utils.Green("[RESULT]") + str)
+	op.Outputln(utils.Now() + utils.Green("[RESULT] ") + str)
 	utils.Result.Println(str)
 	op.CursorEnd(false)
 }
 
 func (op *OutputView) error(str string) {
-	op.Outputln(utils.Now() + utils.Red("[ERROR]") + str)
+	op.Outputln(utils.Now() + utils.Red("[ERROR] ") + str)
 	utils.Error.Println(str)
 	op.CursorEnd(false)
 }

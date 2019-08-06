@@ -10,7 +10,6 @@ import (
 )
 
 var Ui UI
-var ResultChan chan map[int]interface{}
 
 type UI struct {
 	G        *gocui.Gui
@@ -52,7 +51,8 @@ func InitUI() {
 func Render() {
 	for {
 		select {
-		case res := <-ResultChan:
+		case res := <-redis.R.ResultChan:
+			utils.Info.Println(res)
 			for rtype, item := range res {
 				switch rtype {
 				case redis.RES_OUTPUT_COMMAND:
@@ -87,6 +87,7 @@ func Render() {
 					utils.Error.Println(res)
 				}
 			}
+			redis.Wg.Done()
 		}
 	}
 }

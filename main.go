@@ -80,7 +80,6 @@ func main() {
 
 	ui.InitUI()
 	redis.InitRedis(host, port, pwd, pattern)
-	ui.ResultChan = redis.R.ResultChan
 	go ui.Render()
 
 	if err := ui.Ui.G.MainLoop(); err != nil && !gocui.IsQuit(err) {

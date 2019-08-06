@@ -4,11 +4,13 @@ import (
 	"errors"
 	"gosrg/utils"
 	"strings"
+	"sync"
 
 	"github.com/gomodule/redigo/redis"
 )
 
 var R *Redis
+var Wg sync.WaitGroup
 
 const (
 	RES_EXIT = iota
@@ -80,7 +82,6 @@ func InitRedis(host string, port string, pwd string, pattern string) error {
 			Pwd:        pwd,
 			Conn:       conn,
 			ResultChan: make(chan map[int]interface{}),
-			Db:         0,
 		}
 	} else {
 		R.Host = host
@@ -127,11 +128,13 @@ func (r *Redis) ResetCurrent() {
 }
 
 func (r *Redis) Send(rtype int, data interface{}) {
+	Wg.Wait()
 	go func(rtype int, data interface{}) {
 		t := map[int]interface{}{rtype: data}
 		r.ResultChan <- t
 		return
 	}(rtype, data)
+	Wg.Add(1)
 }
 
 func registerHandler() {
