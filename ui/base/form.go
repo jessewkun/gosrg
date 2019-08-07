@@ -124,6 +124,8 @@ func (f *Form) Edit(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier) {
 	switch {
 	case ch != 0 && mod == 0:
 		v.EditWrite(ch)
+	case key == gocui.KeySpace:
+		v.EditWrite(' ')
 	case key == gocui.KeyTab:
 		f.Tab()
 	case key == gocui.KeyBackspace || key == gocui.KeyBackspace2:

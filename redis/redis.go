@@ -80,7 +80,6 @@ func InitRedis(host string, port string, pwd string, pattern string) error {
 			Pwd:        pwd,
 			Conn:       conn,
 			ResultChan: make(chan map[int]interface{}),
-			Db:         0,
 		}
 	} else {
 		R.Host = host
