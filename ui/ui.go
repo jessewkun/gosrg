@@ -86,7 +86,6 @@ func Render() {
 					utils.Error.Println(res)
 				}
 			}
-			redis.Locker.Unlock()
 		}
 	}
 }

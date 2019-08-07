@@ -4,13 +4,11 @@ import (
 	"errors"
 	"gosrg/utils"
 	"strings"
-	"sync"
 
 	"github.com/gomodule/redigo/redis"
 )
 
 var R *Redis
-var Locker sync.Mutex
 
 const (
 	RES_EXIT = iota
@@ -128,7 +126,6 @@ func (r *Redis) ResetCurrent() {
 }
 
 func (r *Redis) Send(rtype int, data interface{}) {
-	Locker.Lock()
 	go func(rtype int, data interface{}) {
 		t := map[int]interface{}{rtype: data}
 		r.ResultChan <- t
