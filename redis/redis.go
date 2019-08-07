@@ -10,7 +10,7 @@ import (
 )
 
 var R *Redis
-var Wg sync.WaitGroup
+var Locker sync.Mutex
 
 const (
 	RES_EXIT = iota
@@ -128,13 +128,12 @@ func (r *Redis) ResetCurrent() {
 }
 
 func (r *Redis) Send(rtype int, data interface{}) {
-	Wg.Wait()
+	Locker.Lock()
 	go func(rtype int, data interface{}) {
 		t := map[int]interface{}{rtype: data}
 		r.ResultChan <- t
 		return
 	}(rtype, data)
-	Wg.Add(1)
 }
 
 func registerHandler() {

@@ -52,7 +52,6 @@ func Render() {
 	for {
 		select {
 		case res := <-redis.R.ResultChan:
-			utils.Info.Println(res)
 			for rtype, item := range res {
 				switch rtype {
 				case redis.RES_OUTPUT_COMMAND:
@@ -87,7 +86,7 @@ func Render() {
 					utils.Error.Println(res)
 				}
 			}
-			redis.Wg.Done()
+			redis.Locker.Unlock()
 		}
 	}
 }
